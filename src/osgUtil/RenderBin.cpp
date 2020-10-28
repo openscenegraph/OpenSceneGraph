@@ -305,7 +305,7 @@ void RenderBin::sortFrontToBack()
 {
     copyLeavesFromStateGraphListToRenderLeafList();
 
-    // now sort the list into acending depth order.
+    // now sort the list into ascending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),FrontToBackSortFunctor());
 
 //    cout << "sort front to back"<<endl;
@@ -323,7 +323,7 @@ void RenderBin::sortBackToFront()
 {
     copyLeavesFromStateGraphListToRenderLeafList();
 
-    // now sort the list into acending depth order.
+    // now sort the list into ascending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),BackToFrontSortFunctor());
 
 //    cout << "sort back to front"<<endl;
@@ -342,7 +342,7 @@ void RenderBin::sortTraversalOrder()
 {
     copyLeavesFromStateGraphListToRenderLeafList();
 
-    // now sort the list into acending depth order.
+    // now sort the list into ascending depth order.
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),TraversalOrderFunctor());
 }
 

@@ -1459,7 +1459,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
     {
         case(osg::DisplaySettings::QUAD_BUFFER):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             // left Camera left buffer
@@ -1546,7 +1546,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         }
         case(osg::DisplaySettings::ANAGLYPHIC):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             // left Camera red
@@ -1679,7 +1679,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         }
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             bool left_eye_left_viewport = ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT;
@@ -1771,7 +1771,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         }
         case(osg::DisplaySettings::VERTICAL_SPLIT):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             bool left_eye_bottom_viewport = ds->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT;
@@ -1783,7 +1783,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
                                0, left_start, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                -1.0);
 
-            // top vieport camera
+            // top viewport camera
             osg::ref_ptr<osg::Camera> right_camera = assignStereoCamera(ds, gc.get(),
                                0, right_start, traits->width, traits->height/2, traits->doubleBuffer ? GL_BACK : GL_FRONT,
                                1.0);
@@ -1870,7 +1870,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         }
         case(osg::DisplaySettings::LEFT_EYE):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             // single window, whole window, just left eye offsets
@@ -1921,7 +1921,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         }
         case(osg::DisplaySettings::RIGHT_EYE):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             // single window, whole window, just right eye offsets
@@ -1973,7 +1973,7 @@ void View::assignStereoOrKeystoneToCamera(osg::Camera* camera, osg::DisplaySetti
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
         case(osg::DisplaySettings::CHECKERBOARD):
         {
-            // disconect the camera from the graphics context.
+            // disconnect the camera from the graphics context.
             camera->setGraphicsContext(0);
 
             // set up the stencil buffer

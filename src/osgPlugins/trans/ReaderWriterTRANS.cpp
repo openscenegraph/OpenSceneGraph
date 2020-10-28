@@ -55,7 +55,7 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
         return false;
     }
 
-    // clear the params sting of any brackets.
+    // clear the params string of any brackets.
     std::string::size_type params_pos = params.size();
     for(; params_pos>0; )
     {

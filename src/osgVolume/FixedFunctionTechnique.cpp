@@ -106,7 +106,7 @@ void FixedFunctionTechnique::init()
 
     if (_volumeTile->getLayer()==0)
     {
-        OSG_NOTICE<<"FixedFunctionTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        OSG_NOTICE<<"FixedFunctionTechnique::init(), error no layer assigned to volume tile."<<std::endl;
         return;
     }
 

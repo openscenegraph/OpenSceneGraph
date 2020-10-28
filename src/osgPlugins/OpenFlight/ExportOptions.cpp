@@ -150,7 +150,7 @@ ExportOptions::parseOptionsString()
         else
             pos += (count+1);
 
-        // See if it's a Boolen/toggle
+        // See if it's a Boolean/toggle
         if ( token == _validateOption )
         {
             OSG_INFO << "fltexp: Found: " << token << std::endl;

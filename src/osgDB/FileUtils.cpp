@@ -275,16 +275,16 @@ bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDire
 void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {
 #if defined(WIN32) && !defined(__CYGWIN__)
-    char delimitor = ';';
+    char delimiter = ';';
 #else
-    char delimitor = ':';
+    char delimiter = ':';
 #endif
 
     if (!paths.empty())
     {
         std::string::size_type start = 0;
         std::string::size_type end;
-        while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+        while ((end = paths.find_first_of(delimiter,start))!=std::string::npos)
         {
             filepath.push_back(std::string(paths,start,end-start));
             start = end+1;
@@ -988,7 +988,7 @@ bool osgDB::containsCurrentWorkingDirectoryReference(const FilePathList& paths)
     // The Carbon version is noticeably longer.
     // Unfortunately, the Cocoa version requires -lobjc to be
     // linked in when creating an executable.
-    // Rumor is that this will be done autmatically in gcc 3.5/Tiger,
+    // Rumor is that this will be done automatically in gcc 3.5/Tiger,
     // but for now, this will cause a lot of headaches for people
     // who aren't familiar with this concept, so the Carbon version
     // is preferable.

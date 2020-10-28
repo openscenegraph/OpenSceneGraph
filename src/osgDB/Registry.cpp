@@ -434,7 +434,7 @@ Registry::Registry()
     addFileExtensionAlias("fnt",    "freetype");  // Windows bitmap fonts
     addFileExtensionAlias("text3d", "freetype"); // use 3D Font instead of 2D Font
 
-    // wont't add type1 and type2 until resolve extension collision with Performer binary and ascii files.
+    // won't add type1 and type2 until resolve extension collision with Performer binary and ascii files.
     // addFileExtensionAlias("pfb",   "freetype");  // type1 binary
     // addFileExtensionAlias("pfa",   "freetype");  // type2 ascii
 

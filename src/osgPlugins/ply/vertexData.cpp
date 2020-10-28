@@ -535,7 +535,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             osgUtil::SmoothingVisitor::smooth((*geom), osg::PI/2);
         }
 
-        // set flage true to activate the vertex buffer object of drawable
+        // set flags true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
 
         osg::ref_ptr<osg::Image> image;

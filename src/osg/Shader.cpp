@@ -780,7 +780,7 @@ void Shader::_parseShaderDefines(const std::string& str, ShaderDefines& defines)
     std::string::size_type start_of_parameter = 0;
     do
     {
-        // skip spaces, tabs, commans
+        // skip spaces, tabs, commands
         start_of_parameter = find_first(str, NoneOf(" \t,"), start_of_parameter);
         if (start_of_parameter==std::string::npos) break;
 

@@ -1355,7 +1355,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                             return group.release();
                         }
 
-                        // Read the texture corrdinates
+                        // Read the texture coordinates
                         osg::Vec2 texCoord;
                         stream >> texCoord[0] >> texCoord[1];
                         if (!stream) {

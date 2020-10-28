@@ -45,7 +45,7 @@ namespace osgUtil
 //                        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
 //                    #endif
 
-static osg::ApplicationUsageProxy ICO_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
+static osg::ApplicationUsageProxy ICO_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time allotted to compiling OpenGL objects per frame in database pager.");
 static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
 static osg::ApplicationUsageProxy UCO_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FORCE_TEXTURE_DOWNLOAD <ON/OFF>","should the texture compiles be forced to download using a dummy Geometry.");
 

@@ -158,7 +158,7 @@ int Condition::wait(Mutex *mutex, unsigned long int ms) {
         static_cast<PThreadMutexPrivateData *>(mutex->_prvData);
 
 
-    // wait time is now in ms milliseconds, so need to convert to seconds and nanoseconds for timespec strucuture.
+    // wait time is now in ms milliseconds, so need to convert to seconds and nanoseconds for timespec structure.
     unsigned int sec = ms / 1000;
     unsigned int nsec = (ms % 1000) * 1000000;
 

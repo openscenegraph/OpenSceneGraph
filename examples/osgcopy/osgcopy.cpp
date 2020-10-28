@@ -211,7 +211,7 @@ int main( int argc, char **argv )
 
 // -------------    Start of copy specific code -------------------------------------------------------
 
-    // do a deep copy, using MyCopyOp to reveal whats going on under the hood,
+    // do a deep copy, using MyCopyOp to reveal what's going on under the hood,
     // in your own code you'd typically just use the basic osg::CopyOp something like
     osg::ref_ptr<osg::Node> mycopy = dynamic_cast<osg::Node*>(rootnode->clone(osg::CopyOp::DEEP_COPY_ALL));
     std::cout << "Doing a deep copy of scene graph"<<std::endl;

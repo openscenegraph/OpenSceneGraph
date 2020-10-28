@@ -52,8 +52,8 @@ State::State():
     _shaderComposer = new ShaderComposer;
     _currentShaderCompositionProgram = 0L;
 
-    _drawBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoreing the first call to State::glDrawBuffer() to make sure it's always passed to OpenGL
-    _readBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoreing the first call to State::glReadBuffer() to make sure it's always passed to OpenGL
+    _drawBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoring the first call to State::glDrawBuffer() to make sure it's always passed to OpenGL
+    _readBuffer = GL_INVALID_ENUM; // avoid the lazy state mechanism from ignoring the first call to State::glReadBuffer() to make sure it's always passed to OpenGL
 
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _initialViewMatrix = _identity;
@@ -811,7 +811,7 @@ void State::applyShaderComposition()
         {
             // if (isNotifyEnabled(osg::INFO)) print(notify(osg::INFO));
 
-            // build lits of current ShaderComponents
+            // build list of current ShaderComponents
             ShaderComponents shaderComponents;
 
             // OSG_NOTICE<<"State::applyShaderComposition() : _attributeMap.size()=="<<_attributeMap.size()<<std::endl;

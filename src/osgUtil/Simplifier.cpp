@@ -753,7 +753,7 @@ public:
             EdgeSet::iterator itr = _edgeSet.find(edge);
             if (itr!=_edgeSet.end())
             {
-                // remove the edge from the list, as its positoin in the list
+                // remove the edge from the list, as its position in the list
                 // may need to change once its values have been amended
                 _edgeSet.erase(itr);
             }
@@ -883,7 +883,7 @@ public:
 
         //OSG_NOTICE<<"  pNew="<<pNew<<"\tedge_p1"<<edge_p1.get()<<"\tedge_p2"<<edge_p2.get()<<std::endl;
 
-        // we copy the edge's _triangles and interate the copy of the triangle set to avoid invalidating iterators.
+        // we copy the edge's _triangles and iterate the copy of the triangle set to avoid invalidating iterators.
         TriangleSet trianglesToRemove = edge->_triangles;
         for(TriangleSet::iterator teitr=trianglesToRemove.begin();
             teitr!=trianglesToRemove.end();

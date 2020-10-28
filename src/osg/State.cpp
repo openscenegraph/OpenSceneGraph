@@ -715,7 +715,7 @@ void State::apply(const StateSet* dstate)
 
         // Checking if there is no program on the stack or the program is not applied from the AttributeStack (StateSet core mechanism)
         if (_shaderCompositionEnabled && (_lastAppliedProgramObject == 0 ||
-            (_lastAppliedProgramObject->getProgram() != _attributeMap[_lastAppliedProgramObject->getProgram()->getTypeMemberPair()].last_applied_attribute)))
+                                          (_lastAppliedProgramObject->getProgram() != getLastAppliedAttribute(osg::StateAttribute::PROGRAM))))
         {
             // No program has been applied by the StateSet stack so assume shader composition is required
             applyShaderComposition();
@@ -786,7 +786,7 @@ void State::apply()
 
     // Checking if there is no program on the stack or the program is not applied from the AttributeStack (StateSet core mechanism)
     if (_shaderCompositionEnabled && (_lastAppliedProgramObject == 0 ||
-        (_lastAppliedProgramObject->getProgram() != _attributeMap[_lastAppliedProgramObject->getProgram()->getTypeMemberPair()].last_applied_attribute)))
+                                      (_lastAppliedProgramObject->getProgram() != getLastAppliedAttribute(osg::StateAttribute::PROGRAM))))
     {
         // No program has been applied by the StateSet stack so assume shader composition is required
         applyShaderComposition();

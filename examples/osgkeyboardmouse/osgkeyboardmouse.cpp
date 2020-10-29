@@ -167,7 +167,7 @@ public:
                     {
                         osg::notify(osg::NOTICE)<<"Using window coordinates for picking"<<std::endl;
                     } else {
-                        osg::notify(osg::NOTICE)<<"Using projection coordiates for picking"<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Using projection coordinates for picking"<<std::endl;
                     }
                 }
                 else if (ea.getKey()=='a')
@@ -401,7 +401,7 @@ public:
 
         if (cmtsv._group->getNumChildren()>0)
         {
-            std::cout<<"Writing selected compoents to 'selected_model.osgt'"<<std::endl;
+            std::cout<<"Writing selected components to 'selected_model.osgt'"<<std::endl;
             osgDB::writeNodeFile(*cmtsv._group, "selected_model.osgt");
         }
     }

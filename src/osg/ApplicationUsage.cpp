@@ -198,7 +198,7 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                 std::string::size_type slashn_pos = explanation.find('\n',pos);
 
                 unsigned int extraSkip = 0;
-                bool concatinated = false;
+                bool concatenated = false;
                 if (slashn_pos!=std::string::npos)
                 {
                     if (slashn_pos<pos+width)
@@ -227,13 +227,13 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                         // word must be longer than a whole line so will need
                         // to concatenate it.
                         width = explanationWidth-1;
-                        concatinated = true;
+                        concatenated = true;
                     }
                 }
 
                 line.replace(explanationPos+offset,explanationWidth, explanation, pos, width);
 
-                if (concatinated) { str += line; str += "-\n"; }
+                if (concatenated) { str += line; str += "-\n"; }
                 else { str += line; str += "\n"; }
 
                 // move to the next line of output.

@@ -229,7 +229,7 @@ private:
     };
 
     //-------------------------------------------------------------------------
-    // Print information related to thread schduling parameters.
+    // Print information related to thread scheduling parameters.
     //
     static void PrintThreadSchedulingInfo(Thread *thread) {
 

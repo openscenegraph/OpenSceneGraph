@@ -1854,7 +1854,7 @@ struct RenderLeafBounds
             else
             {
                 // no modelview matrix (such as when LightPointNode is in the scene graph) so assume
-                // that modelview matrix is indentity.
+                // that modelview matrix is identity.
                 light_mvp = light_p;
             }
             // OSG_INFO<<"Computing new light_mvp "<<light_mvp<<std::endl;

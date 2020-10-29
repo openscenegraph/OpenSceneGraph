@@ -314,7 +314,7 @@ int main(int, char **)
 
     osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
 #if 0
-    // temporily commenting out as its causing the viewer to crash... no clue yet to why
+    // temporarily commenting out as its causing the viewer to crash... no clue yet to why
     viewer.setRealizeOperation(testSupportOperation.get());
 #endif
     // create the windows and run the threads.

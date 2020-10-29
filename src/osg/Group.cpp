@@ -169,7 +169,7 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
         if (endOfRemoveRange>_children.size())
         {
             OSG_DEBUG<<"Warning: Group::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
-            OSG_DEBUG<<"         of chilren to remove, trimming just to end of child list."<<std::endl;
+            OSG_DEBUG<<"         of children to remove, trimming just to end of child list."<<std::endl;
             endOfRemoveRange=_children.size();
         }
 

@@ -63,7 +63,7 @@ void ShaderGenVisitor::remapStateSet(osg::StateSet* stateSet)
 {
     if (!stateSet) return;
 
-    // remove any modes that won't be appropriate when using shaders, and remap them to the apppropriate Uniform/Define combination
+    // remove any modes that won't be appropriate when using shaders, and remap them to the appropriate Uniform/Define combination
 
 
     osg::StateSet::ModeList& modes = stateSet->getModeList();

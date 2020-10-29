@@ -399,7 +399,7 @@ static ApplicationUsageProxy DisplaySetting_e34(ApplicationUsage::ENVIRONMENTAL_
         "Specify the shader files to use for when Shader Pipeline is enabled");
 static ApplicationUsageProxy DisplaySetting_e35(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SHADER_PIPELINE_NUM_TEXTURE_UNITS <value>",
-        "Specifiy number of texture units Shader Pipeline shaders support");
+        "Specify number of texture units Shader Pipeline shaders support");
 static ApplicationUsageProxy DisplaySetting_e36(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_TEXT_SHADER_TECHNIQUE <value>",
         "Set the defafult osgText::ShaderTechnique. ALL_FEATURES | ALL | GREYSCALE | SIGNED_DISTANCE_FIELD | SDF | NO_TEXT_SHADER | NONE");
@@ -734,9 +734,9 @@ void DisplaySettings::readEnvironmentalVariables()
     if (getEnvVar("OSG_KEYSTONE_FILES", value))
     {
     #if defined(WIN32) && !defined(__CYGWIN__)
-        char delimitor = ';';
+        char delimiter = ';';
     #else
-        char delimitor = ':';
+        char delimiter = ':';
     #endif
 
         std::string paths(value);
@@ -744,7 +744,7 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             std::string::size_type start = 0;
             std::string::size_type end;
-            while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+            while ((end = paths.find_first_of(delimiter,start))!=std::string::npos)
             {
                 _keystoneFileNames.push_back(std::string(paths,start,end-start));
                 start = end+1;
@@ -798,9 +798,9 @@ void DisplaySettings::readEnvironmentalVariables()
     if (getEnvVar("OSG_SHADER_PIPELINE_FILES", value))
     {
     #if defined(WIN32) && !defined(__CYGWIN__)
-        char delimitor = ';';
+        char delimiter = ';';
     #else
-        char delimitor = ':';
+        char delimiter = ':';
     #endif
 
         _shaderPipelineFiles.clear();
@@ -810,7 +810,7 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             std::string::size_type start = 0;
             std::string::size_type end;
-            while ((end = paths.find_first_of(delimitor,start))!=std::string::npos)
+            while ((end = paths.find_first_of(delimiter,start))!=std::string::npos)
             {
                 _shaderPipelineFiles.push_back(std::string(paths,start,end-start));
                 start = end+1;
@@ -1045,7 +1045,7 @@ osg::Matrixd DisplaySettings::computeLeftEyeProjectionImplementation(const osg::
     else
     {
         // all other display types assume working like a projected power wall
-        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        // need to shjear projection matrix to account for asymmetric frustum due to eye offset.
         return osg::Matrixd(1.0,0.0,0.0,0.0,
                            0.0,1.0,0.0,0.0,
                            iod/(2.0*sd),0.0,1.0,0.0,
@@ -1098,7 +1098,7 @@ osg::Matrixd DisplaySettings::computeRightEyeProjectionImplementation(const osg:
     else
     {
         // all other display types assume working like a projected power wall
-        // need to shjear projection matrix to account for asymetric frustum due to eye offset.
+        // need to shjear projection matrix to account for asymmetric frustum due to eye offset.
         return osg::Matrixd(1.0,0.0,0.0,0.0,
                            0.0,1.0,0.0,0.0,
                            -iod/(2.0*sd),0.0,1.0,0.0,

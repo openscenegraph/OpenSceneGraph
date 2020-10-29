@@ -35,7 +35,7 @@
 using namespace osgShadow;
 
 ////////////////////////////////////////////////////////////////////////////////
-// There are two slightly differing implemetations available on
+// There are two slightly differing implementations available on
 // "Light Space Perspective Shadow Maps" page. One from 2004 and other from 2006.
 // Our implementation is written in two versions based on these solutions.
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,7 +372,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     double n = (z_n+sqrt(z_f*z_n))/sinGamma;
 
 #if ROBERTS_TEST_CHANGES
-    // clamp the localtion of p so that it isn't too close to the eye as to cause problems
+    // clamp the location of p so that it isn't too close to the eye as to cause problems
     float minRatio=0.02;
     if (n<d*minRatio)
     {

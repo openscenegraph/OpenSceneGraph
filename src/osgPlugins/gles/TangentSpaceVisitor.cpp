@@ -24,7 +24,7 @@ void TangentSpaceVisitor::process(osg::Geometry& geometry) {
             return;
         }
         else {
-            OSG_WARN << "Anomaly: [TangentSpaceVisitor] Missing tangent array at specificied index." << std::endl;
+            OSG_WARN << "Anomaly: [TangentSpaceVisitor] Missing tangent array at specified index." << std::endl;
         }
     }
 

@@ -110,7 +110,7 @@ class ReaderWriterRestHttp : public osgDB::ReaderWriter
                 }
                 catch(...)
                 {
-                    OSG_WARN << "ReaderWriterRestHttpDevice : could not create http-server, unknown excpetion thrown " << std::endl;
+                    OSG_WARN << "ReaderWriterRestHttpDevice : could not create http-server, unknown exception thrown " << std::endl;
                     return ReadResult::ERROR_IN_READING_FILE;
                 }
                 

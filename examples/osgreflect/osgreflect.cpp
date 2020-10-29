@@ -39,7 +39,7 @@
 
 //
 // A simple demo demonstrating planar reflections using multiple renderings
-// of a subgraph, overriding of state attribures and use of the stencil buffer.
+// of a subgraph, overriding of state attributes and use of the stencil buffer.
 //
 // The multipass system implemented here is a variation of Mark Kilgard's
 // paper "Improving Shadows and Reflections via the Stencil Buffer" which

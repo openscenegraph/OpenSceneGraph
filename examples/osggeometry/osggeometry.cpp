@@ -148,7 +148,7 @@ osg::Node* createScene()
 
         // create a Vec3Array and add to it all my coordinates.
         // Like all the *Array variants (see include/osg/Array) , Vec3Array is derived from both osg::Array
-        // and std::vector<>.  osg::Array's are reference counted and hence sharable,
+        // and std::vector<>.  osg::Array's are reference counted and hence shareable,
         // which std::vector<> provides all the convenience, flexibility and robustness
         // of the most popular of all STL containers.
         osg::Vec3Array* vertices = new osg::Vec3Array;

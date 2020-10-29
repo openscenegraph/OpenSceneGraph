@@ -28,7 +28,7 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
             supportsExtension("las", "LAS point cloud format");
             supportsExtension("laz", "compressed LAS point cloud format");
             supportsOption("v", "Verbose output");
-            supportsOption("noScale", "don't scale vertices according to las haeder - put schale in matixTransform");
+            supportsOption("noScale", "don't scale vertices according to las header - put scale in matrixTransform");
             supportsOption("noReCenter", "don't transform vertex coords to re-center the pointcloud");
         }
 

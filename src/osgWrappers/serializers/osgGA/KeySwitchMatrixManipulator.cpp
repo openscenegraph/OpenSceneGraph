@@ -35,7 +35,7 @@ static bool writeKeyManipMap( osgDB::OutputStream& os, const osgGA::KeySwitchMat
     const osgGA::KeySwitchMatrixManipulator::KeyManipMap& kmm = kwmm.getKeyManipMap();    
     unsigned int size = kmm.size();
 
-    // find out what num the acive camera manipulator is
+    // find out what num the active camera manipulator is
     const osgGA::CameraManipulator* cm = kwmm.getCurrentMatrixManipulator();
     int index = 0;
     int activeCameraManipulatorIndex = -1;

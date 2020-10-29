@@ -59,7 +59,7 @@ public:
     {
         supportsExtension("obj","Alias Wavefront OBJ format");
         supportsOption("noRotation","Do not do the default rotate about X axis");
-        supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
+        supportsOption("noTesselateLargePolygons","Do not do the default tessellation of large polygons");
         supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
         supportsOption("generateFacetNormals","generate facet normals for vertices without normals");
         supportsOption("noReverseFaces","avoid to reverse faces when normals and triangles orientation are reversed");

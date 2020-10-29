@@ -124,7 +124,7 @@ osgDB::ReaderWriter::WriteResult ReaderWritterOpenCASCADE::writeNode(const osg::
 /// \detail http://www.opencascade.org/org/forum/thread_12716/?forum=3
 ///         Usually IGES files suffer from precision problems (when transferring from
 ///         one CAD system to another).It might be the case that faces are not sewed
-///         properly,  or do not have the right precision, and so the tesselator does
+///         properly,  or do not have the right precision, and so the tessellator does
 ///         not treat them like "sewed". this needs to be done for sewing
 /// \param shape opencascade shape to be healed
 void ReaderWritterOpenCASCADE::OCCTKReader::_healShape(TopoDS_Shape& shape)
@@ -386,7 +386,7 @@ void ReaderWritterOpenCASCADE::OCCTKReader::_traverse(const TDF_Label &shapeTree
         }
 
         /// if referred shape has children traverse them first else
-        /// travese the shape itself
+        /// traverse the shape itself
         if(referredShape.HasChild())
         {
             TDF_ChildIterator it;

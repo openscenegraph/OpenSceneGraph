@@ -49,14 +49,14 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
     int nbVerticesY = static_cast<int>( (nbVertices * k) / (length.z() * length.x()) );
     int nbVerticesZ = static_cast<int>( (nbVertices * k) / (length.x() * length.y()) );
 
-    setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cutting the scene in too many blocs
+    setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cutting the scene in too many blocks
 
     OSG_INFO
         << "Cutting x by " << nbVerticesX << std::endl
         << "Cutting y by " << nbVerticesY << std::endl
         << "Cutting z by " << nbVerticesZ << std::endl;
 
-    osg::BoundingBox::value_type blocX = length.x() / nbVerticesX;    // These 3 lines set the size of a bloc in x, y and z
+    osg::BoundingBox::value_type blocX = length.x() / nbVerticesX;    // These 3 lines set the size of a block in x, y and z
     osg::BoundingBox::value_type blocY = length.y() / nbVerticesY;
     osg::BoundingBox::value_type blocZ = length.z() / nbVerticesZ;
 
@@ -95,7 +95,7 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
                 if (z == nbVerticesZ - 1) //to prevent from mesh with no case
                     zMax += 10;
 
-                boxList.push_back(osg::BoundingBox(xMin, // Add a bloc to the list
+                boxList.push_back(osg::BoundingBox(xMin, // Add a block to the list
                     yMin,
                     zMin,
                     xMax,
@@ -129,7 +129,7 @@ WriterCompareTriangle::inWhichBox(const osg::BoundingBox::value_type x,
             return i;
         }
     }
-    assert(false && "Point is not in any blocs");
+    assert(false && "Point is not in any blocks");
     return 0;
 }
 

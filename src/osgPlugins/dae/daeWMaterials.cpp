@@ -112,7 +112,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         std::string fileURI;
         if (_pluginOptions.linkOrignialTextures)
         {
-            // We link to orignial images (not the ones in memory).
+            // We link to original images (not the ones in memory).
             fileURI = osgDB::findDataFile(osgimg->getFileName());
             if (fileURI=="" && _pluginOptions.forceTexture)
             {

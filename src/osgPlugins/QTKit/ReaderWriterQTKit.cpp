@@ -87,7 +87,7 @@ class ReaderWriterQTKit : public osgDB::ReaderWriter
             if (ext=="QTKit")
             {
                 fileName = osgDB::getNameLessExtension(fileName);
-                OSG_INFO<<"ReaderWriterQTKit stipped filename = "<<fileName<<std::endl;
+                OSG_INFO<<"ReaderWriterQTKit stripped filename = "<<fileName<<std::endl;
             }
             if (!osgDB::containsServerAddress(fileName))
             {

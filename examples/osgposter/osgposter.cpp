@@ -76,7 +76,7 @@ void computeViewMatrixOnEarth( osg::Camera* camera, osg::Node* scene,
     osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(scene);
     if ( !csn ) return;
 
-    // Compute eye point in world coordiantes
+    // Compute eye point in world coordinates
     osg::Vec3d eye;
     csn->getEllipsoidModel()->convertLatLongHeightToXYZ(
         latLongHeight.x(), latLongHeight.y(), latLongHeight.z(), eye.x(), eye.y(), eye.z() );

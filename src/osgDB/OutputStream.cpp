@@ -576,7 +576,7 @@ void OutputStream::writeImage( const osg::Image* img )
                     std::string encodedData;
                     e.encode((char*)img_itr.data(), img_itr.size(), encodedData);
                     // Each set of data is written into a separate string so we can
-                    // distiguish between main data and all mipmap levels, so writing
+                    // distinguish between main data and all mipmap levels, so writing
                     // mipmap size is not required for ASCII mode.
                     writeWrappedString(encodedData);
                 }
@@ -781,7 +781,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         }
 
         // From SOVERSION 98, start to support binary begin/end brackets so we can easily ignore
-        // errors and unsupport classes, enabling the attribute bit
+        // errors and unsupported classes, enabling the attribute bit
         if ( _useRobustBinaryFormat )
         {
             outIterator->setSupportBinaryBrackets( true );

@@ -68,6 +68,8 @@ ReaderWriterDAE::readNode(std::istream& fin,
         }
     }
 
+    pluginOptions.options = options ? osg::clone(options, osg::CopyOp::SHALLOW_COPY) : new Options;
+
     if (NULL == pDAE)
     {
         bOwnDAE = true;

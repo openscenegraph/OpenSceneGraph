@@ -158,6 +158,10 @@ inline bool isDXTC(GLenum pixelFormat)
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
             return true;
         default:
             return false;
@@ -179,17 +183,18 @@ inline dxtc_pixels::dxtc_pixels(size_t Width, size_t Height, GLenum Format, void
 
 
 inline bool dxtc_pixels::DXT1() const {
-    return ((m_Format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) || (m_Format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT));
+    return ((m_Format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) || (m_Format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT)
+        || (m_Format == GL_COMPRESSED_SRGB_S3TC_DXT1_EXT) || (m_Format == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT));
 }
 
 
 inline bool dxtc_pixels::DXT3() const {
-    return (m_Format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT);
+    return ((m_Format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) || (m_Format == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT));
 }
 
 
 inline bool dxtc_pixels::DXT5() const {
-    return (m_Format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT);
+    return ((m_Format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) || (m_Format == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT));
 }
 
 

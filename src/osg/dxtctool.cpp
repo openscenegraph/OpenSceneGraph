@@ -191,9 +191,11 @@ bool isCompressedImageTranslucent(size_t width, size_t height, GLenum format, vo
     switch(format)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
             return false;
 
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
         {
             const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
 
@@ -230,6 +232,7 @@ bool isCompressedImageTranslucent(size_t width, size_t height, GLenum format, vo
         }
 
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
         {
             const DXT3TexelsBlock *texelsBlock = reinterpret_cast<const DXT3TexelsBlock*>(imageData);
             // Only do the check on the first mipmap level, and stop when we see the first alpha texel
@@ -246,6 +249,7 @@ bool isCompressedImageTranslucent(size_t width, size_t height, GLenum format, vo
             return false;
         }
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
         {
             const DXT5TexelsBlock *texelsBlock = reinterpret_cast<const DXT5TexelsBlock*>(imageData);
             // Only do the check on the first mipmap level, and stop when we see the first alpha texel

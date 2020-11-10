@@ -17,7 +17,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
@@ -39,7 +39,7 @@ std::string convertStringFromUTF8toCurrentCodePage(const char* s){return convert
 
 std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     if (sourceLength == 0)
     {
         return std::string();
@@ -71,7 +71,7 @@ std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
 
 std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     if (sourceLength == 0)
     {
         return std::wstring();
@@ -103,7 +103,7 @@ std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
 
 std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned sourceLength)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     if (sourceLength == 0)
     {
         return std::string();
@@ -132,7 +132,7 @@ std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned 
 
 std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned sourceLength)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     if (sourceLength == 0)
     {
         return std::string();

@@ -99,7 +99,7 @@ osg::Node* createOldShaderCompositionScene(osg::ArgumentParser& arguments)
         group->addChild(pat);
     }
 
-    // resuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
+    // reuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
     {
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
@@ -119,7 +119,7 @@ osg::Node* createOldShaderCompositionScene(osg::ArgumentParser& arguments)
     }
 
 
-    // resuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
+    // reuse the first ShaderAttribute's type and ShaderComponent, just use new uniform
     {
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);

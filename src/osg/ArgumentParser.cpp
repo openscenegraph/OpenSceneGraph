@@ -198,7 +198,7 @@ ArgumentParser::ArgumentParser(int* argc,char **argv):
     }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
     // Remove linefeed from last argument if it exist
     char* lastline = argc==0 ? 0 : _argv[*argc-1];
     if (lastline)

@@ -768,7 +768,7 @@ bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4) const
         size_t NumberOfSetParams = SetParamArray.getCount();
         for (size_t i = 0; i < NumberOfSetParams; i++)
         {
-            // Just do a simple comaprison of the ref strings for the time being
+            // Just do a simple comparison of the ref strings for the time being
             if (0 == strcmp(SetParamArray[i]->getRef(), Reference))
             {
                 if (NULL != SetParamArray[i]->getFx_basic_type_common() && (NULL != SetParamArray[i]->getFx_basic_type_common()->getFloat4()))
@@ -815,7 +815,7 @@ bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f) const
         size_t NumberOfSetParams = SetParamArray.getCount();
         for (size_t i = 0; i < NumberOfSetParams; i++)
         {
-            // Just do a simple comaprison of the ref strings for the time being
+            // Just do a simple comparison of the ref strings for the time being
             if (0 == strcmp(SetParamArray[i]->getRef(), Reference))
             {
                 if (NULL != SetParamArray[i]->getFx_basic_type_common() && (NULL != SetParamArray[i]->getFx_basic_type_common()->getFloat()))
@@ -907,7 +907,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
                 OSG_WARN << "Unable to get path from URI." << std::endl;
                 return std::string();
             }
-#ifdef WIN32
+#ifdef _WIN32
             // If the path has a drive specifier or a UNC name then strip the leading /
             if (path.size() > 2 && (path[2] == ':' || (path[1] == '/' && path[2] == '/')))
                 return path.substr(1, std::string::npos);

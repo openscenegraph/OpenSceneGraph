@@ -1,6 +1,6 @@
 #include <sstream>
 #include <memory>
-#ifndef WIN32
+#ifndef _WIN32
 #include <strings.h>//for strncasecmp
 #endif
 
@@ -339,7 +339,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 for (unsigned int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
                 {
                     if (0 ==
-#ifdef WIN32
+#ifdef _WIN32
                         _strnicmp
 #else
                         strncasecmp

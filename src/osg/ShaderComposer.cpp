@@ -103,7 +103,7 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
                     computeShaders.push_back(shader);
                     break;
                 case(Shader::UNDEFINED):
-                    OSG_WARN<<"Warning: ShaderCompose::getOrCreateProgam(ShaderComponts) encounterd invalid Shader::Type."<<std::endl;
+                    OSG_WARN<<"Warning: ShaderCompose::getOrCreateProgam(ShaderComponts) encountered invalid Shader::Type."<<std::endl;
                     break;
             }
         }

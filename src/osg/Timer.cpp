@@ -20,7 +20,7 @@
 using namespace osg;
 
 // follows are the constructors of the Timer class, once version
-// for each OS combination.  The order is WIN32, FreeBSD, Linux, IRIX,
+// for each OS combination.  The order is _WIN32, FreeBSD, Linux, IRIX,
 // and the rest of the world.
 //
 // all the rest of the timer methods are implemented within the header.
@@ -32,7 +32,7 @@ Timer* Timer::instance()
     return &s_timer;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
     #include <sys/types.h>
     #include <fcntl.h>

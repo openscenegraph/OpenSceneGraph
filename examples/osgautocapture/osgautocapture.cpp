@@ -312,7 +312,7 @@ int main( int argc, char **argv )
         osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(loadedModel.get());
         if(!csn) return 1;
 
-        // Compute eye point in world coordiantes
+        // Compute eye point in world coordinates
         osg::Vec3d eye;
         csn->getEllipsoidModel()->convertLatLongHeightToXYZ(lat, lon, alt, eye.x(), eye.y(), eye.z());
 

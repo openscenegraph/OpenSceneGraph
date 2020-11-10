@@ -126,7 +126,7 @@ public:
     void notify(osg::NotifySeverity severity, const char *message);
 };
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 
 /** Redirects notification stream to windows debugger with use of
   * OuputDebugString functions.

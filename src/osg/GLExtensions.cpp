@@ -27,7 +27,7 @@
 #include <set>
 #include <sstream>
 
-#if defined(WIN32)
+#if defined(_WIN32)
     #ifndef WIN32_LEAN_AND_MEAN
         #define WIN32_LEAN_AND_MEAN
     #endif // WIN32_LEAN_AND_MEAN
@@ -59,9 +59,14 @@
 using namespace osg;
 
 typedef std::set<std::string>  ExtensionSet;
-static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
-static osg::buffered_object<std::string> s_glRendererList;
-static osg::buffered_value<int> s_glInitializedList;
+struct GLExtensions::ExtensionData : public Referenced
+{
+    osg::buffered_object<ExtensionSet> glExtensionSetList;
+    osg::buffered_object<std::string> glRendererList;
+    osg::buffered_value<int> glInitializedList;
+};
+
+ref_ptr<GLExtensions::ExtensionData> s_extensionData(new GLExtensions::ExtensionData);
 
 static ApplicationUsageProxy GLEXtension_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_GL_EXTENSION_DISABLE <value>", "Use space deliminarted list of GL extensions to disable associated GL extensions");
 static ApplicationUsageProxy GLEXtension_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_MAX_TEXTURE_SIZE <value>", "Clamp the maximum GL texture size to specified value.");
@@ -104,8 +109,8 @@ bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension1,
 
 bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGLVersion)
 {
-    ExtensionSet& extensionSet = s_glExtensionSetList[contextID];
-    std::string& rendererString = s_glRendererList[contextID];
+    ExtensionSet& extensionSet = s_extensionData->glExtensionSetList[contextID];
+    std::string& rendererString = s_extensionData->glRendererList[contextID];
 
     // first check to see if GL version number of recent enough.
     bool result = requiredGLVersion <= osg::getGLVersionNumber();
@@ -113,9 +118,9 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
     if (!result)
     {
         // if not already set up, initialize all the per graphic context values.
-        if (!s_glInitializedList[contextID])
+        if (!s_extensionData->glInitializedList[contextID])
         {
-            s_glInitializedList[contextID] = 1;
+            s_extensionData->glInitializedList[contextID] = 1;
 
             // set up the renderer
             const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -174,7 +179,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                 if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
             }
 
-    #if defined(WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
+    #if defined(_WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
 
             // add WGL extensions to the list
 
@@ -342,7 +347,7 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
         #endif
         return dlsym(handle, funcName);
 
-    #elif defined(WIN32)
+    #elif defined(_WIN32)
 
         #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GLES3_AVAILABLE)
             static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));
@@ -439,7 +444,8 @@ void GLExtensions::Set(unsigned int in_contextID, GLExtensions* extensions)
 
 
 GLExtensions::GLExtensions(unsigned int in_contextID):
-    contextID(in_contextID)
+    contextID(in_contextID),
+    _extensionData(s_extensionData)
 {
     const char* versionString = (const char*) glGetString( GL_VERSION );
     bool validContext = versionString!=0;
@@ -724,9 +730,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glTexBuffer, "glTexBuffer","glTexBufferARB" , validContext);
 
     isVBOSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_buffer_object"));
-    isPBOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
+    isPBOSupported = validContext && ((OSG_GLES3_FEATURES && glVersion >= 3.0) || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object"));
     isTBOSupported = validContext && osg::isGLExtensionSupported(contextID,"GL_ARB_texture_buffer_object");
-    isVAOSupported = validContext && (OSG_GLES3_FEATURES || OSG_GL3_FEATURES  || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
+    isVAOSupported = validContext && ((OSG_GLES3_FEATURES && glVersion >= 3.0) || OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_vertex_array_object", "GL_OES_vertex_array_object"));
     isTransformFeedbackSupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_transform_feedback2");
     isBufferObjectSupported = isVBOSupported || isPBOSupported;
 
@@ -966,12 +972,21 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     maxLayerCount = 0;
     if (validContext) glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxLayerCount);
 
-    // Bindless textures
+    // ARB_bindless_texture
     setGLExtensionFuncPtr(glGetTextureHandle,             "glGetTextureHandle", "glGetTextureHandleARB","glGetTextureHandleNV", validContext);
+    setGLExtensionFuncPtr(glGetTextureSamplerHandle,      "glGetTextureSamplerHandle","glGetTextureSamplerHandleARB", "glGetTextureSamplerHandleNV", validContext);
     setGLExtensionFuncPtr(glMakeTextureHandleResident,    "glMakeTextureHandleResident", "glMakeTextureHandleResidentARB","glMakeTextureHandleResidentNV", validContext);
     setGLExtensionFuncPtr(glMakeTextureHandleNonResident, "glMakeTextureHandleNonResident", "glMakeTextureHandleNonResidentARB", "glMakeTextureHandleNonResidentNV",validContext);
-    setGLExtensionFuncPtr(glUniformHandleui64,            "glUniformHandleui64", "glUniformHandleui64ARB","glUniformHandleui64NV", validContext);
     setGLExtensionFuncPtr(glIsTextureHandleResident,      "glIsTextureHandleResident","glIsTextureHandleResidentARB", "glIsTextureHandleResidentNV", validContext);
+    setGLExtensionFuncPtr(glGetImageHandle,      "glGetImageHandle","glGetImageHandleARB", "glGetImageHandleNV", validContext);
+    setGLExtensionFuncPtr(glMakeImageHandleResident,      "glMakeImageHandleResident","glMakeImageHandleResidentARB", "glMakeImageHandleResidentNV", validContext);
+    setGLExtensionFuncPtr(glMakeImageHandleNonResident,      "glMakeImageHandleNonResident","glMakeImageHandleNonResidentARB", "glMakeImageHandleNonResidentNV", validContext);
+    setGLExtensionFuncPtr(glIsImageHandleResident,      "glIsImageHandleResident","glIsImageHandleResidentARB", "glIsImageHandleResidentNV", validContext);
+    setGLExtensionFuncPtr(glUniformHandleui64,            "glUniformHandleui64", "glUniformHandleui64ARB","glUniformHandleui64NV", validContext);
+    setGLExtensionFuncPtr(glUniformHandleuiv64,      "glUniformHandleuiv64","glUniformHandleuiv64ARB", "glUniformHandleuiv64NV", validContext);
+    setGLExtensionFuncPtr(glProgramUniformHandleui64,      "glProgramUniformHandleui64","glProgramUniformHandleui64ARB", "glProgramUniformHandleui64NV", validContext);
+    setGLExtensionFuncPtr(glProgramUniformHandleuiv64,      "glProgramUniformHandleuiv64","glProgramUniformHandleuiv64ARB", "glProgramUniformHandleuiv64NV", validContext);
+
 
     // Blending
     isBlendColorSupported = validContext &&
@@ -1049,9 +1064,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     isPointSpriteSupported = validContext && (OSG_GLES2_FEATURES || OSG_GLES3_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_OES_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite"));
-
     isPointSpriteModeSupported = isPointSpriteSupported && !OSG_GL3_FEATURES;
-
     isPointSpriteCoordOriginSupported = validContext && (OSG_GL3_FEATURES || (glVersion >= 2.0f));
 
 
@@ -1073,6 +1086,9 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
 
     // FrameBufferObject
+    isMultisampledRenderToTextureSupported = validContext && isGLExtensionSupported(contextID, "GL_EXT_multisampled_render_to_texture");
+    isInvalidateFramebufferSupported = validContext && (isGLExtensionSupported(contextID, "GL_ARB_invalidate_subdata") || (OSG_GLES3_FEATURES && glVersion >= 3.0) || glVersion >= 4.3);
+
     setGLExtensionFuncPtr(glBindRenderbuffer, "glBindRenderbuffer", "glBindRenderbufferEXT", "glBindRenderbufferOES", validContext);
     setGLExtensionFuncPtr(glDeleteRenderbuffers, "glDeleteRenderbuffers", "glDeleteRenderbuffersEXT", "glDeleteRenderbuffersOES", validContext);
     setGLExtensionFuncPtr(glGenRenderbuffers, "glGenRenderbuffers", "glGenRenderbuffersEXT", "glGenRenderbuffersOES", validContext);
@@ -1086,6 +1102,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     setGLExtensionFuncPtr(glFramebufferTexture1D, "glFramebufferTexture1D", "glFramebufferTexture1DEXT", "glFramebufferTexture1DOES", validContext);
     setGLExtensionFuncPtr(glFramebufferTexture2D, "glFramebufferTexture2D", "glFramebufferTexture2DEXT", "glFramebufferTexture2DOES", validContext);
+    setGLExtensionFuncPtr(glFramebufferTexture2DMultisample, "glFramebufferTexture2DMultisample", "glFramebufferTexture2DMultisampleEXT", validContext);
     setGLExtensionFuncPtr(glFramebufferTexture3D, "glFramebufferTexture3D", "glFramebufferTexture3DEXT", "glFramebufferTexture3DOES", validContext);
     setGLExtensionFuncPtr(glFramebufferTexture, "glFramebufferTexture", "glFramebufferTextureEXT", "glFramebufferTextureOES", validContext);
     setGLExtensionFuncPtr(glFramebufferTextureLayer, "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT", "glFramebufferTextureLayerOES", validContext);
@@ -1101,6 +1118,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 
     setGLExtensionFuncPtr(glGenerateMipmap, "glGenerateMipmap", "glGenerateMipmapEXT", "glGenerateMipmapOES", validContext);
     setGLExtensionFuncPtr(glBlitFramebuffer, "glBlitFramebuffer", "glBlitFramebufferEXT", "glBlitFramebufferOES", validContext);
+    setGLExtensionFuncPtr(glInvalidateFramebuffer, "glInvalidateFramebuffer", "glInvalidateFramebufferEXT", validContext);
     setGLExtensionFuncPtr(glGetRenderbufferParameteriv, "glGetRenderbufferParameteriv", "glGetRenderbufferParameterivEXT", "glGetRenderbufferParameterivOES", validContext);
 
 
@@ -1279,9 +1297,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 GLExtensions::~GLExtensions()
 {
     // Remove s_gl*List
-    s_glExtensionSetList[contextID] = ExtensionSet();
-    s_glRendererList[contextID] = std::string();
-    s_glInitializedList[contextID] = 0;
+    ref_ptr<ExtensionData> eData;
+    if (_extensionData.lock(eData))
+    {
+        eData->glExtensionSetList[contextID] = ExtensionSet();
+        eData->glRendererList[contextID] = std::string();
+        eData->glInitializedList[contextID] = 0;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1387,3 +1409,4 @@ bool GLExtensions::getFragDataLocation( const char* fragDataName, GLuint& locati
     location = loc;
     return true;
 }
+

@@ -27,7 +27,7 @@
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windows.h"
 #endif
 
@@ -112,7 +112,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         std::string fileURI;
         if (_pluginOptions.linkOrignialTextures)
         {
-            // We link to orignial images (not the ones in memory).
+            // We link to original images (not the ones in memory).
             fileURI = osgDB::findDataFile(osgimg->getFileName());
             if (fileURI=="" && _pluginOptions.forceTexture)
             {

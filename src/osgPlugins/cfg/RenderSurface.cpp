@@ -221,7 +221,7 @@ void RenderSurface::setDisplay( Display *dpy )
 
 Producer::Display *RenderSurface::getDisplay()
 {
-#ifdef WIN32
+#ifdef _WIN32
     return &_hdc;
 #else
     return _dpy;
@@ -230,7 +230,7 @@ Producer::Display *RenderSurface::getDisplay()
 
 const Producer::Display *RenderSurface::getDisplay() const
 {
-#ifdef WIN32
+#ifdef _WIN32
     return &_hdc;
 #else
     return _dpy;
@@ -434,7 +434,7 @@ void RenderSurface::setWindow( const Window win )
         return;
     }
     _win = win;
-#ifdef WIN32
+#ifdef _WIN32
     _ownWindow = false;
 #endif
 }

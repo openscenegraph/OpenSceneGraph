@@ -32,7 +32,7 @@ using namespace osgShadow;
 
 #if defined( DEBUG ) || defined( _DEBUG ) || defined( _DEBUG_ )
 // ConvexPolyhedron may produce tons of warnings when it becomes non convex.
-// Unfortuantely this condition often happens in daily routine of shadow usage
+// Unfortunately this condition often happens in daily routine of shadow usage
 // due precision errors mixed with repeating frustum cuts performed by MinimalShadowClasses.
 // However, in most of above cases this condition is not fatal
 // because polyhedron becomes concave by very small margin (measuring deep the hole).
@@ -301,7 +301,7 @@ void ConvexPolyhedron::transform(const osg::Matrix& matrix, const osg::Matrix& i
     }
 
     // Perpective transforms and lack of precision
-    // occasionaly cause removal of some points
+    // occasionally cause removal of some points
 
     removeDuplicateVertices( );
 
@@ -637,7 +637,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
     }
 
     // Perpective transforms and lack of precision
-    // occasionaly cause removal of some points
+    // occasionally cause removal of some points
 
     removeDuplicateVertices( );
 

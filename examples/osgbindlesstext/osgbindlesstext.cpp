@@ -150,7 +150,7 @@ std::string fragShader =
 "}                                                             \n"
 ;
 
-///This class provides a basic wraper for a Uniform Buffer Object
+///This class provides a basic wrapper for a Uniform Buffer Object
 ///or UBO, and provides the storage for the texture handles
 class BindlessBuffer: public osg::Referenced{
 public:

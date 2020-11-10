@@ -140,7 +140,7 @@ int EXIF_Orientation (j_decompress_ptr cinfo)
     a pointer to the actual value, are packed into these 12 byte entries. */
     if ((i + tags * 12) > exif_marker->data_length)
     {
-        OSG_INFO<<"Not enough length for requied tags"<<std::endl;
+        OSG_INFO<<"Not enough length for required tags"<<std::endl;
         return 0;
     }
 

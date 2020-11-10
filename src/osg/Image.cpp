@@ -749,7 +749,7 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
     // which raises the question of how to actually query for these sizes...
     // will need to revisit this issue, for now just report an error.
     // this is possible a bit of mute point though as since the ARB compressed formats
-    // aren't yet used for storing images to disk, so its likely that users wont have
+    // aren't yet used for storing images to disk, so its likely that users won't have
     // osg::Image's for pixel formats set the ARB compressed formats, just using these
     // compressed formats as internal texture modes.  This is very much speculation though
     // if get the below error then its time to revist this issue :-)

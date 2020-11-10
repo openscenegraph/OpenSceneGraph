@@ -311,7 +311,7 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
                         vertices->push_back(osg::Vec3(vptr[0],vptr[1],vptr[2]));
                     }
 
-                    // add the line segmenets for track
+                    // add the line segments for track
                     for(int pi=0; pi<n_points-1; ++pi, ++vi)
                     {
                         lines->push_back(vi);

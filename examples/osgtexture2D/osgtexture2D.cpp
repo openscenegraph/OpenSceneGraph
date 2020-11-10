@@ -543,7 +543,7 @@ public:
         // now assign the appropriate portion data from the originalImage
         subImage->setImage(originalImage->s()/2, originalImage->t()/2, originalImage->r(), // half the width and height
                            originalImage->getInternalTextureFormat(), // same internal texture format
-                           originalImage->getPixelFormat(),originalImage->getDataType(), // same pixel foramt and data type
+                           originalImage->getPixelFormat(),originalImage->getDataType(), // same pixel format and data type
                            originalImage->data(originalImage->s()/4,originalImage->t()/4), // offset the start point to 1/4 into the image
                            osg::Image::NO_DELETE, // don't attempt to delete the image data, leave this to the originalImage
                            originalImage->getPacking(), // use the same packing

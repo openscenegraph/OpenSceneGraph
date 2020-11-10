@@ -121,7 +121,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
             foundFile = osgDB::getRealPath(foundFile);
             OSG_NOTICE<<"foundFile = "<<foundFile<<std::endl;
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
             std::string uri = std::string("file:///") + foundFile;
 #else
             std::string uri = std::string("file:") + foundFile;

@@ -271,7 +271,7 @@ void TextureCubeMap::apply(State& state) const
 
         _subloadCallback->load(*this,state);
 
-        // in theory the following line is redundent, but in practice
+        // in theory the following line is redundant, but in practice
         // have found that the first frame drawn doesn't apply the textures
         // unless a second bind is called?!!
         // perhaps it is the first glBind which is not required...

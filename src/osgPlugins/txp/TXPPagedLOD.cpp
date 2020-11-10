@@ -103,7 +103,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
 
-                    //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
+                    //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priority = "<<priority<<std::endl;
                     nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,
                                                                     nv.getNodePath(),
                                                                     priority,

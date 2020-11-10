@@ -664,9 +664,9 @@ void IntersectVisitor::apply(Geode& geode)
 {
     if (!enterNode(geode)) return;
 
-    for(unsigned int i = 0; i < geode.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < geode.getNumChildren(); i++ )
     {
-        intersect(*geode.getDrawable(i));
+        geode.getChild(i)->accept(*this);
     }
 
     leaveNode();
@@ -680,7 +680,7 @@ void IntersectVisitor::apply(Billboard& node)
     // IntersectVisitor doesn't have getEyeLocal(), can we use NodeVisitor::getEyePoint()?
     const Vec3& eye_local = getEyePoint();
 
-    for(unsigned int i = 0; i < node.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < node.getNumChildren(); i++ )
     {
         const Vec3& pos = node.getPosition(i);
         osg::ref_ptr<RefMatrix> billboard_matrix = new RefMatrix;
@@ -688,7 +688,7 @@ void IntersectVisitor::apply(Billboard& node)
 
         pushMatrix(billboard_matrix.get(), osg::Transform::RELATIVE_RF);
 
-        intersect(*node.getDrawable(i));
+        node.getChild(i)->accept(*this);
 
         popMatrix();
 

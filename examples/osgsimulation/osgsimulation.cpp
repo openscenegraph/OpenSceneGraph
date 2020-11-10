@@ -16,7 +16,7 @@
 *  THE SOFTWARE.
 */
 
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
 /////////////////////////////////////////////////////////////////////////////
 // Disable unavoidable warning messages:
 
@@ -32,7 +32,7 @@
 
 #pragma warning(disable : 4103 4114 4201 4237 4251 4275 4290 4503 4335 4786)
 
-#endif // WIN32
+#endif // _WIN32
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>

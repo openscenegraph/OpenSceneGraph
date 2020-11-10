@@ -25,7 +25,7 @@
 using namespace osg;
 using namespace std;
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #include<windows.h>
 extern "C" { OSG_EXPORT DWORD NvOptimusEnablement=0x00000001; }
 #else
@@ -719,7 +719,7 @@ void DisplaySettings::readEnvironmentalVariables()
 
     if (getEnvVar("OSG_KEYSTONE_FILES", value))
     {
-    #if defined(WIN32) && !defined(__CYGWIN__)
+    #if defined(_WIN32) && !defined(__CYGWIN__)
         char delimitor = ';';
     #else
         char delimitor = ':';

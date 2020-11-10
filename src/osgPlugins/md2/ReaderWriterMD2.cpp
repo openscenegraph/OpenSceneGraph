@@ -29,7 +29,7 @@
 #include <string.h>
 #include <fcntl.h>
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
 #  include <io.h>
 #else
 #  include <unistd.h>

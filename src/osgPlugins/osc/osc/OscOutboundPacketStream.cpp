@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#if defined(__WIN32__) || defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32)
 #include <malloc.h> // for alloca
 #endif
 

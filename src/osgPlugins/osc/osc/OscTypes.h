@@ -35,7 +35,7 @@ namespace osc{
 
 // basic types
 
-#if defined(__BORLANDC__) || defined(_MSC_VER)
+#if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__clang__))
 
 typedef __int64 int64;
 typedef unsigned __int64 uint64;

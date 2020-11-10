@@ -98,7 +98,7 @@ void PagedLOD::setDatabasePath(const std::string& path)
 
 /*
         // make sure the last character is the appropriate slash
-#ifdef WIN32
+#ifdef _WIN32
         if (lastCharacter==unixSlash)
         {
             lastCharacter = winSlash;

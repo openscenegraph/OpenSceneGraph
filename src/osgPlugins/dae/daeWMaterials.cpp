@@ -27,7 +27,7 @@
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windows.h"
 #endif
 

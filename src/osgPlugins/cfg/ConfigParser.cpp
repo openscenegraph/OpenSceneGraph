@@ -210,7 +210,7 @@
 
 
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
@@ -218,7 +218,7 @@
 #endif
 
 #if 0
-#ifndef WIN32
+#ifndef _WIN32
 #define SUPPORT_CPP 1
 #endif
 #endif

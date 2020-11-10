@@ -18,13 +18,13 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#ifdef WIN32
+#ifdef _WIN32
     #include <windows.h>
 #endif
 
 #if defined(__sgi)
     #include <ctype.h>
-#elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
+#elif defined(__GNUC__) || !defined(_WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
 #endif
@@ -98,7 +98,7 @@ std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
 
 char osgDB::getNativePathSeparator()
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     return WINDOWS_PATH_SEPARATOR;
 #else
     return UNIX_PATH_SEPARATOR;
@@ -107,7 +107,7 @@ char osgDB::getNativePathSeparator()
 
 bool osgDB::isFileNameNativeStyle(const std::string& fileName)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     return fileName.find(UNIX_PATH_SEPARATOR) == std::string::npos; // return true if no unix style slash exist
 #else
     return fileName.find(WINDOWS_PATH_SEPARATOR) == std::string::npos; // return true if no windows style backslash exist
@@ -116,7 +116,7 @@ bool osgDB::isFileNameNativeStyle(const std::string& fileName)
 
 std::string osgDB::convertFileNameToNativeStyle(const std::string& fileName)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     return convertFileNameToWindowsStyle(fileName);
 #else
     return convertFileNameToUnixStyle(fileName);
@@ -261,7 +261,7 @@ std::string osgDB::getServerFileName(const std::string& filename)
 
 std::string osgDB::concatPaths(const std::string& left, const std::string& right)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32) && !defined(__CYGWIN__)
     const char delimiterNative  = WINDOWS_PATH_SEPARATOR;
     const char delimiterForeign = UNIX_PATH_SEPARATOR;
 #else
@@ -291,7 +291,7 @@ std::string osgDB::concatPaths(const std::string& left, const std::string& right
 
 std::string osgDB::getRealPath(const std::string& path)
 {
-#if defined(WIN32)  && !defined(__CYGWIN__)
+#if defined(_WIN32)  && !defined(__CYGWIN__)
 
 #ifdef OSG_USE_UTF8_FILENAME
 

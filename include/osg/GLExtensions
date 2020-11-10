@@ -33,6 +33,7 @@
 #include <osg/MatrixTemplate>
 #include <osg/Matrixd>
 #include <osg/Matrixf>
+#include <osg/observer_ptr>
 
 #include <stdlib.h>
 #include <string.h>
@@ -165,6 +166,15 @@ class VertexAttribAlias
             _glName(glName),
             _osgName(osgName),
             _declaration(declaration) {}
+
+        VertexAttribAlias& operator = (const VertexAttribAlias& rhs)
+        {
+            _location = rhs._location;
+            _glName = rhs._glName;
+            _osgName = rhs._osgName;
+            _declaration = rhs._declaration;
+            return *this;
+        }
 
         GLuint      _location;
         std::string _glName;
@@ -382,11 +392,21 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glUniformMatrix4x3dv)( GLint location, GLsizei count, GLboolean transpose, const GLdouble* value );
         void (GL_APIENTRY * glGetActiveAtomicCounterBufferiv)( GLuint program, GLuint bufferIndex, GLenum pname, GLint* params );
         void (GL_APIENTRY * glDispatchCompute)( GLuint numGroupsX, GLuint numGroupsY, GLuint numGroupsZ );
-        GLuint64 (GL_APIENTRY* glGetTextureHandle)(GLint texture);
-        void        (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64 handle);
-        void        (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64 handle);
-        void        (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64 handle);
-        GLboolean   (GL_APIENTRY* glIsTextureHandleResident)(GLuint64 handle);
+
+        // ARB_bindless_texture
+        GLuint64 (GL_APIENTRY* glGetTextureHandle)(GLuint texture);
+        GLuint64 (GL_APIENTRY* glGetTextureSamplerHandle)(GLuint texture, GLuint sampler);
+        void (GL_APIENTRY* glMakeTextureHandleResident)(GLuint64 handle);
+        void (GL_APIENTRY* glMakeTextureHandleNonResident)(GLuint64 handle);
+        GLboolean (GL_APIENTRY* glIsTextureHandleResident)(GLuint64 handle);
+        GLuint64 (GL_APIENTRY* glGetImageHandle)(GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum format);
+        void (GL_APIENTRY* glMakeImageHandleResident)(GLuint64 handle);
+        void  (GL_APIENTRY* glMakeImageHandleNonResident)(GLuint64 handle);
+        GLboolean (GL_APIENTRY* glIsImageHandleResident)(GLuint64 handle);
+        void  (GL_APIENTRY* glUniformHandleui64)(GLint location, GLuint64 handle);
+        void  (GL_APIENTRY* glUniformHandleuiv64)(GLint location, GLsizei count, GLuint64 *handles);
+        void  (GL_APIENTRY* glProgramUniformHandleui64)(GLuint program, GLint location, GLuint64 handle);
+        void  (GL_APIENTRY* glProgramUniformHandleuiv64)(GLuint program, GLint location, GLsizei count, GLuint64 *handles);
 
         // Buffer Object extensions
         bool isBufferObjectSupported;
@@ -664,6 +684,9 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         // FrameBuferObject
         bool isFrameBufferObjectSupported;
         bool isPackedDepthStencilSupported;
+        bool isMultisampledRenderToTextureSupported;
+        bool isInvalidateFramebufferSupported;
+
         bool isRenderbufferMultisampleSupported() const { return glRenderbufferStorageMultisample != 0; }
         bool isRenderbufferMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
 
@@ -680,6 +703,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glFramebufferTexture1D) (GLenum, GLenum, GLenum, GLuint, GLint);
         void (GL_APIENTRY * glFramebufferTexture2D) (GLenum, GLenum, GLenum, GLuint, GLint);
+        void (GL_APIENTRY * glFramebufferTexture2DMultisample) (GLenum, GLenum, GLenum, GLuint, GLint, GLsizei);
         void (GL_APIENTRY * glFramebufferTexture3D) (GLenum, GLenum, GLenum, GLuint, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTexture) (GLenum, GLenum, GLint, GLint);
         void (GL_APIENTRY * glFramebufferTextureLayer) (GLenum, GLenum, GLuint, GLint, GLint);
@@ -688,6 +712,7 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         void (GL_APIENTRY * glGenerateMipmap) (GLenum);
         void (GL_APIENTRY * glBlitFramebuffer) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+        void (GL_APIENTRY * glInvalidateFramebuffer) (GLenum, GLsizei, const GLenum*); // GL_ARB_invalidate_subdata or GL 4.3 or GLES 3
         void (GL_APIENTRY * glGetRenderbufferParameteriv) (GLenum, GLenum, GLint*);
 
         //ARB_framebuffer_no_attachments
@@ -904,8 +929,10 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
 
         inline void glUniform(GLint location, const std::vector<osg::Matrixd>& array) const { if (!array.empty()) glUniformMatrix4dv(location, static_cast<GLsizei>(array.size()), GL_FALSE, array.front().ptr()); }
 
+        struct ExtensionData;
     protected:
         virtual ~GLExtensions();
+        observer_ptr<ExtensionData> _extensionData;
 };
 
 

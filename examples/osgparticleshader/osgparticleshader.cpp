@@ -175,7 +175,7 @@ int main( int argc, char** argv )
     // A floating error of delta-time should be explained here:
     // The particles emitter, program and updater all use a 'dt' to compute the time value in every frame.
     // Because the 'dt' is a double value, it is not suitable to keep three copies of it separately, which
-    // is the previous implementation. The small error makes some opeartors unable to work correctly, e.g.
+    // is the previous implementation. The small error makes some operators unable to work correctly, e.g.
     // the BounceOperator.
     // Now we make use of the getDeltaTime() of ParticleSystem to maintain and dispatch the delta time. But..
     // it is not the best solution so far, since there are still very few particles acting unexpectedly.

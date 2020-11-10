@@ -154,7 +154,7 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
 {
     if (_tileMap.count(TileIdentifier(tid.x+dx,tid.y+dy,tid.lod))!=0)
     {
-        // we have a neightbour at the same lod level.
+        // we have a neighbour at the same lod level.
         return false;
     }
 

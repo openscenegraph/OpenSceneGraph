@@ -98,7 +98,7 @@ int main( int, char** )
         vAry->push_back( osg::Vec4(1,0,1,1) );
         osg::ref_ptr<osg::VertexBufferObject> vbo = new osg::VertexBufferObject;
         vbo->setDataVariance(osg::Object::STATIC);
-        vbo->setUsage(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT ); // enable persistant bufferStorage
+        vbo->setUsage(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT ); // enable persistent bufferStorage
         vbo->setMappingBitfield(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT| GL_MAP_FLUSH_EXPLICIT_BIT );// set mapping flags
         vAry->setBufferObject(vbo);
 

@@ -213,7 +213,7 @@ osg::gluTessProperty( GLUtesselator *tess, GLenum which, GLdouble value )
       tess->windingRule = windingRule;
       return;
     default:
-      break;
+      return;
     }
 
   case GLU_TESS_BOUNDARY_ONLY:

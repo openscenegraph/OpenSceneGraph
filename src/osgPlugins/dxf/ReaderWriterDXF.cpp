@@ -40,8 +40,8 @@ public:
         supportsOption("UTF8", "Assuming UTF8 encoding of dxf text");
         supportsOption("UTF16", "Assuming UTF16 encoding of dxf text");
         supportsOption("UTF32", "Assuming UTF32 encoding of dxf text");
-        supportsOption("SIGNATURE", "Detrmine encoding of dxf text from it's signative");
-        supportsOption("WideChar | CurrentCodePage", "Detrmine encoding of dxf text using CurrentCodePage (Windows only.)");
+        supportsOption("SIGNATURE", "Determine encoding of dxf text from it's signative");
+        supportsOption("WideChar | CurrentCodePage", "Determine encoding of dxf text using CurrentCodePage (Windows only.)");
         supportsOption("FontFile=<fontfile>", "Set the font file for dxf text");
     }
 

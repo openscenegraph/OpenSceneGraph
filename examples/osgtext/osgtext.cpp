@@ -683,7 +683,7 @@ int main(int argc, char** argv)
             text->setFont("fonts/times.ttf");
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
             text->setAlignment(osgText::Text::RIGHT_TOP);
-            text->setText("Alingment\nBefore:");
+            text->setText("Alignment\nBefore:");
             group->addChild(text);
         }
 
@@ -691,7 +691,7 @@ int main(int argc, char** argv)
             osg::ref_ptr<osgText::Text> text = new osgText::Text;
             text->setFont("fonts/times.ttf");
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
-            text->setText("Alingment\nAfter:");
+            text->setText("Alignment\nAfter:");
             text->setAlignment(osgText::Text::LEFT_TOP);
             group->addChild(text);
         }

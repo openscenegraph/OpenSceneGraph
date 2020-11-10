@@ -351,7 +351,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
             _input.seekg( 0, std::ios_base::end );
             file_size = ARCHIVE_POS( _input.tellg() );
             if( _input.is_open() && file_size <= 0 )
-            {   // compute end of file postition manually ...
+            {   // compute end of file position manually ...
                 // seekp( 0, ios::end ), tellp( ) fails in 32 bit windows with files > 4 GiB
                 size_t BlockHeaderSize =
                     sizeof( unsigned int /*_blockSize*/ ) +

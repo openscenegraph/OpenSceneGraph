@@ -715,7 +715,7 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
     int iNumMaterials = 0;
     const osg::StateSet::RefAttributePair* pRAP=NULL;
     // Let ac3d optimise the file
-    // whiz round and get a list of materails
+    // whiz round and get a list of materials
     // write them out
     // write out an object for each drawable.
     // Write out world object
@@ -764,7 +764,7 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                     fout << "OBJECT poly" << std::endl;
                     fout << "name \"" << getName() << "\"" << std::endl;
 
-                    // Use zero offset co-ordinate as location IS OPTIONAL
+                    // Use zero offset coordinate as location IS OPTIONAL
                     // fout << "loc " << "0 0 0" << std::endl;
                     /* you could have an offset for the coordinates;  it was suggested that the first coord would do.
                     if((*pVertexArray).getType()==osg::Array::Vec3ArrayType) {

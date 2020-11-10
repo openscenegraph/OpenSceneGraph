@@ -124,7 +124,7 @@ int main(int argc, char** argv)
 
     if (arguments.argc()<=1)
     {
-        std::cout<<"Please supply an image filename on the commnand line."<<std::endl;
+        std::cout<<"Please supply an image filename on the command line."<<std::endl;
         return 1;
     }
 

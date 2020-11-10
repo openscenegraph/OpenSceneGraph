@@ -99,19 +99,19 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 switch(_mode)
                 {
                     case(READ_PIXELS):
-                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with out PixelBufferObject."<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Reading window using glReadPixels, with out PixelBufferObject."<<std::endl;
                         break;
                     case(SINGLE_PBO):
-                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a single PixelBufferObject."<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Reading window using glReadPixels, with a single PixelBufferObject."<<std::endl;
                         _pboBuffer.push_back(0);
                         break;
                     case(DOUBLE_PBO):
-                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Reading window using glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
                         _pboBuffer.push_back(0);
                         _pboBuffer.push_back(0);
                         break;
                     case(TRIPLE_PBO):
-                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Reading window using glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
                         _pboBuffer.push_back(0);
                         _pboBuffer.push_back(0);
                         _pboBuffer.push_back(0);

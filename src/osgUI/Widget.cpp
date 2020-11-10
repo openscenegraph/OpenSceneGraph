@@ -441,7 +441,7 @@ bool Widget::computeIntersections(osgGA::EventVisitor* ev, osgGA::GUIEventAdapte
         typedef std::vector<const osgUtil::LineSegmentIntersector::Intersection*> IntersectionPointerList;
         IntersectionPointerList intersectionsToSort;
 
-        // populate the temporay vector of poiners to the original intersection pointers.
+        // populate the temporary vector of pointers to the original intersection pointers.
         for(osgUtil::LineSegmentIntersector::Intersections::iterator itr = source_intersections.begin();
             itr != source_intersections.end();
             ++itr)

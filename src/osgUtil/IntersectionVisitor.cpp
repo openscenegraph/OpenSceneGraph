@@ -234,9 +234,9 @@ void IntersectionVisitor::apply(osg::Geode& geode)
 
     // OSG_NOTICE<<"inside apply(Geode&)"<<std::endl;
 
-    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+    for(unsigned int i=0; i<geode.getNumChildren(); ++i)
     {
-        intersect( geode.getDrawable(i) );
+        geode.getChild(i)->accept(*this);
     }
 
     leave();
@@ -250,7 +250,7 @@ void IntersectionVisitor::apply(osg::Billboard& billboard)
     // IntersectVisitor doesn't have getEyeLocal(), can we use NodeVisitor::getEyePoint()?
     osg::Vec3 eye_local = getEyePoint();
 
-    for(unsigned int i = 0; i < billboard.getNumDrawables(); i++ )
+    for(unsigned int i = 0; i < billboard.getNumChildren(); i++ )
     {
         const osg::Vec3& pos = billboard.getPosition(i);
         osg::ref_ptr<osg::RefMatrix> billboard_matrix = new osg::RefMatrix;
@@ -269,7 +269,7 @@ void IntersectionVisitor::apply(osg::Billboard& billboard)
         // now push an new intersector clone transform to the new local coordinates
         push_clone();
 
-        intersect( billboard.getDrawable(i) );
+        billboard.getChild(i)->accept(*this);
 
         // now push an new intersector clone transform to the new local coordinates
         pop_clone();

@@ -59,9 +59,14 @@
 using namespace osg;
 
 typedef std::set<std::string>  ExtensionSet;
-static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
-static osg::buffered_object<std::string> s_glRendererList;
-static osg::buffered_value<int> s_glInitializedList;
+struct GLExtensions::ExtensionData : public Referenced
+{
+    osg::buffered_object<ExtensionSet> glExtensionSetList;
+    osg::buffered_object<std::string> glRendererList;
+    osg::buffered_value<int> glInitializedList;
+};
+
+ref_ptr<GLExtensions::ExtensionData> s_extensionData(new GLExtensions::ExtensionData);
 
 static ApplicationUsageProxy GLEXtension_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_GL_EXTENSION_DISABLE <value>", "Use space deliminarted list of GL extensions to disable associated GL extensions");
 static ApplicationUsageProxy GLEXtension_e1(ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_MAX_TEXTURE_SIZE <value>", "Clamp the maximum GL texture size to specified value.");
@@ -104,8 +109,8 @@ bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension1,
 
 bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGLVersion)
 {
-    ExtensionSet& extensionSet = s_glExtensionSetList[contextID];
-    std::string& rendererString = s_glRendererList[contextID];
+    ExtensionSet& extensionSet = s_extensionData->glExtensionSetList[contextID];
+    std::string& rendererString = s_extensionData->glRendererList[contextID];
 
     // first check to see if GL version number of recent enough.
     bool result = requiredGLVersion <= osg::getGLVersionNumber();
@@ -113,9 +118,9 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
     if (!result)
     {
         // if not already set up, initialize all the per graphic context values.
-        if (!s_glInitializedList[contextID])
+        if (!s_extensionData->glInitializedList[contextID])
         {
-            s_glInitializedList[contextID] = 1;
+            s_extensionData->glInitializedList[contextID] = 1;
 
             // set up the renderer
             const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -439,7 +444,8 @@ void GLExtensions::Set(unsigned int in_contextID, GLExtensions* extensions)
 
 
 GLExtensions::GLExtensions(unsigned int in_contextID):
-    contextID(in_contextID)
+    contextID(in_contextID),
+    _extensionData(s_extensionData)
 {
     const char* versionString = (const char*) glGetString( GL_VERSION );
     bool validContext = versionString!=0;
@@ -1279,9 +1285,13 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
 GLExtensions::~GLExtensions()
 {
     // Remove s_gl*List
-    s_glExtensionSetList[contextID] = ExtensionSet();
-    s_glRendererList[contextID] = std::string();
-    s_glInitializedList[contextID] = 0;
+    ref_ptr<ExtensionData> eData;
+    if (_extensionData.lock(eData))
+    {
+        eData->glExtensionSetList[contextID] = ExtensionSet();
+        eData->glRendererList[contextID] = std::string();
+        eData->glInitializedList[contextID] = 0;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////

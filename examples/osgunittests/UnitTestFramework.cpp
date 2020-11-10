@@ -50,7 +50,7 @@ std::ostream& TestContext::tout(TraceLevel tl) const
 TestContext::TraceStream::TraceStream(std::ostream& o, TraceLevel tl):
     _traceLevel(tl),
     _outputStreamPtr(&o),
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+#if defined(_WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
     _nullStream("nul")
 #else
     _nullStream("/dev/null")

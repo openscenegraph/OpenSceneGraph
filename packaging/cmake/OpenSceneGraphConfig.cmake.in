@@ -131,7 +131,7 @@ foreach(component OpenThreads osg ${OpenSceneGraph_FIND_COMPONENTS})
     # Components all get installed to the same include directory
     set(${UC_COMPONENT}_INCLUDE_DIR ${OpenSceneGraph_INCLUDE_DIRS})
 
-    if(WIN32)
+    if(_WIN32)
         # For Windows, we need to provide the consumer with the IMPLIB (.lib) file
         set(osg_imported_lib_property IMPORTED_IMPLIB)
     else()

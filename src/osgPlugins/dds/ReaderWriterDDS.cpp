@@ -62,7 +62,7 @@
     #define GL_LUMINANCE4_ALPHA4    0x8043
 #endif
 
-// NOTICE ON WIN32:
+// NOTICE ON _WIN32:
 // typedef DWORD unsigned long;
 // sizeof(DWORD) = 4
 

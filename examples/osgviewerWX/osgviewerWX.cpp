@@ -10,7 +10,7 @@
 #endif
 
 // For wxCURSOR_BLANK below, but isn't used a.t.m.
-//#ifdef WIN32
+//#ifdef _WIN32
 //#include "wx/msw/wx.rc"
 //#endif
 

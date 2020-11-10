@@ -102,7 +102,7 @@ std::string osgText::findFontFile(const std::string& str)
     if (!initialized)
     {
         initialized = true;
-    #if defined(WIN32)
+    #if defined(_WIN32)
         osgDB::convertStringPathIntoFilePathList(
             ".;C:/winnt/fonts;C:/windows/fonts",
             s_FontFilePath);

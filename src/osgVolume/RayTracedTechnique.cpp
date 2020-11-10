@@ -63,7 +63,7 @@ void RayTracedTechnique::init()
 
     if (_volumeTile->getLayer()==0)
     {
-        OSG_NOTICE<<"RayTracedTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        OSG_NOTICE<<"RayTracedTechnique::init(), error no layer assigned to volume tile."<<std::endl;
         return;
     }
 

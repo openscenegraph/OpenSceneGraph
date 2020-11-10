@@ -508,7 +508,7 @@ int main( int argc, char **argv )
 
     viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
 
-    // neeed to address.
+    // need to address.
     // viewer.getScene()->getUpdateVisitor()->setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
 
 
@@ -558,7 +558,7 @@ int main( int argc, char **argv )
     while (arguments.read("--loop")) loopPresentation = true;
 
     {
-        // set update hte default traversal mode settings for update visitor
+        // set update the default traversal mode settings for update visitor
         // default to osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN.
         osg::NodeVisitor::TraversalMode updateTraversalMode = osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN; // viewer.getUpdateVisitor()->getTraversalMode();
 
@@ -690,7 +690,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     //arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have ocured when parsing the program aguments.
+    // report any errors if they have ocured when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(osg::notify(osg::INFO));

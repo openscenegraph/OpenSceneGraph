@@ -175,7 +175,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         {
             if (typeid(*object)==typeid(LightPointDrawable))
             {
-                // resuse the user data attached to the render graph.
+                // reuse the user data attached to the render graph.
                 drawable = static_cast<LightPointDrawable*>(object);
 
             }
@@ -260,7 +260,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
             const osg::Vec3& position = lp._position;
 
-            // skip light point if it is not contianed in the view frustum.
+            // skip light point if it is not contained in the view frustum.
             if (computeClipping && !clipvol.contains(position)) continue;
 
             // delta vector between eyepoint and light point.

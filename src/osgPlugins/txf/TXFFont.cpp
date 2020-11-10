@@ -182,7 +182,7 @@ TXFFont::loadFont(std::istream& stream)
         stream.read(reinterpret_cast<std::istream::char_type*>(image->data()), ntexels);
         if (!stream)
         {
-            OSG_FATAL << "osgdb_txf: unxpected end of file in txf file \"" << _filename << "\"!" << std::endl;
+            OSG_FATAL << "osgdb_txf: unexpected end of file in txf file \"" << _filename << "\"!" << std::endl;
             return false;
         }
     }
@@ -194,7 +194,7 @@ TXFFont::loadFont(std::istream& stream)
         if (!stream)
         {
             delete [] texbitmap;
-            OSG_FATAL << "osgdb_txf: unxpected end of file in txf file \"" << _filename << "\"!" << std::endl;
+            OSG_FATAL << "osgdb_txf: unexpected end of file in txf file \"" << _filename << "\"!" << std::endl;
             return false;
         }
 
@@ -217,7 +217,7 @@ TXFFont::loadFont(std::istream& stream)
     }
     else
     {
-        OSG_FATAL << "osgdb_txf: unxpected txf file!" << std::endl;
+        OSG_FATAL << "osgdb_txf: unexpected txf file!" << std::endl;
         return false;
     }
 

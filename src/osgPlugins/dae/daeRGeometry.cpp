@@ -769,7 +769,7 @@ struct VertexIndices
         return false;
     }
 
-    /// Templated getter for memebers, used for createGeometryArray()
+    /// Templated getter for members, used for createGeometryArray()
     enum ValueType { POSITION, COLOR, NORMAL, TEXCOORD };
     template <int Value>
     inline int get() const;

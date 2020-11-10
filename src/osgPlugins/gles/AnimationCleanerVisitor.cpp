@@ -177,7 +177,7 @@ void AnimationCleanerVisitor::cleanInvalidMorphGeometries() {
 
 void AnimationCleanerVisitor::cleanInvalidRigGeometries() {
     // Replace rig geometries by static geometries if:
-    //   * empty or inexistant vertex influence map
+    //   * empty or inexistent vertex influence map
     //   * no *strictly* positive influence coefficient
     for(RigGeometryList::iterator iterator = _rigGeometries.begin() ; iterator != _rigGeometries.end() ; ) {
         osg::ref_ptr<osgAnimation::RigGeometry> rigGeometry = *iterator;

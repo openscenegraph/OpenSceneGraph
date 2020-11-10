@@ -470,7 +470,7 @@ osg::Geometry *makePols (void) {
     gtess->setStateSet( stateset );
 
     int nstart=0;
-    // the contours accepoted are polygons; quads & tris. Trifans can bve added later.
+    // the contours accepted are polygons; quads & tris. Trifans can be added later.
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,nstart,12));nstart+=12;
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,nstart,12));nstart+=12;
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,16));nstart+=16;

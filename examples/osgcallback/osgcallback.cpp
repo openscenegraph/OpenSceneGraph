@@ -184,7 +184,7 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
-    // set the osgDB::Registy read file callback to catch all requests for reading files.
+    // set the osgDB::Registry read file callback to catch all requests for reading files.
     osgDB::Registry::instance()->setReadFileCallback(new MyReadFileCallback());
 
     // initialize the viewer.

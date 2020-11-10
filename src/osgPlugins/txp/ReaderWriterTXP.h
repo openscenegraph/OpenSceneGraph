@@ -57,6 +57,7 @@ public:
     ReaderWriterTXP()
     {
         supportsExtension("txp","Terrapage txp format");
+        supportsEnvironment("OSG_TXP_DEFAULT_MAX_ANISOTROPY", "default value to use when setting up textures");
     }
 
     virtual const char* className() const

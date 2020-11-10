@@ -52,7 +52,7 @@ class ReaderWriterAVFoundation : public osgDB::ReaderWriter
             if (ext=="avfoundation")
             {
                 fileName = osgDB::getNameLessExtension(fileName);
-                OSG_INFO<<"AVFoundation stipped filename = "<<fileName<<std::endl;
+                OSG_INFO<<"AVFoundation stripped filename = "<<fileName<<std::endl;
             }
             if (!osgDB::containsServerAddress(fileName))
             {

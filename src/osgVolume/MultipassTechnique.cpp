@@ -399,7 +399,7 @@ void MultipassTechnique::init()
 
     if (_volumeTile->getLayer()==0)
     {
-        OSG_NOTICE<<"MultipassTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        OSG_NOTICE<<"MultipassTechnique::init(), error no layer assigned to volume tile."<<std::endl;
         return;
     }
 
@@ -1066,15 +1066,15 @@ void MultipassTechnique::cull(osgUtil::CullVisitor* cv)
             switch(renderingMode)
             {
                 case(CUBE):
-                    // OSG_NOTICE<<"Travering Transform for CUBE rendering"<<std::endl;
+                    // OSG_NOTICE<<"Traversing Transform for CUBE rendering"<<std::endl;
                     _transform->accept(*cv);
                      break;
                 case(HULL):
-                    // OSG_NOTICE<<"Travering children for HULL rendering"<<std::endl;
+                    // OSG_NOTICE<<"Traversing children for HULL rendering"<<std::endl;
                     getVolumeTile()->osg::Group::traverse(*cv);
                     break;
                 case(CUBE_AND_HULL):
-                    // OSG_NOTICE<<"Travering Transform for CUBE_AND_HULL rendering"<<std::endl;
+                    // OSG_NOTICE<<"Traversing Transform for CUBE_AND_HULL rendering"<<std::endl;
                     _transform->accept(*cv);
                     //getVolumeTile()->osg::Group::traverse(*cv);
                     break;

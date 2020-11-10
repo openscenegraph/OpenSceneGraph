@@ -77,7 +77,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Base output filename of the images, recommended to use something like Images/image.png");
     arguments.getApplicationUsage()->addCommandLineOption("--cs <filename>","Load pre-generated configuration file for run.");
     arguments.getApplicationUsage()->addCommandLineOption("--ouput-cs <filename>","Output configuration file with settings provided on commandline.");
-    arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specificied camera path file to control camera position.");
+    arguments.getApplicationUsage()->addCommandLineOption("-p <filename>","Use specified camera path file to control camera position.");
     arguments.getApplicationUsage()->addCommandLineOption("--offscreen","Use an pbuffer to render the images offscreen.");
     arguments.getApplicationUsage()->addCommandLineOption("--screen","Use an window to render the images.");
     arguments.getApplicationUsage()->addCommandLineOption("--width <width>","Window/output image width.");

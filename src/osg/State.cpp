@@ -713,19 +713,19 @@ void State::apply(const StateSet* dstate)
 
         applyAttributeList(_attributeMap,dstate->getAttributeList());
 
-        if ((_lastAppliedProgramObject!=0) && (previousLastAppliedProgramObject==_lastAppliedProgramObject) && _defineMap.changed)
+        // Checking if there is no program on the stack or the program is not applied from the AttributeStack (StateSet core mechanism)
+        if (_shaderCompositionEnabled && (_lastAppliedProgramObject == 0 ||
+                                          (_lastAppliedProgramObject->getProgram() != getLastAppliedAttribute(osg::StateAttribute::PROGRAM))))
         {
-            // OSG_NOTICE<<"State::apply(StateSet*) Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
-            _lastAppliedProgramObject->getProgram()->apply(*this);
+            // No program has been applied by the StateSet stack so assume shader composition is required
+            applyShaderComposition();
         }
 
-        if (_shaderCompositionEnabled)
+        if (_lastAppliedProgramObject != 0 && previousLastAppliedProgramObject == _lastAppliedProgramObject && _defineMap.changed)
         {
-            if (previousLastAppliedProgramObject == _lastAppliedProgramObject || _lastAppliedProgramObject==0)
-            {
-                // No program has been applied by the StateSet stack so assume shader composition is required
-                applyShaderComposition();
-            }
+            // Pragma(tic) mechanism must be applied after ShaderComposer
+            // OSG_NOTICE<<"State::apply(StateSet*) Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
+            _lastAppliedProgramObject->getProgram()->apply(*this);
         }
 
         if (dstate->getUniformList().empty())
@@ -784,17 +784,19 @@ void State::apply()
     // go through all active StateAttribute's, applying where appropriate.
     applyAttributeMap(_attributeMap);
 
-
-    if ((_lastAppliedProgramObject!=0) && (previousLastAppliedProgramObject==_lastAppliedProgramObject) && _defineMap.changed)
+    // Checking if there is no program on the stack or the program is not applied from the AttributeStack (StateSet core mechanism)
+    if (_shaderCompositionEnabled && (_lastAppliedProgramObject == 0 ||
+                                      (_lastAppliedProgramObject->getProgram() != getLastAppliedAttribute(osg::StateAttribute::PROGRAM))))
     {
-        //OSG_NOTICE<<"State::apply() Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
-        if (_lastAppliedProgramObject) _lastAppliedProgramObject->getProgram()->apply(*this);
+        // No program has been applied by the StateSet stack so assume shader composition is required
+        applyShaderComposition();
     }
 
-
-    if (_shaderCompositionEnabled)
+    if ((_lastAppliedProgramObject != 0) && (previousLastAppliedProgramObject == _lastAppliedProgramObject) && _defineMap.changed)
     {
-        applyShaderComposition();
+        // Pragma(tic) mechanism must be applied after ShaderComposer
+        //OSG_NOTICE<<"State::apply() Program already applied ("<<(previousLastAppliedProgramObject==_lastAppliedProgramObject)<<") and _defineMap.changed= "<<_defineMap.changed<<std::endl;
+        _lastAppliedProgramObject->getProgram()->apply(*this);
     }
 
     if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
@@ -835,7 +837,8 @@ void State::applyShaderComposition()
         if (_currentShaderCompositionProgram)
         {
             Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(*this);
-            if (_lastAppliedProgramObject != pcp) applyAttribute(_currentShaderCompositionProgram);
+            if (_lastAppliedProgramObject != pcp)
+                _currentShaderCompositionProgram->apply(*this);    // NOTE: AttributeStack should not be changed by ShaderComposer
         }
     }
 }

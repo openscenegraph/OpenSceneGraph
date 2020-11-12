@@ -275,7 +275,7 @@ bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDire
 void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {
 #if defined(_WIN32) && !defined(__CYGWIN__)
-    char delimitor = ';';
+    char delimiter = ';';
 #else
     char delimiter = ':';
 #endif

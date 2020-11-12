@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include "StandardStereo.h"
+#include "MultiviewOVR.h"
 
 #include <osgViewer/Renderer>
 #include <osgViewer/View>
@@ -33,7 +33,7 @@
 
 using namespace osgViewer;
 
-osg::ref_ptr<osg::Node> StandardStereo::createStereoMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector) const
+osg::ref_ptr<osg::Node> MultiviewOVR::createStereoMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector) const
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
@@ -83,7 +83,7 @@ osg::ref_ptr<osg::Node> StandardStereo::createStereoMesh(const osg::Vec3& origin
     return geometry;
 }
 
-void StandardStereo::configure(osgViewer::View& view) const
+void MultiviewOVR::configure(osgViewer::View& view) const
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi)
@@ -181,7 +181,7 @@ void StandardStereo::configure(osgViewer::View& view) const
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setAllowEventFocus(false);
-        camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.2f, 1.0f));
+        camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.5f, 1.0f));
 
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderTargetImplementation);
@@ -212,8 +212,8 @@ void StandardStereo::configure(osgViewer::View& view) const
             osg::ref_ptr<osg::Program> program = new osg::Program();
             stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
-            std::string vsFileName("standard.vert");
-            std::string fsFileName("standard.frag");
+            std::string vsFileName("multiviewOVR.vert");
+            std::string fsFileName("multiviewOVR.frag");
 
             osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
             if (vertexShader.get()) program->addShader( vertexShader.get() );

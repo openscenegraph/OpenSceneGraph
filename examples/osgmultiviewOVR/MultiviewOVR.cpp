@@ -131,17 +131,27 @@ void MultiviewOVR::configure(osgViewer::View& view) const
     int camera_width = tex_width;
     int camera_height = tex_height;
 
-    osg::Texture2DArray* texture = new osg::Texture2DArray;
+    osg::Texture2DArray* color_texture = new osg::Texture2DArray;
 
-    texture->setTextureSize(tex_width, tex_height, 2);
-    texture->setInternalFormat(GL_RGBA);
-    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+    color_texture->setTextureSize(tex_width, tex_height, 2);
+    color_texture->setInternalFormat(GL_RGBA);
+    color_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    color_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    color_texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    color_texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+    color_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
 
-#if 0
+    osg::Texture2DArray* depth_texture = new osg::Texture2DArray;
+
+    depth_texture->setTextureSize(tex_width, tex_height, 2);
+    depth_texture->setInternalFormat(GL_DEPTH_COMPONENT24);
+    depth_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    depth_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    depth_texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    depth_texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+    depth_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+
+    #if 0
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
     GLenum buffer = GL_FRONT;
 #else
@@ -167,18 +177,32 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer, specify that the face is controlled by the multiview extension
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
+        camera->attach(osg::Camera::COLOR_BUFFER, color_texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
+        camera->attach(osg::Camera::DEPTH_BUFFER, depth_texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
 
-        // set up the projection and view matrices
-        osg::Matrixd left_projectionOffset = displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd());
-        osg::Matrixd left_viewOffset = displaySettings->computeLeftEyeViewImplementation(osg::Matrixd());
-        osg::Matrixd right_projectionOffset = displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd());
-        osg::Matrixd right_viewOffset = displaySettings->computeRightEyeViewImplementation(osg::Matrixd());
 
         view.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
 
         osg::StateSet* stateset = camera->getOrCreateStateSet();
         {
+            // set up the projection and view matrix uniforms
+            osg::Matrixd left_projectionOffset = displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd());
+            osg::Matrixd left_viewOffset = displaySettings->computeLeftEyeViewImplementation(osg::Matrixd());
+            osg::Matrixd right_projectionOffset = displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd());
+            osg::Matrixd right_viewOffset = displaySettings->computeRightEyeViewImplementation(osg::Matrixd());
+
+            osg::ref_ptr<osg::Uniform> ovr_viewMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_viewMatrix", 2);
+            osg::ref_ptr<osg::Uniform> ovr_projectionMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_projectionMatrix", 2);
+            stateset->addUniform(ovr_viewMatrix_uniform);
+            stateset->addUniform(ovr_projectionMatrix_uniform);
+
+            ovr_viewMatrix_uniform->setElement(0, left_viewOffset);
+            ovr_projectionMatrix_uniform->setElement(0, left_projectionOffset);
+
+            ovr_viewMatrix_uniform->setElement(1, right_viewOffset);
+            ovr_projectionMatrix_uniform->setElement(1, right_projectionOffset);
+
+            // set up the shaders
             osg::ref_ptr<osg::Program> program = new osg::Program();
             stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
@@ -203,7 +227,7 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = mesh->getOrCreateStateSet();
-        stateset->setTextureAttribute(0, texture, osg::StateAttribute::ON);
+        stateset->setTextureAttribute(0, color_texture, osg::StateAttribute::ON);
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
         {

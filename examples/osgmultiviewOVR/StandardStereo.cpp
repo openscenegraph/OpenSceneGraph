@@ -163,7 +163,6 @@ void StandardStereo::configure(osgViewer::View& view) const
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setAllowEventFocus(false);
-        camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.2f, 1.0f));
 
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderTargetImplementation);

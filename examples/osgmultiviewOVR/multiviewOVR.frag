@@ -1,9 +1,12 @@
-#extension GL_EXT_texture_array : enable
+#version 330
 
-uniform sampler2DArray texture;
-varying vec3 texcoord;
+uniform sampler2D texture;
+
+in vec2 texcoord;
+
+out vec4 fragColor;
 
 void main(void)
 {
-    gl_FragColor = texture2DArray( texture, texcoord.xyz);
+    fragColor = texture2D( texture, texcoord.xy);
 }

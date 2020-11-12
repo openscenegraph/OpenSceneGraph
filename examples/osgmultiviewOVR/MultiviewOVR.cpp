@@ -149,10 +149,14 @@ void MultiviewOVR::configure(osgViewer::View& view) const
     GLenum buffer = GL_FRONT;
 #endif
 
-    // left eye
+    // left/right eye multiviewOVR camera
     {
+        // GL_OVR_multiview2 extensions requires modern versions of GLSL without fixed function fallback
+        gc->getState()->setUseModelViewAndProjectionUniforms(true);
+        gc->getState()->setUseVertexAttributeAliasing(true);
+
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setName("Left eye camera");
+        camera->setName("multview eye camera");
         camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
@@ -162,38 +166,32 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
-        // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, 0);
+        // attach the texture and use it as the color buffer, specify that the face is controlled by the multiview extension
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
 
         // set up the projection and view matrices
-        osg::Matrixd projectionOffset = displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd());
-        osg::Matrixd viewOffset = displaySettings->computeLeftEyeViewImplementation(osg::Matrixd());
+        osg::Matrixd left_projectionOffset = displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd());
+        osg::Matrixd left_viewOffset = displaySettings->computeLeftEyeViewImplementation(osg::Matrixd());
+        osg::Matrixd right_projectionOffset = displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd());
+        osg::Matrixd right_viewOffset = displaySettings->computeRightEyeViewImplementation(osg::Matrixd());
 
-        view.addSlave(camera.get(), projectionOffset, viewOffset);
-    }
+        view.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
 
-    // right eye
-    {
-        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setName("Right eyecamera");
-        camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
-        camera->setAllowEventFocus(false);
-        camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.5f, 1.0f));
+        osg::StateSet* stateset = camera->getOrCreateStateSet();
+        {
+            osg::ref_ptr<osg::Program> program = new osg::Program();
+            stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
-        // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplementation(renderTargetImplementation);
+            std::string vsFileName("multiviewOVR.vert");
+            std::string fsFileName("multiviewOVR.frag");
 
-        // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, 1);
+            osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
+            if (vertexShader.get()) program->addShader( vertexShader.get() );
 
-        // set up the projection and view matrices
-        osg::Matrixd projectionOffset = displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd());
-        osg::Matrixd viewOffset = displaySettings->computeRightEyeViewImplementation(osg::Matrixd());
+            osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
+            if (fragmentShader.get()) program->addShader( fragmentShader.get() );
+        }
 
-        view.addSlave(camera.get(), projectionOffset, viewOffset);
     }
 
     view.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
@@ -212,8 +210,8 @@ void MultiviewOVR::configure(osgViewer::View& view) const
             osg::ref_ptr<osg::Program> program = new osg::Program();
             stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
-            std::string vsFileName("multiviewOVR.vert");
-            std::string fsFileName("multiviewOVR.frag");
+            std::string vsFileName("standard.vert");
+            std::string fsFileName("standard.frag");
 
             osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
             if (vertexShader.get()) program->addShader( vertexShader.get() );

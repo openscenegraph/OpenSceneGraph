@@ -131,7 +131,7 @@ void MultiviewOVR::configure(osgViewer::View& view) const
     osg::Texture2DArray* depth_texture = new osg::Texture2DArray;
 
     depth_texture->setTextureSize(tex_width, tex_height, 2);
-    depth_texture->setInternalFormat(GL_DEPTH_COMPONENT24);
+    depth_texture->setInternalFormat(GL_DEPTH_COMPONENT);
     depth_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     depth_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     depth_texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);

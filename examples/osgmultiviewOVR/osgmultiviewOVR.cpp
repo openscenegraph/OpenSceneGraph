@@ -38,6 +38,8 @@ int main( int argc, char** argv )
     }
     else
     {
+        viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
         viewer.apply(new MultiviewOVR());
     }
 

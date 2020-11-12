@@ -128,13 +128,8 @@ void StandardStereo::configure(osgViewer::View& view) const
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
 
-#if 0
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
-    GLenum buffer = GL_FRONT;
-#else
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     GLenum buffer = GL_FRONT;
-#endif
 
     // left eye
     {

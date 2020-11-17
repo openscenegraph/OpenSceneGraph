@@ -734,7 +734,7 @@ void DisplaySettings::readEnvironmentalVariables()
     if (getEnvVar("OSG_KEYSTONE_FILES", value))
     {
     #if defined(_WIN32) && !defined(__CYGWIN__)
-        char delimitor = ';';
+        char delimiter = ';';
     #else
         char delimiter = ':';
     #endif
@@ -798,7 +798,7 @@ void DisplaySettings::readEnvironmentalVariables()
     if (getEnvVar("OSG_SHADER_PIPELINE_FILES", value))
     {
     #if defined(_WIN32) && !defined(__CYGWIN__)
-        char delimitor = ';';
+        char delimiter = ';';
     #else
         char delimiter = ':';
     #endif

@@ -910,13 +910,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (!state.useVertexArrayObject(_useVertexArrayObject) && state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects))
-    {
-        // unbind the VBO's if any are used.
-        osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    osg::VertexArrayState *vas = state.getCurrentVertexArrayState();
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }

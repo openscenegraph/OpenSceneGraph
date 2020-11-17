@@ -587,12 +587,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         }
     }
 
-    if (usingVertexBufferObjects && !state.useVertexArrayObject(_useVertexArrayObject))
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (needToApplyMatrix)
     {

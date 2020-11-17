@@ -924,7 +924,9 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     attributeDispatchers.activateNormalArray(_normalArray.get());
     attributeDispatchers.activateColorArray(_colorArray.get());
 
-    if (!state.useVertexArrayObject(_useVertexArrayObject) || vas->getRequiresSetArrays())
+    bool requiresSetArrays = vas->getRequiresSetArrays();
+
+    if (requiresSetArrays)
     {
         // OSG_NOTICE<<"   sending vertex arrays vas->getRequiresSetArrays()="<<vas->getRequiresSetArrays()<<std::endl;
 
@@ -954,8 +956,6 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     //
     GLenum primitiveType = computeDiagonals ? GL_LINES_ADJACENCY : GL_QUADS;
 
-    bool request_bind_unbind = !state.useVertexArrayObject(_useVertexArrayObject) || state.getCurrentVertexArrayState()->getRequiresSetArrays();
-
     osg::GLBufferObject* ebo = _drawElements->getOrCreateGLBufferObject(state.getContextID());
 
     if (ebo)
@@ -972,7 +972,7 @@ void SharedGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
     // unbind the VBO's if any are used.
-    if (request_bind_unbind) state.unbindVertexBufferObject();
+    if (requiresSetArrays) state.unbindVertexBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of SharedGeometry::drawImplementation().");
 }

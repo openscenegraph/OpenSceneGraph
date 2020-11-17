@@ -109,16 +109,20 @@ struct ProxyNodeFinishedObjectReadCallback : public osgDB::FinishedObjectReadCal
     {
         osg::ProxyNode& proxyNode = static_cast<osg::ProxyNode&>(obj);
 
+        if (proxyNode.getDatabasePath().empty())
+        {
+            osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)is.getOptions())->getDatabasePathList();
+            if (!fpl.empty())
+                proxyNode.setDatabaseOptions((osgDB::ReaderWriter::Options*)is.getOptions());
+        }
+
         if (proxyNode.getLoadingExternalReferenceMode() == osg::ProxyNode::LOAD_IMMEDIATELY)
         {
             for(unsigned int i=0; i<proxyNode.getNumFileNames(); i++)
             {
                 if(i >= proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
                 {
-                    osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)is.getOptions())->getDatabasePathList();
-                    fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
                     osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile(proxyNode.getFileName(i), is.getOptions());
-                    fpl.pop_front();
                     if(node)
                         proxyNode.insertChild(i, node);
                 }

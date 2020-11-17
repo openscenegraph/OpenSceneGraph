@@ -1209,12 +1209,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.haveAppliedAttribute(osg::StateAttribute::DEPTH);
 
-    if (!state.useVertexArrayObject(_useVertexArrayObject) && state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects))
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (needToApplyMatrix)
     {

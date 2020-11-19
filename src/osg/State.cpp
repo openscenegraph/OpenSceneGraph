@@ -541,8 +541,6 @@ void State::popAllStateSets()
 
     applyProjectionMatrix(0);
     applyModelViewMatrix(0);
-
-    _lastAppliedProgramObject = 0;
 }
 
 void State::popStateSet()

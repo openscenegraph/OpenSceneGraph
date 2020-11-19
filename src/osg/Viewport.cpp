@@ -18,8 +18,8 @@ Viewport::Viewport()
 {
     _x = 0;
     _y = 0;
-    _width = 800;
-    _height = 600;
+    _width = 0;
+    _height = 0;
 }
 
 
@@ -29,6 +29,9 @@ Viewport::~Viewport()
 
 void Viewport::apply(State&) const
 {
+    if (!valid())
+        return;
+
     glViewport( static_cast<GLint>(_x),static_cast<GLint>(_y),
                 static_cast<GLsizei>(_width),static_cast<GLsizei>(_height) );
 }

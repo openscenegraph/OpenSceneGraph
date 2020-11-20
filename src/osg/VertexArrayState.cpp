@@ -467,6 +467,11 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
         {
             ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
         }
+
+        if (ext->glVertexAttribDivisor && new_array->getDivisor() > 0)
+        {
+            ext->glVertexAttribDivisor(static_cast<GLuint>(unit), new_array->getDivisor());
+        }
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)

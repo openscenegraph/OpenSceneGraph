@@ -107,6 +107,11 @@ REGISTER_OBJECT_WRAPPER( Array,
         ADD_ENUM_VALUE( BIND_PER_VERTEX );
     END_ENUM_SERIALIZER();
 
+    {
+        UPDATE_TO_VERSION_SCOPED( 162 )
+        ADD_UINT_SERIALIZER_NO_SET( Divisor, 0);
+    }
+
     ADD_BOOL_SERIALIZER(Normalize, false);
     ADD_BOOL_SERIALIZER(PreserveDataType, false);
 

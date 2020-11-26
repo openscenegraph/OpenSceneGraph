@@ -850,13 +850,21 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureFilterAnisotropicSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
     isTextureSwizzleSupported = validContext && isGLExtensionSupported(contextID,"GL_ARB_texture_swizzle");
     isTextureCompressionARBSupported = validContext && (builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3f));
-    isTextureCompressionS3TCSupported = validContext && (isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc") || isGLExtensionSupported(contextID, "GL_S3_s3tc"));
-    isTextureCompressionPVRTC2BPPSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+    isTextureCompressionS3TCSupported = validContext && (isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc") ||
+                                                         isGLExtensionSupported(contextID, "GL_S3_s3tc") ||
+                                                         isGLExtensionSupported(contextID, "WEBGL_compressed_texture_s3tc") ||
+                                                         isGLExtensionSupported(contextID, "MOZ_WEBGL_compressed_texture_s3tc") ||
+                                                         isGLExtensionSupported(contextID, "WEBKIT_WEBGL_compressed_texture_s3tc") ||
+                                                         isGLExtensionSupported(contextID, "WEBGL_compressed_texture_s3tc_srgb") /* TODO: separate flag */);
+    isTextureCompressionPVRTC2BPPSupported = validContext && (isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc") ||
+                                                              isGLExtensionSupported(contextID, "WEBGL_compressed_texture_pvrtc"));
     isTextureCompressionPVRTC4BPPSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
-    isTextureCompressionETCSupported = validContext && isGLExtensionSupported(contextID,"GL_OES_compressed_ETC1_RGB8_texture");
-    isTextureCompressionETC2Supported = validContext && isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility");
+    isTextureCompressionETCSupported = validContext && (isGLExtensionSupported(contextID, "GL_OES_compressed_ETC1_RGB8_texture") ||
+                                                        isGLExtensionSupported(contextID, "WEBGL_compressed_texture_etc1"));
+    isTextureCompressionETC2Supported = validContext && (isGLExtensionSupported(contextID,"GL_ARB_ES3_compatibility") ||
+                                                         isGLExtensionSupported(contextID, "WEBGL_compressed_texture_etc"));
     isTextureCompressionRGTCSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
-    isTextureCompressionPVRTCSupported = validContext && isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+    isTextureCompressionPVRTCSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
 
     isTextureMirroredRepeatSupported = validContext &&
                                        (builtInSupport ||

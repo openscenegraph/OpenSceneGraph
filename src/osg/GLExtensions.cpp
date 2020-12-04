@@ -866,6 +866,11 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isTextureCompressionRGTCSupported = validContext && isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
     isTextureCompressionPVRTCSupported = isTextureCompressionPVRTC2BPPSupported;//covered by same extension
 
+    isTextureCompressionASTCSupported = validContext && (isGLExtensionSupported(contextID, "GL_KHR_texture_compression_astc_hdr") ||
+                                                         isGLExtensionSupported(contextID, "GL_KHR_texture_compression_astc_ldr") ||
+                                                         isGLExtensionSupported(contextID, "GL_OES_texture_compression_astc") ||
+                                                         isGLExtensionSupported(contextID, "WEBGL_compressed_texture_astc"));
+
     isTextureMirroredRepeatSupported = validContext &&
                                        (builtInSupport ||
                                         isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
@@ -906,18 +911,22 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     {
         maxTextureSize = osg_max_size;
     }
+
+#if defined(__EMSCRIPTEN__)
+    isTextureMaxLevelSupported = (glVersion >= 3.0f);    // WebGL 2.0 (OpenGL ES 3.0)
+    isTextureLODBiasSupported  = (glVersion >= 3.0f) || isGLExtensionSupported(contextID, "GL_EXT_texture_lod_bias");
+#else
     isTextureMaxLevelSupported = (glVersion >= 1.2f);
+    isTextureLODBiasSupported  = (glVersion >= 1.2f) || isGLExtensionSupported(contextID, "GL_EXT_texture_lod_bias");
+#endif
 
     isTextureStorageEnabled = validContext && ((glVersion >= 4.2f) || isGLExtensionSupported(contextID, "GL_ARB_texture_storage"));
 
     if (isTextureStorageEnabled)
     {
         std::string value;
-        if (getEnvVar("OSG_GL_TEXTURE_STORAGE", value))
-        {
-            if (value=="OFF" || value=="DISABLE") isTextureStorageEnabled = false;
-            else isTextureStorageEnabled = true;
-        }
+        if (getEnvVar("OSG_GL_TEXTURE_STORAGE", value) && (value == "OFF" || value == "DISABLE"))
+            isTextureStorageEnabled = false;
     }
 
     setGLExtensionFuncPtr(glTexStorage1D,"glTexStorage1D","glTexStorage1DARB", validContext);

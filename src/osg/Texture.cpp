@@ -2216,7 +2216,8 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         glTexParameterf(target, GL_TEXTURE_MAX_LOD, _maxlod);
     }
 
-    glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
+    if (extensions->isTextureLODBiasSupported)
+        glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
 
     getTextureParameterDirty(state.getContextID()) = false;
 

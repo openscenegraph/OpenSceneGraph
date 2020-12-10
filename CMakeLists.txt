@@ -85,7 +85,7 @@ ELSEIF(APPLE)
         # OSX >= 10.5 uses Cocoa windowing system, otherwise Carbon
         IF(OSG_OSX_VERSION VERSION_LESS 10.5)
             SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
-			SET(OSG_WINDOWING_SYSTEM_CARBON ON INTERNAL "use Carbon (apple; 32 bit only)")
+            SET(OSG_WINDOWING_SYSTEM_CARBON ON INTERNAL "use Carbon (apple; 32 bit only)")
         ELSE()
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
         ENDIF()
@@ -353,7 +353,9 @@ IF(WIN32 AND NOT ANDROID)
         OPTION(MSVC_DISABLE_CHECKED_ITERATORS "Set to ON to disable Visual C++ checked iterators. If you do this you must ensure that every other project in your solution and all dependencies are compiled with _SECURE_SCL=0." OFF)
         MARK_AS_ADVANCED(MSVC_DISABLE_CHECKED_ITERATORS)
         IF(MSVC_DISABLE_CHECKED_ITERATORS)
+            ADD_DEFINITIONS(-D_ITERATOR_DEBUG_LEVEL=0) # this supercedes _SECURE_SCL and _HAS_ITERATOR_DEBUGGING in VS2010 and forward
             ADD_DEFINITIONS(-D_SECURE_SCL=0)
+            ADD_DEFINITIONS(-D_HAS_ITERATOR_DEBUGGING=0)
         ENDIF(MSVC_DISABLE_CHECKED_ITERATORS)
 
         OPTION(MSVC_USE_DEFAULT_STACK_SIZE "Set to ON to use the default Visual C++ stack size. CMake forces a high stack size by default, which can cause problems for applications with large number of threads." OFF)

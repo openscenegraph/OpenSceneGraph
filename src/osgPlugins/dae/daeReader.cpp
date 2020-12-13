@@ -300,6 +300,7 @@ bool daeReader::convert( std::istream& fin )
     // use a vector as buffer and read from stream
     std::vector<char> buffer(length);
     fin.read(&buffer[0], length);
+    buffer.emplace_back('\0');
 
     domElement* loaded_element = _dae->openFromMemory(fileURI, &buffer[0]);
     _document = dynamic_cast<domCOLLADA*>(loaded_element);

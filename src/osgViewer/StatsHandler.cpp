@@ -434,6 +434,9 @@ void StatsHandler::setWindowSize(int width, int height)
     if (width <= 0 || height <= 0)
         return;
 
+    _statsWidth = width;
+    _statsHeight = height;
+
     _camera->setViewport(0, 0, width, height);
     if (fabs(height*_statsWidth) <= fabs(width*_statsHeight))
     {

@@ -23,6 +23,7 @@ namespace osg {
 // forward declare
 class ArgumentParser;
 class ApplicationUsage;
+class Polytope;
 
 class OSG_EXPORT CullSettings
 {
@@ -77,6 +78,7 @@ class OSG_EXPORT CullSettings
             LIGHT                                   = (0x1 << 16),
             DRAW_BUFFER                             = (0x1 << 17),
             READ_BUFFER                             = (0x1 << 18),
+            INITIAL_FRUSTUM_CALLBACK                = (0x1 << 19),
 
             NO_VARIABLES                            = 0x00000000,
             ALL_VARIABLES                           = 0x7FFFFFFF
@@ -243,6 +245,17 @@ class OSG_EXPORT CullSettings
         const ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() const { return _clampProjectionMatrixCallback.get(); }
 
 
+        /** Callback to override the initial frustum, in clip space, set up at the start of cull traversal prior to projection and view matrices transforming.*/
+        struct InitialFrustumCallback : public osg::Referenced
+        {
+            virtual void setInitialFrustum(CullStack& cullStack, Polytope& frustum) const = 0;
+        };
+
+        void setInitialFrustumCallback(InitialFrustumCallback* ifc) { _initialFrustumCallback = ifc; applyMaskAction(INITIAL_FRUSTUM_CALLBACK); }
+        InitialFrustumCallback* getInitialFrustumCallback() { return _initialFrustumCallback.get(); }
+        const InitialFrustumCallback* getInitialFrustumCallback() const { return _initialFrustumCallback.get(); }
+
+
         /** Write out internal settings of CullSettings. */
         void write(std::ostream& out);
 
@@ -267,7 +280,7 @@ class OSG_EXPORT CullSettings
         Node::NodeMask                              _cullMaskLeft;
         Node::NodeMask                              _cullMaskRight;
 
-
+        ref_ptr<InitialFrustumCallback>            _initialFrustumCallback;
 };
 
 template<class matrix_type, class value_type>

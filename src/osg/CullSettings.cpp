@@ -70,6 +70,8 @@ void CullSettings::setCullSettings(const CullSettings& rhs)
     _cullMask = rhs._cullMask;
     _cullMaskLeft = rhs._cullMaskLeft;
     _cullMaskRight =  rhs._cullMaskRight;
+
+    _initialFrustumCallback = rhs._initialFrustumCallback;
 }
 
 
@@ -88,6 +90,7 @@ void CullSettings::inheritCullSettings(const CullSettings& settings, unsigned in
     if (inheritanceMask & LOD_SCALE) _LODScale = settings._LODScale;
     if (inheritanceMask & SMALL_FEATURE_CULLING_PIXEL_SIZE) _smallFeatureCullingPixelSize = settings._smallFeatureCullingPixelSize;
     if (inheritanceMask & CLAMP_PROJECTION_MATRIX_CALLBACK) _clampProjectionMatrixCallback = settings._clampProjectionMatrixCallback;
+    if (inheritanceMask & INITIAL_FRUSTUM_CALLBACK) _initialFrustumCallback = settings._initialFrustumCallback;
 }
 
 

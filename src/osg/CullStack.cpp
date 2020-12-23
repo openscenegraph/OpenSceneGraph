@@ -162,7 +162,15 @@ void CullStack::pushProjectionMatrix(RefMatrix* matrix)
     osg::CullingSet& cullingSet = _projectionCullingStack.back();
 
     // set up view frustum.
-    cullingSet.getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
+    if (_initialFrustumCallback.valid())
+    {
+        _initialFrustumCallback->setInitialFrustum(*this, cullingSet.getFrustum());
+    }
+    else
+    {
+        cullingSet.getFrustum().setToUnitFrustum(((_cullingMode&NEAR_PLANE_CULLING)!=0),((_cullingMode&FAR_PLANE_CULLING)!=0));
+    }
+
     cullingSet.getFrustum().transformProvidingInverse(*matrix);
 
     // set the culling mask ( There should be a more elegant way!)  Nikolaus H.

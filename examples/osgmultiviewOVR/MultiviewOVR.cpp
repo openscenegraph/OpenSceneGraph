@@ -27,7 +27,13 @@ struct CustomIntialFrustumCallback : public osg::CullSettings::InitialFrustumCal
     std::vector<osg::Matrixd> projectionOffsets;
     std::vector<osg::Matrixd> viewOffsets;
 
+    bool applyBB = true;
     osg::BoundingBoxd bb;
+
+    void toggle()
+    {
+        applyBB = !applyBB;
+    }
 
     void computeClipSpaceBound(osg::Camera& camera)
     {
@@ -71,8 +77,47 @@ struct CustomIntialFrustumCallback : public osg::CullSettings::InitialFrustumCal
     virtual void setInitialFrustum(osg::CullStack& cullStack, osg::Polytope& frustum) const
     {
         osg::CullSettings::CullingMode cullingMode = cullStack.getCullingMode();
-        frustum.setToBoundingBox(bb, ((cullingMode&osg::CullSettings::NEAR_PLANE_CULLING)!=0),((cullingMode&osg::CullSettings::FAR_PLANE_CULLING)!=0));
+        if (applyBB)
+        {
+            frustum.setToBoundingBox(bb, ((cullingMode&osg::CullSettings::NEAR_PLANE_CULLING)!=0),((cullingMode&osg::CullSettings::FAR_PLANE_CULLING)!=0));
+        }
+        else
+        {
+            frustum.setToUnitFrustum(((cullingMode&osg::CullSettings::NEAR_PLANE_CULLING)!=0),((cullingMode&osg::CullSettings::FAR_PLANE_CULLING)!=0));
+        }
     }
+};
+
+class ToggleFrustumHandler : public osgGA::GUIEventHandler
+{
+    public:
+
+        ToggleFrustumHandler(CustomIntialFrustumCallback* callback) :
+            cifc(callback) {}
+
+        osg::ref_ptr<CustomIntialFrustumCallback> cifc;
+
+        bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+        {
+            if (ea.getHandled()) return false;
+
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::KEYUP):
+                {
+                    if (ea.getKey()=='c')
+                    {
+                        cifc->toggle();
+                        return true;
+                    }
+                    break;
+                }
+
+                default:
+                    return false;
+            }
+            return false;
+        }
 };
 
 
@@ -214,6 +259,9 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         camera->setAllowEventFocus(false);
 
         osg::ref_ptr<CustomIntialFrustumCallback> ifc = new CustomIntialFrustumCallback;
+
+
+        view.addEventHandler(new ToggleFrustumHandler(ifc.get()));
 
         // assign custom frustum callback
         camera->setInitialFrustumCallback(ifc.get());

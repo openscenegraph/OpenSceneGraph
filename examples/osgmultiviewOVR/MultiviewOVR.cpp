@@ -14,11 +14,67 @@
 #include <osg/Stencil>
 #include <osg/PolygonStipple>
 #include <osg/ValueObject>
+#include <osg/DisplaySettings>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
 using namespace osgViewer;
+
+
+struct CustomIntialFrustumCallback : public osg::CullSettings::InitialFrustumCallback
+{
+    std::vector<osg::Matrixd> projectionOffsets;
+    std::vector<osg::Matrixd> viewOffsets;
+
+    osg::BoundingBoxd bb;
+
+    void computeClipSpaceBound(osg::Camera& camera)
+    {
+        osg::Matrixd pmv = camera.getViewMatrix() * camera.getViewMatrix();
+
+        size_t numOffsets = std::min(projectionOffsets.size(), viewOffsets.size());
+
+        std::vector<osg::Vec3d> world_vertices;
+        world_vertices.reserve(numOffsets*8);
+
+        for(size_t i=0; i<numOffsets; ++i)
+        {
+            osg::Matrixd proj = projectionOffsets[i] * camera.getProjectionMatrix();
+            osg::Matrixd view = viewOffsets[i] * camera.getViewMatrix();
+
+            osg::Matrix clipToWorld;
+            clipToWorld.invert(proj * view);
+
+            world_vertices.push_back(osg::Vec3d(-1.0, -1.0, -1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(1.0, -1.0, -1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(1.0, 1.0, -1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(-1.0, 1.0, -1.0) * clipToWorld);
+
+            world_vertices.push_back(osg::Vec3d(-1.0, -1.0, 1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(1.0, -1.0, 1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(1.0, 1.0, 1.0) * clipToWorld);
+            world_vertices.push_back(osg::Vec3d(-1.0, 1.0, 1.0) * clipToWorld);
+
+            // project local clip space into world coords
+            // project world coords back into master clipspace
+        }
+
+        osg::Matrix worldToclip = camera.getProjectionMatrix() * camera.getViewMatrix();
+
+        for(auto& v : world_vertices)
+        {
+            bb.expandBy(v * worldToclip);
+        }
+    }
+
+    virtual void setInitialFrustum(osg::CullStack& cullStack, osg::Polytope& frustum) const
+    {
+        osg::CullSettings::CullingMode cullingMode = cullStack.getCullingMode();
+        frustum.setToBoundingBox(bb, ((cullingMode&osg::CullSettings::NEAR_PLANE_CULLING)!=0),((cullingMode&osg::CullSettings::FAR_PLANE_CULLING)!=0));
+    }
+};
+
 
 osg::ref_ptr<osg::Node> MultiviewOVR::createStereoMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector) const
 {
@@ -141,11 +197,13 @@ void MultiviewOVR::configure(osgViewer::View& view) const
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     GLenum buffer = GL_FRONT;
 
+
     // left/right eye multiviewOVR camera
     {
         // GL_OVR_multiview2 extensions requires modern versions of GLSL without fixed function fallback
         gc->getState()->setUseModelViewAndProjectionUniforms(true);
         gc->getState()->setUseVertexAttributeAliasing(true);
+        //osg::DisplaySettings::instance()->setShaderHint(osg::DisplaySettings::SHADER_GL3);
 
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("multview eye camera");
@@ -154,6 +212,12 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setAllowEventFocus(false);
+
+        osg::ref_ptr<CustomIntialFrustumCallback> ifc = new CustomIntialFrustumCallback;
+
+        // assign custom frustum callback
+        camera->setInitialFrustumCallback(ifc.get());
+
 
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderTargetImplementation);
@@ -168,21 +232,28 @@ void MultiviewOVR::configure(osgViewer::View& view) const
         osg::StateSet* stateset = camera->getOrCreateStateSet();
         {
             // set up the projection and view matrix uniforms
-            osg::Matrixd left_projectionOffset = displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd());
-            osg::Matrixd left_viewOffset = displaySettings->computeLeftEyeViewImplementation(osg::Matrixd());
-            osg::Matrixd right_projectionOffset = displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd());
-            osg::Matrixd right_viewOffset = displaySettings->computeRightEyeViewImplementation(osg::Matrixd());
+            ifc->projectionOffsets.push_back(displaySettings->computeLeftEyeProjectionImplementation(osg::Matrixd()));
+            ifc->viewOffsets.push_back(displaySettings->computeLeftEyeViewImplementation(osg::Matrixd()));
 
-            osg::ref_ptr<osg::Uniform> ovr_viewMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_viewMatrix", 2);
-            osg::ref_ptr<osg::Uniform> ovr_projectionMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_projectionMatrix", 2);
+            ifc->projectionOffsets.push_back(displaySettings->computeRightEyeProjectionImplementation(osg::Matrixd()));
+            ifc->viewOffsets.push_back(displaySettings->computeRightEyeViewImplementation(osg::Matrixd()));
+
+            ifc->computeClipSpaceBound(*camera);
+
+            osg::ref_ptr<osg::Uniform> ovr_viewMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_viewMatrix", ifc->projectionOffsets.size());
+            osg::ref_ptr<osg::Uniform> ovr_projectionMatrix_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "ovr_projectionMatrix", ifc->viewOffsets.size());
             stateset->addUniform(ovr_viewMatrix_uniform);
             stateset->addUniform(ovr_projectionMatrix_uniform);
 
-            ovr_viewMatrix_uniform->setElement(0, left_viewOffset);
-            ovr_projectionMatrix_uniform->setElement(0, left_projectionOffset);
+            for(size_t i=0; i<ifc->projectionOffsets.size(); ++i)
+            {
+                ovr_projectionMatrix_uniform->setElement(i, ifc->projectionOffsets[i]);
+            }
 
-            ovr_viewMatrix_uniform->setElement(1, right_viewOffset);
-            ovr_projectionMatrix_uniform->setElement(1, right_projectionOffset);
+            for(size_t i=0; i<ifc->viewOffsets.size(); ++i)
+            {
+                ovr_viewMatrix_uniform->setElement(i, ifc->viewOffsets[i]);
+            }
 
             // set up the shaders
             osg::ref_ptr<osg::Program> program = new osg::Program();

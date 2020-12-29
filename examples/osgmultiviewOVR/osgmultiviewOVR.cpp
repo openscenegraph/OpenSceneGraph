@@ -25,6 +25,7 @@
 
 #include "StandardStereo.h"
 #include "MultiviewOVR.h"
+#include "Leia.h"
 
 int main( int argc, char** argv )
 {
@@ -35,6 +36,10 @@ int main( int argc, char** argv )
     if (arguments.read("--standard"))
     {
         viewer.apply(new StandardStereo());
+    }
+    if (arguments.read("--leia"))
+    {
+        viewer.apply(new Leia());
     }
     else
     {

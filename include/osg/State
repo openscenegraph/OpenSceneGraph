@@ -1392,12 +1392,12 @@ class OSG_EXPORT State : public Referenced
         inline void popModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void popAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
         inline void popUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
-        inline void popDefineList(DefineMap& uniformMap,const StateSet::DefineList& defineList);
+        inline void popDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList);
 
         inline void applyModeList(ModeMap& modeMap,const StateSet::ModeList& modeList);
         inline void applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
         inline void applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList);
-        inline void applyDefineList(DefineMap& uniformMap,const StateSet::DefineList& defineList);
+        inline void applyDefineList(DefineMap& defineMap,const StateSet::DefineList& defineList);
 
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);

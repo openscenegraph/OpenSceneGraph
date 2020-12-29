@@ -1,7 +1,7 @@
 #version 330
 #extension GL_OVR_multiview2 : enable
 
-#define NUM_VIEWS 2
+#define NUM_VIEWS 4
 
 layout(num_views = NUM_VIEWS) in;
 

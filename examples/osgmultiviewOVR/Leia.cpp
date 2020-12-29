@@ -198,31 +198,32 @@ osg::ref_ptr<osg::Node> Leia::createLeiaMesh(const osg::Vec3& origin, const osg:
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0, 1.0, 0.0, 1.0));
 
-    // left hand side
-    vertices->push_back(origin); texcoords->push_back(osg::Vec3(0.0f, 0.0f, 0.0f));
-    vertices->push_back(origin + widthVector*0.5f); texcoords->push_back(osg::Vec3(1.0f, 0.0f, 0.0f));
-    vertices->push_back(origin + widthVector*0.5f +heightVector); texcoords->push_back(osg::Vec3(1.0f, 1.0f, 0.0f));
-    vertices->push_back(origin + heightVector); texcoords->push_back(osg::Vec3(0.0f, 1.0f, 0.0f));
+    for(uint32_t row = 0; row<4; ++row)
+    {
+        for(uint32_t column = 0; column<4; ++column)
+        {
+            uint16_t base = static_cast<uint16_t>(vertices->size());
 
-    elements->push_back(0);
-    elements->push_back(1);
-    elements->push_back(2);
-    elements->push_back(2);
-    elements->push_back(3);
-    elements->push_back(0);
+            vertices->push_back(origin + widthVector*static_cast<float>(column)*0.25f + heightVector*static_cast<float>(row)*0.25f);
+            texcoords->push_back(osg::Vec3(0.0f, 0.0f, static_cast<float>(column)));
 
-    // right hand side
-    vertices->push_back(origin + widthVector*0.5f); texcoords->push_back(osg::Vec3(0.0f, 0.0f, 1.0f));
-    vertices->push_back(origin + widthVector); texcoords->push_back(osg::Vec3(1.0f, 0.0f, 1.0f));
-    vertices->push_back(origin + widthVector +heightVector); texcoords->push_back(osg::Vec3(1.0f, 1.0f, 1.0f));
-    vertices->push_back(origin + widthVector*0.5f + heightVector); texcoords->push_back(osg::Vec3(0.0f, 1.0f, 1.0f));
+            vertices->push_back(origin + widthVector*static_cast<float>(column+1)*0.25f + heightVector*static_cast<float>(row)*0.25f);
+            texcoords->push_back(osg::Vec3(1.0f, 0.0f, static_cast<float>(column)));
 
-    elements->push_back(4);
-    elements->push_back(5);
-    elements->push_back(6);
-    elements->push_back(6);
-    elements->push_back(7);
-    elements->push_back(4);
+            vertices->push_back(origin + widthVector*static_cast<float>(column+1)*0.25f + heightVector*static_cast<float>(row+1)*0.25f);
+            texcoords->push_back(osg::Vec3(1.0f, 1.0f, static_cast<float>(column)));
+
+            vertices->push_back(origin + widthVector*static_cast<float>(column)*0.25f + heightVector*static_cast<float>(row+1)*0.25f);
+            texcoords->push_back(osg::Vec3(0.0f, 1.0f, static_cast<float>(column)));
+
+            elements->push_back(base + 0);
+            elements->push_back(base + 1);
+            elements->push_back(base + 2);
+            elements->push_back(base + 2);
+            elements->push_back(base + 3);
+            elements->push_back(base + 0);
+        }
+    }
 
     geometry->setVertexArray(vertices);
     geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
@@ -281,7 +282,7 @@ void Leia::configure(osgViewer::View& view) const
 
     osg::Texture2DArray* color_texture = new osg::Texture2DArray;
 
-    color_texture->setTextureSize(tex_width, tex_height, 2);
+    color_texture->setTextureSize(tex_width, tex_height, 4);
     color_texture->setInternalFormat(GL_RGBA);
     color_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     color_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
@@ -291,7 +292,7 @@ void Leia::configure(osgViewer::View& view) const
 
     osg::Texture2DArray* depth_texture = new osg::Texture2DArray;
 
-    depth_texture->setTextureSize(tex_width, tex_height, 2);
+    depth_texture->setTextureSize(tex_width, tex_height, 4);
     depth_texture->setInternalFormat(GL_DEPTH_COMPONENT);
     depth_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     depth_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
@@ -341,8 +342,10 @@ void Leia::configure(osgViewer::View& view) const
         osg::StateSet* stateset = camera->getOrCreateStateSet();
         {
             // set up the projection and view matrix uniforms
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix());
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix());
+            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(-0.2, 0.0, 0.0));
+            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(-0.1, 0.0, 0.0));
+            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(0.1, 0.0, 0.0));
+            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(0.2, 0.0, 0.0));
 
             ifc->computeClipSpaceBound(*camera);
 

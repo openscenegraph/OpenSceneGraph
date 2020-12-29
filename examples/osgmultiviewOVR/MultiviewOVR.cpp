@@ -37,7 +37,7 @@ struct CustomIntialFrustumCallback : public osg::CullSettings::InitialFrustumCal
 
     void computeClipSpaceBound(osg::Camera& camera)
     {
-        osg::Matrixd pmv = camera.getViewMatrix() * camera.getViewMatrix();
+        osg::Matrixd pmv = camera.getProjectionMatrix() * camera.getViewMatrix();
 
         size_t numOffsets = std::min(projectionOffsets.size(), viewOffsets.size());
 

@@ -194,36 +194,29 @@ osg::ref_ptr<osg::Node> Leia::createLeiaMesh(const osg::Vec3& origin, const osg:
 
     osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
     osg::Vec3Array* vertices = new osg::Vec3Array;
-    osg::Vec3Array* texcoords = new osg::Vec3Array;
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0, 1.0, 0.0, 1.0));
 
-    for(uint32_t row = 0; row<4; ++row)
-    {
-        for(uint32_t column = 0; column<4; ++column)
-        {
-            uint16_t base = static_cast<uint16_t>(vertices->size());
+    vertices->push_back(origin);
+    texcoords->push_back(osg::Vec2(0.0f, 0.0f));
 
-            vertices->push_back(origin + widthVector*static_cast<float>(column)*0.25f + heightVector*static_cast<float>(row)*0.25f);
-            texcoords->push_back(osg::Vec3(0.0f, 0.0f, static_cast<float>(column)));
+    vertices->push_back(origin + widthVector);
+    texcoords->push_back(osg::Vec2(1.0f, 0.0f));
 
-            vertices->push_back(origin + widthVector*static_cast<float>(column+1)*0.25f + heightVector*static_cast<float>(row)*0.25f);
-            texcoords->push_back(osg::Vec3(1.0f, 0.0f, static_cast<float>(column)));
+    vertices->push_back(origin + widthVector + heightVector);
+    texcoords->push_back(osg::Vec2(1.0f, 1.0f));
 
-            vertices->push_back(origin + widthVector*static_cast<float>(column+1)*0.25f + heightVector*static_cast<float>(row+1)*0.25f);
-            texcoords->push_back(osg::Vec3(1.0f, 1.0f, static_cast<float>(column)));
+    vertices->push_back(origin + heightVector);
+    texcoords->push_back(osg::Vec2(0.0f, 1.0f));
 
-            vertices->push_back(origin + widthVector*static_cast<float>(column)*0.25f + heightVector*static_cast<float>(row+1)*0.25f);
-            texcoords->push_back(osg::Vec3(0.0f, 1.0f, static_cast<float>(column)));
-
-            elements->push_back(base + 0);
-            elements->push_back(base + 1);
-            elements->push_back(base + 2);
-            elements->push_back(base + 2);
-            elements->push_back(base + 3);
-            elements->push_back(base + 0);
-        }
-    }
+    uint16_t base = 0;
+    elements->push_back(base + 0);
+    elements->push_back(base + 1);
+    elements->push_back(base + 2);
+    elements->push_back(base + 2);
+    elements->push_back(base + 3);
+    elements->push_back(base + 0);
 
     geometry->setVertexArray(vertices);
     geometry->setColorArray(colors, osg::Array::BIND_OVERALL);
@@ -287,98 +280,116 @@ void Leia::configure(osgViewer::View& view) const
         return;
     }
 
+    // GL_OVR_multiview2 extensions requires modern versions of GLSL without fixed function fallback
+    gc->getState()->setUseModelViewAndProjectionUniforms(true);
+    gc->getState()->setUseVertexAttributeAliasing(true);
+    //osg::DisplaySettings::instance()->setShaderHint(osg::DisplaySettings::SHADER_GL3);
+
     int tex_width = width;
     int tex_height = height;
 
     int camera_width = tex_width;
     int camera_height = tex_height;
 
-    osg::ref_ptr<osg::Texture2DArray> color_texture_0 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture_0 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
-#if 0
-    osg::ref_ptr<osg::Texture2DArray> color_texture_1 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture_1 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+    struct TexturePair
+    {
+        TexturePair(unsigned int width, unsigned int height, unsigned int rows)
+        {
+            color = new osg::Texture2DArray;
+            color->setTextureSize(width, height, rows);
+            color->setInternalFormat(GL_RGBA);
+            color->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            color->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            color->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+            color->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+            color->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
 
-    osg::ref_ptr<osg::Texture2DArray> color_texture_2 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture_2 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+            depth = new osg::Texture2DArray;
+            depth->setTextureSize(width, height, rows);
+            depth->setInternalFormat(GL_DEPTH_COMPONENT);
+            depth->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            depth->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            depth->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+            depth->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+            depth->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+        }
 
-    osg::ref_ptr<osg::Texture2DArray> color_texture_3 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture_3 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
-#endif
+        osg::ref_ptr<osg::Texture2DArray> color;
+        osg::ref_ptr<osg::Texture2DArray> depth;
+    };
 
-    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
-    GLenum buffer = GL_FRONT;
+    typedef std::vector<TexturePair> Textures;
+    Textures textures;
 
     view.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
 
     osg::ref_ptr<LeiaIntialFrustumCallback> ifc = new LeiaIntialFrustumCallback;
 
     // set up the projection and view matrix uniforms
-    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-0.2, 0.0, 0.0));
-    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-0.1, 0.0, 0.0));
-    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(0.1, 0.0, 0.0));
-    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(0.2, 0.0, 0.0));
+    double delta = 0.2;
+    for(size_t i=0; i<4; ++i)
+    {
+        double y = delta*(static_cast<double>(i)-1.5);
+        ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-delta*2.0, y, 0.0));
+        ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-delta, y, 0.0));
+        ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(delta, y, 0.0));
+        ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(delta*2.0, y, 0.0));
+
+        textures.push_back(TexturePair(tex_width, tex_height, 4));
+    }
 
     ifc->computeClipSpaceBound(*(view.getCamera()));
 
-    // left/right eye multiviewOVR camera
+    view.addEventHandler(new LeiaToggleFrustumHandler(ifc.get()));
+
+    // set up the shaders
+    osg::ref_ptr<osg::Program> multiview_program = new osg::Program();
     {
-        // GL_OVR_multiview2 extensions requires modern versions of GLSL without fixed function fallback
-        gc->getState()->setUseModelViewAndProjectionUniforms(true);
-        gc->getState()->setUseVertexAttributeAliasing(true);
-        //osg::DisplaySettings::instance()->setShaderHint(osg::DisplaySettings::SHADER_GL3);
+        std::string vsFileName("leia.vert");
+        std::string fsFileName("leia.frag");
+
+        osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
+        if (vertexShader.get()) multiview_program->addShader( vertexShader.get() );
+
+        osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
+        if (fragmentShader.get()) multiview_program->addShader( fragmentShader.get() );
+    }
+
+    // left/right eye multiviewOVR camera
+    for(unsigned int row=0; row<textures.size(); ++row)
+    {
+        TexturePair& texturePair = textures[row];
 
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("multview eye camera");
         camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
+        camera->setDrawBuffer(GL_FRONT);
+        camera->setReadBuffer(GL_FRONT);
         camera->setAllowEventFocus(false);
-
-
-
-        view.addEventHandler(new LeiaToggleFrustumHandler(ifc.get()));
+        camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // assign custom frustum callback
         camera->setInitialFrustumCallback(ifc.get());
 
-
-        // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplementation(renderTargetImplementation);
-
         // attach the texture and use it as the color buffer, specify that the face is controlled by the multiview extension
-        camera->attach(osg::Camera::COLOR_BUFFER, color_texture_0, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
-        camera->attach(osg::Camera::DEPTH_BUFFER, depth_texture_0, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
-
+        camera->attach(osg::Camera::COLOR_BUFFER, texturePair.color, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
+        camera->attach(osg::Camera::DEPTH_BUFFER, texturePair.depth, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
 
         view.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
 
+
+        // setup state for RTT Camera
         osg::StateSet* stateset = camera->getOrCreateStateSet();
+        stateset->setAttribute(multiview_program.get(), osg::StateAttribute::ON);
+
+        osg::ref_ptr<osg::Uniform> projectionMatrices_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "osg_ProjectionMatrices", 4);
+        stateset->addUniform(projectionMatrices_uniform);
+
+        for(size_t i=0; i<4; ++i)
         {
-
-            osg::ref_ptr<osg::Uniform> projectionMatrices_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "osg_ProjectionMatrices", ifc->projectionMatrices.size());
-            stateset->addUniform(projectionMatrices_uniform);
-
-            for(size_t i=0; i<ifc->projectionMatrices.size(); ++i)
-            {
-                projectionMatrices_uniform->setElement(i, ifc->projectionMatrices[i]);
-            }
-
-            // set up the shaders
-            osg::ref_ptr<osg::Program> program = new osg::Program();
-            stateset->setAttribute(program.get(), osg::StateAttribute::ON);
-
-            std::string vsFileName("leia.vert");
-            std::string fsFileName("leia.frag");
-
-            osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
-            if (vertexShader.get()) program->addShader( vertexShader.get() );
-
-            osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
-            if (fragmentShader.get()) program->addShader( fragmentShader.get() );
+            projectionMatrices_uniform->setElement(i, ifc->projectionMatrices[row*4 + i]);
         }
-
     }
 
 
@@ -389,21 +400,30 @@ void Leia::configure(osgViewer::View& view) const
         // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = mesh->getOrCreateStateSet();
-        stateset->setTextureAttribute(0, color_texture_0, osg::StateAttribute::ON);
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+        for(size_t row = 0; row<textures.size(); ++row)
+        {
+            stateset->setTextureAttribute(row, textures[row].color, osg::StateAttribute::ON);
+
+            osg::MakeString uniformName;
+            uniformName<<"texture_"<<row;
+            stateset->addUniform( new osg::Uniform(uniformName.str().c_str(), int(row)));
+        }
 
         {
             osg::ref_ptr<osg::Program> program = new osg::Program();
             stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
-            std::string vsFileName("standard.vert");
-            std::string fsFileName("standard.frag");
+            std::string vsFileName("leia_interleave.vert");
+            std::string fsFileName("leia_interleave.frag");
 
             osg::ref_ptr<osg::Shader> vertexShader = osgDB::readRefShaderFile( osg::Shader::VERTEX, vsFileName) ;
             if (vertexShader.get()) program->addShader( vertexShader.get() );
 
             osg::ref_ptr<osg::Shader> fragmentShader = osgDB::readRefShaderFile( osg::Shader::FRAGMENT, fsFileName) ;
             if (fragmentShader.get()) program->addShader( fragmentShader.get() );
+
         }
 
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
@@ -426,9 +446,9 @@ void Leia::configure(osgViewer::View& view) const
         // add subgraph to render
         camera->addChild(mesh.get());
 
-        camera->setName("DistortionCorrectionCamera");
+        camera->setName("Row");
 
-        osgDB::writeNodeFile(*mesh, "mesh.osgt");
+        osgDB::writeNodeFile(*camera, "camera.osgt");
 
         view.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
     }

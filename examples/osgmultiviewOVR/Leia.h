@@ -21,7 +21,7 @@ class Leia : public osgViewer::ViewConfig
         
         void setScreenNum(unsigned int n) { _screenNum = n; }
         unsigned int getScreenNum() const { return _screenNum; }
-        
+
     protected:
 
         osg::ref_ptr<osg::Texture2DArray> createTexture2DArray(unsigned int width, unsigned int height, unsigned int depth, GLenum format) const;

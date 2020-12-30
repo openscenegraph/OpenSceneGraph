@@ -233,6 +233,19 @@ osg::ref_ptr<osg::Node> Leia::createLeiaMesh(const osg::Vec3& origin, const osg:
     return geometry;
 }
 
+osg::ref_ptr<osg::Texture2DArray> Leia::createTexture2DArray(unsigned int width, unsigned int height, unsigned int depth, GLenum format) const
+{
+    osg::ref_ptr<osg::Texture2DArray> texture = new osg::Texture2DArray;
+    texture->setTextureSize(width, height, depth);
+    texture->setInternalFormat(format);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+    texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+    return texture;
+}
+
 void Leia::configure(osgViewer::View& view) const
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
@@ -280,25 +293,8 @@ void Leia::configure(osgViewer::View& view) const
     int camera_width = tex_width;
     int camera_height = tex_height;
 
-    osg::Texture2DArray* color_texture = new osg::Texture2DArray;
-
-    color_texture->setTextureSize(tex_width, tex_height, 4);
-    color_texture->setInternalFormat(GL_RGBA);
-    color_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-    color_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-    color_texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-    color_texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    color_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-
-    osg::Texture2DArray* depth_texture = new osg::Texture2DArray;
-
-    depth_texture->setTextureSize(tex_width, tex_height, 4);
-    depth_texture->setInternalFormat(GL_DEPTH_COMPONENT);
-    depth_texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-    depth_texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
-    depth_texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-    depth_texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    depth_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+    osg::ref_ptr<osg::Texture2DArray> color_texture = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
 
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     GLenum buffer = GL_FRONT;

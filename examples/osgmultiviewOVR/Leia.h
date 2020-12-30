@@ -23,7 +23,8 @@ class Leia : public osgViewer::ViewConfig
         unsigned int getScreenNum() const { return _screenNum; }
         
     protected:
-        
+
+        osg::ref_ptr<osg::Texture2DArray> createTexture2DArray(unsigned int width, unsigned int height, unsigned int depth, GLenum format) const;
         osg::ref_ptr<osg::Node> createLeiaMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector) const;
 
         unsigned int _screenNum;

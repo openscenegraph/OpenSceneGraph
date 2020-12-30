@@ -293,13 +293,33 @@ void Leia::configure(osgViewer::View& view) const
     int camera_width = tex_width;
     int camera_height = tex_height;
 
-    osg::ref_ptr<osg::Texture2DArray> color_texture = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+    osg::ref_ptr<osg::Texture2DArray> color_texture_0 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture_0 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+#if 0
+    osg::ref_ptr<osg::Texture2DArray> color_texture_1 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture_1 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+
+    osg::ref_ptr<osg::Texture2DArray> color_texture_2 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture_2 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+
+    osg::ref_ptr<osg::Texture2DArray> color_texture_3 = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture_3 = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
+#endif
 
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     GLenum buffer = GL_FRONT;
 
     view.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
+
+    osg::ref_ptr<LeiaIntialFrustumCallback> ifc = new LeiaIntialFrustumCallback;
+
+    // set up the projection and view matrix uniforms
+    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-0.2, 0.0, 0.0));
+    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(-0.1, 0.0, 0.0));
+    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(0.1, 0.0, 0.0));
+    ifc->projectionMatrices.push_back(view.getCamera()->getProjectionMatrix()*osg::Matrixd::translate(0.2, 0.0, 0.0));
+
+    ifc->computeClipSpaceBound(*(view.getCamera()));
 
     // left/right eye multiviewOVR camera
     {
@@ -316,7 +336,6 @@ void Leia::configure(osgViewer::View& view) const
         camera->setReadBuffer(buffer);
         camera->setAllowEventFocus(false);
 
-        osg::ref_ptr<LeiaIntialFrustumCallback> ifc = new LeiaIntialFrustumCallback;
 
 
         view.addEventHandler(new LeiaToggleFrustumHandler(ifc.get()));
@@ -329,21 +348,14 @@ void Leia::configure(osgViewer::View& view) const
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer, specify that the face is controlled by the multiview extension
-        camera->attach(osg::Camera::COLOR_BUFFER, color_texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
-        camera->attach(osg::Camera::DEPTH_BUFFER, depth_texture, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
+        camera->attach(osg::Camera::COLOR_BUFFER, color_texture_0, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
+        camera->attach(osg::Camera::DEPTH_BUFFER, depth_texture_0, 0, osg::Camera::FACE_CONTROLLED_BY_MULTIVIEW_SHADER);
 
 
         view.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
 
         osg::StateSet* stateset = camera->getOrCreateStateSet();
         {
-            // set up the projection and view matrix uniforms
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(-0.2, 0.0, 0.0));
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(-0.1, 0.0, 0.0));
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(0.1, 0.0, 0.0));
-            ifc->projectionMatrices.push_back(camera->getProjectionMatrix()*osg::Matrixd::translate(0.2, 0.0, 0.0));
-
-            ifc->computeClipSpaceBound(*camera);
 
             osg::ref_ptr<osg::Uniform> projectionMatrices_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "osg_ProjectionMatrices", ifc->projectionMatrices.size());
             stateset->addUniform(projectionMatrices_uniform);
@@ -377,7 +389,7 @@ void Leia::configure(osgViewer::View& view) const
         // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = mesh->getOrCreateStateSet();
-        stateset->setTextureAttribute(0, color_texture, osg::StateAttribute::ON);
+        stateset->setTextureAttribute(0, color_texture_0, osg::StateAttribute::ON);
         stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
         {

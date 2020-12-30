@@ -294,7 +294,7 @@ void Leia::configure(osgViewer::View& view) const
     int camera_height = tex_height;
 
     osg::ref_ptr<osg::Texture2DArray> color_texture = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
-    osg::ref_ptr<osg::Texture2DArray> depth_texture = createTexture2DArray(tex_width, tex_height, 4, GL_RGBA);
+    osg::ref_ptr<osg::Texture2DArray> depth_texture = createTexture2DArray(tex_width, tex_height, 4, GL_DEPTH_COMPONENT);
 
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     GLenum buffer = GL_FRONT;

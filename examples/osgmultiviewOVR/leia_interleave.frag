@@ -1,5 +1,7 @@
 #extension GL_EXT_texture_array : enable
 
+#pragma import_defines ( WINDOW_WIDTH, WINDOW_HEIGHT )
+
 uniform sampler2DArray texture_0;
 uniform sampler2DArray texture_1;
 uniform sampler2DArray texture_2;
@@ -9,9 +11,6 @@ varying vec2 texcoord;
 
 void main(void)
 {
-    float WINDOW_WIDTH = 1920.0;
-    float WINDOW_HEIGHT = 1080.0;
-
     float cell_width = WINDOW_WIDTH/4.0;
     float cell_height = WINDOW_HEIGHT/4.0;
 

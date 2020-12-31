@@ -415,6 +415,14 @@ void Leia::configure(osgViewer::View& view) const
             osg::ref_ptr<osg::Program> program = new osg::Program();
             stateset->setAttribute(program.get(), osg::StateAttribute::ON);
 
+            osg::MakeString defineValue;
+            defineValue << width;
+            stateset->setDefine("WINDOW_WIDTH", defineValue.str());
+
+            defineValue.clear();
+            defineValue << height;
+            stateset->setDefine("WINDOW_HEIGHT", defineValue.str());
+
             std::string vsFileName("leia_interleave.vert");
             std::string fsFileName("leia_interleave.frag");
 

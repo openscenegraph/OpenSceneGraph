@@ -382,6 +382,7 @@ void Leia::configure(osgViewer::View& view) const
         // setup state for RTT Camera
         osg::StateSet* stateset = camera->getOrCreateStateSet();
         stateset->setAttribute(multiview_program.get(), osg::StateAttribute::ON);
+        stateset->setDefine("NUM_VIEWS", "4");
 
         osg::ref_ptr<osg::Uniform> projectionMatrices_uniform = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "osg_ProjectionMatrices", 4);
         stateset->addUniform(projectionMatrices_uniform);

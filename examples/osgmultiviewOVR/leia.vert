@@ -1,12 +1,19 @@
 #version 330
-#extension GL_OVR_multiview2 : enable
 
-#define NUM_VIEWS 4
+#pragma import_defines ( NUM_VIEWS )
 
-layout(num_views = NUM_VIEWS) in;
+#ifdef NUM_VIEWS
+    #extension GL_OVR_multiview2 : enable
+
+    layout(num_views = NUM_VIEWS) in;
+
+    uniform mat4 osg_ProjectionMatrices[NUM_VIEWS];
+    #define osg_ProjectionMatrix osg_ProjectionMatrices[gl_ViewID_OVR]
+#else
+    uniform mat4 osg_ProjectionMatrix;
+#endif
 
 uniform mat4 osg_ModelViewMatrix;
-uniform mat4 osg_ProjectionMatrices[NUM_VIEWS];
 
 in vec4 osg_Vertex;
 in vec4 osg_Color;
@@ -17,7 +24,7 @@ out vec2 texcoord;
 
 void main(void)
 {
-    mat4 mvp = osg_ProjectionMatrices[gl_ViewID_OVR] * osg_ModelViewMatrix;
+    mat4 mvp = osg_ProjectionMatrix * osg_ModelViewMatrix;
 
     color = osg_Color;
     texcoord = osg_MultiTexCoord0.xy;

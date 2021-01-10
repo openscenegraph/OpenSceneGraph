@@ -1077,10 +1077,9 @@ void SceneView::draw()
                 _renderStageRight->setReadBuffer(GL_BACK_RIGHT);
 
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
-                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
-
                 _renderStageLeft->draw(_renderInfo,previous);
 
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
                 _renderStageRight->draw(_renderInfo,previous);
 
             }
@@ -1114,8 +1113,6 @@ void SceneView::draw()
 
 
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
-                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
-
 
                 // ensure that left eye color planes are active.
                 osg::ColorMask* leftColorMask = _renderStageLeft->getColorMask();
@@ -1137,6 +1134,7 @@ void SceneView::draw()
                 _renderStageLeft->draw(_renderInfo,previous);
 
 
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 // ensure that right eye color planes are active.
                 osg::ColorMask* rightColorMask = _renderStageRight->getColorMask();
@@ -1184,12 +1182,6 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
-                _localStateSet->setAttribute(_viewportLeft.get());
-                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
-
-                _localStateSet->setAttribute(_viewportRight.get());
-                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
-
                 double separation = _displaySettings->getSplitStereoHorizontalSeparation();
                 if (separation > 0.0)
                 {
@@ -1202,9 +1194,11 @@ void SceneView::draw()
                 }
 
                 _localStateSet->setAttribute(_viewportLeft.get());
+                _renderStageLeft->drawPreRenderStages(_renderInfo, previous);
                 _renderStageLeft->draw(_renderInfo,previous);
 
                 _localStateSet->setAttribute(_viewportRight.get());
+                _renderStageRight->drawPreRenderStages(_renderInfo, previous);
                 _renderStageRight->draw(_renderInfo,previous);
 
             }
@@ -1235,12 +1229,6 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
-                _localStateSet->setAttribute(_viewportLeft.get());
-                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
-
-                _localStateSet->setAttribute(_viewportRight.get());
-                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
-
                 double separation = _displaySettings->getSplitStereoVerticalSeparation();
                 if (separation > 0.0)
                 {
@@ -1254,9 +1242,11 @@ void SceneView::draw()
                 }
 
                 _localStateSet->setAttribute(_viewportLeft.get());
+                _renderStageLeft->drawPreRenderStages(_renderInfo, previous);
                 _renderStageLeft->draw(_renderInfo,previous);
 
                 _localStateSet->setAttribute(_viewportRight.get());
+                _renderStageRight->drawPreRenderStages(_renderInfo, previous);
                 _renderStageRight->draw(_renderInfo,previous);
             }
             break;
@@ -1291,6 +1281,9 @@ void SceneView::draw()
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
         case(osg::DisplaySettings::CHECKERBOARD):
+            // TODO: This section has a bad ordering of render operations. Prerender stages of both eyes are done before the nested renders of either.
+            // This means the right eye's RTT operations will overwrite the results of the left eye's RTT operations.
+            // I've fixed this for the other cases but not for this one because i am not interested in figuring out the stencil stuff well enough to write a proper ordering.
             {
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )

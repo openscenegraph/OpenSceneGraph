@@ -1281,9 +1281,8 @@ void SceneView::draw()
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
         case(osg::DisplaySettings::CHECKERBOARD):
-            // TODO: This section has a bad ordering of render operations. Prerender stages of both eyes are done before the nested renders of either.
+            // TODO: This section still has a bad ordering of render operations. Prerender stages of both eyes are done before the nested renders of either.
             // This means the right eye's RTT operations will overwrite the results of the left eye's RTT operations.
-            // I've fixed this for the other cases but not for this one because i am not interested in figuring out the stencil stuff well enough to write a proper ordering.
             {
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )

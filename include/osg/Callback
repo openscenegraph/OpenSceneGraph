@@ -126,7 +126,7 @@ class OSG_EXPORT Callback : public virtual Object {
         static T* findNestedCallback(osg::Callback* callback)
         {
             if (!callback)
-                return nullptr;
+                return NULL;
 
             if (T* cb = dynamic_cast<T*>(callback))
                 return cb;
@@ -139,7 +139,7 @@ class OSG_EXPORT Callback : public virtual Object {
         static const T* findNestedCallback(const osg::Callback* callback)
         {
             if (!callback)
-                return nullptr;
+                return NULL;
 
             if (const T* cb = dynamic_cast<const T*>(callback))
                 return cb;

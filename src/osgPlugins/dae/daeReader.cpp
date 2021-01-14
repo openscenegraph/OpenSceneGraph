@@ -12,6 +12,9 @@
  */
 
 #include "daeReader.h"
+
+#include <cstddef>
+
 #include <dae.h>
 #include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
@@ -294,17 +297,27 @@ bool daeReader::convert( std::istream& fin )
 
     // get the size of the file and rewind
     fin.seekg(0, std::ios::end);
-    std::streampos length = fin.tellg();
+    const std::streampos fin_end = fin.tellg();
     fin.seekg(0, std::ios::beg);
+    const std::size_t length = fin_end - fin.tellg();
 
-    // use a vector as buffer and read from stream
-    std::vector<char> buffer(length);
-    fin.read(&buffer[0], length);
+    char *const buffer = new char[length + 1];
+    fin.read(buffer, length);
+    buffer[length] = '\0';
 
-    domElement* loaded_element = _dae->openFromMemory(fileURI, &buffer[0]);
+    if (fin.fail()) {
+        OSG_WARN << "daeReader::convert: Failed to read istream" << std::endl;
+        delete[] buffer;
+        return false;
+    }
+
+    domElement* loaded_element = _dae->openFromMemory(fileURI, buffer);
     _document = dynamic_cast<domCOLLADA*>(loaded_element);
 
-    return processDocument (fileURI);
+    const bool ok = processDocument (fileURI);
+
+    delete[] buffer;
+    return ok;
 }
 
 bool daeReader::convert( const std::string &fileURI )

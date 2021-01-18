@@ -13,8 +13,6 @@
 
 #include "daeReader.h"
 
-#include <cstddef>
-
 #include <dae.h>
 #include <dae/domAny.h>
 #include <dom/domCOLLADA.h>

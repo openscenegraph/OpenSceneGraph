@@ -294,12 +294,19 @@ bool daeReader::convert( std::istream& fin )
 
     // get the size of the file and rewind
     fin.seekg(0, std::ios::end);
-    std::streampos length = fin.tellg();
+    unsigned long length = static_cast<unsigned long>(fin.tellg());
     fin.seekg(0, std::ios::beg);
 
     // use a vector as buffer and read from stream
-    std::vector<char> buffer(length);
+    std::vector<char> buffer(length + 1ul);
+    buffer[length] = 0;
+
     fin.read(&buffer[0], length);
+    if (fin.fail())
+    {
+        OSG_WARN << "daeReader::convert: Failed to read istream" << std::endl;
+        return false;
+    }
 
     domElement* loaded_element = _dae->openFromMemory(fileURI, &buffer[0]);
     _document = dynamic_cast<domCOLLADA*>(loaded_element);

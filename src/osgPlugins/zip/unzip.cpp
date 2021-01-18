@@ -269,7 +269,7 @@ FILETIME dosdatetime2filetime(WORD dosdate,WORD dostime)
   return ft;
 }
 
-bool FileExists(const TCHAR *fn)
+static bool FileExists(const TCHAR *fn)
 { return (GetFileAttributes(fn)!=0xFFFFFFFF);
 }
 #endif
@@ -1741,9 +1741,9 @@ int inflate_blocks_free(inflate_blocks_statef *s, z_streamp z)
 //
 
 
-
-extern const char inflate_copyright[] =
-   " inflate 1.1.3 Copyright 1995-1998 Mark Adler ";
+// This symbol conflicts with other dependencies when OSG is used in static-lib mode
+// extern const char inflate_copyright[] =
+//    " inflate 1.1.3 Copyright 1995-1998 Mark Adler ";
 // If you use the zlib library in a product, an acknowledgment is welcome
 // in the documentation of your product. If for some reason you cannot
 // include such an acknowledgment, I would appreciate that you keep this

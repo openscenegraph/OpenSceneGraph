@@ -22,6 +22,7 @@ GStreamerImageStream::GStreamerImageStream():
 
 GStreamerImageStream::GStreamerImageStream(const GStreamerImageStream & image, const osg::CopyOp & copyop) :
     osg::ImageStream(image, copyop),
+    OpenThreads::Thread(),
     _loop(0),
     _pipeline(0),
     _internal_buffer(0),
@@ -239,7 +240,7 @@ GstFlowReturn GStreamerImageStream::on_new_preroll(GstAppSink *appsink, GStreame
     return GST_FLOW_OK;
 }
 
-gboolean GStreamerImageStream::on_message(GstBus *bus, GstMessage *message, GStreamerImageStream *user_data)
+gboolean GStreamerImageStream::on_message(GstBus* /*bus*/, GstMessage *message, GStreamerImageStream* user_data)
 {
     if( GST_MESSAGE_TYPE(message) == GST_MESSAGE_EOS)
     {

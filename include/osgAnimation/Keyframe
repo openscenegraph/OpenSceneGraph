@@ -105,12 +105,12 @@ namespace osgAnimation
             // 2. build deduplicated list of keyframes
             unsigned int cumul = 0;
             VectorType deduplicated;
-            for(std::vector<unsigned int>::iterator iterator = intervalSizes.begin() ; iterator != intervalSizes.end() ; ++ iterator) {
+            for(std::vector<unsigned int>::iterator it = intervalSizes.begin() ; it != intervalSizes.end() ; ++ it) {
                 deduplicated.push_back((*this)[cumul]);
-                if(*iterator > 1) {
-                    deduplicated.push_back((*this)[cumul + (*iterator) - 1]);
+                if(*it > 1) {
+                    deduplicated.push_back((*this)[cumul + (*it) - 1]);
                 }
-                cumul += *iterator;
+                cumul += *it;
             }
 
             unsigned int count = size() - deduplicated.size();

@@ -315,7 +315,7 @@ void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
 
 void Texture::TextureProfile::computeSize()
 {
-    double numBitsPerTexel = 32.0;
+    unsigned int numBitsPerTexel = 32;
 
     switch(_internalFormat)
     {
@@ -324,93 +324,104 @@ void Texture::TextureProfile::computeSize()
         case GL_LUMINANCE:
         case GL_INTENSITY:
         case GL_RED:
-            numBitsPerTexel = 8.0;
+            numBitsPerTexel = 8;
             break;
 
         case 2:
         case GL_LUMINANCE_ALPHA:
         case GL_RG:
-            numBitsPerTexel = 16.0;
+            numBitsPerTexel = 16;
             break;
 
         case 3:
         case GL_RGB:
         case GL_BGR:
-            numBitsPerTexel = 24.0;
+            numBitsPerTexel = 24;
             break;
 
         case 4:
         case GL_RGBA:
         case GL_BGRA:
-            numBitsPerTexel = 32.0;
+            numBitsPerTexel = 32;
             break;
 
-        case GL_COMPRESSED_ALPHA_ARB:                      numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_INTENSITY_ARB:                  numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_LUMINANCE_ALPHA_ARB:            numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:              numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_SRGB_S3TC_DXT1_EXT:             numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:             numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:       numBitsPerTexel = 4.0;  break;
+        case GL_COMPRESSED_ALPHA_ARB:                      numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_INTENSITY_ARB:                  numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_LUMINANCE_ALPHA_ARB:            numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:              numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB_S3TC_DXT1_EXT:             numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:             numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:       numBitsPerTexel = 4;  break;
 
-        case GL_COMPRESSED_RGB_ARB:                        numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:             numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:       numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:             numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:       numBitsPerTexel = 8.0;  break;
+        case GL_COMPRESSED_RGB_ARB:                        numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:             numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:       numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:             numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:       numBitsPerTexel = 8;  break;
 
-        case GL_COMPRESSED_SIGNED_RED_RGTC1_EXT:           numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RED_RGTC1_EXT:                  numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:     numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_RED_GREEN_RGTC2_EXT:            numBitsPerTexel = 8.0;  break;
+        case GL_COMPRESSED_SIGNED_RED_RGTC1_EXT:           numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RED_RGTC1_EXT:                  numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:     numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RED_GREEN_RGTC2_EXT:            numBitsPerTexel = 8;  break;
 
-        case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:           numBitsPerTexel = 2.0;  break;
-        case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:          numBitsPerTexel = 2.0;  break;
-        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:           numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:          numBitsPerTexel = 4.0;  break;
+        case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:           numBitsPerTexel = 2;  break;
+        case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:          numBitsPerTexel = 2;  break;
+        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:           numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:          numBitsPerTexel = 4;  break;
 
-        case GL_ETC1_RGB8_OES:                             numBitsPerTexel = 4.0;  break;
+        case GL_ETC1_RGB8_OES:                             numBitsPerTexel = 4;  break;
 
-        case GL_COMPRESSED_RGB8_ETC2:                      numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_SRGB8_ETC2:                     numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_RGBA8_ETC2_EAC:                 numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:          numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_R11_EAC:                        numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_SIGNED_R11_EAC:                 numBitsPerTexel = 4.0;  break;
-        case GL_COMPRESSED_RG11_EAC:                       numBitsPerTexel = 8.0;  break;
-        case GL_COMPRESSED_SIGNED_RG11_EAC:                numBitsPerTexel = 8.0;  break;
+        case GL_COMPRESSED_RGB8_ETC2:                      numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB8_ETC2:                     numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA8_ETC2_EAC:                 numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:          numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_R11_EAC:                        numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SIGNED_R11_EAC:                 numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RG11_EAC:                       numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SIGNED_RG11_EAC:                numBitsPerTexel = 8;  break;
 
         // ASTC
         case GL_COMPRESSED_RGBA_ASTC_4x4_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:      numBitsPerTexel = 8.0;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:
         case GL_COMPRESSED_RGBA_ASTC_5x4_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:      numBitsPerTexel = 6.4;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:
         case GL_COMPRESSED_RGBA_ASTC_5x5_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:      numBitsPerTexel = 5.12; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:
         case GL_COMPRESSED_RGBA_ASTC_6x5_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:      numBitsPerTexel = 4.27; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:
         case GL_COMPRESSED_RGBA_ASTC_6x6_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:      numBitsPerTexel = 3.56; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:
         case GL_COMPRESSED_RGBA_ASTC_8x5_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:      numBitsPerTexel = 3.2;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:
         case GL_COMPRESSED_RGBA_ASTC_8x6_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:      numBitsPerTexel = 2.67; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:
         case GL_COMPRESSED_RGBA_ASTC_8x8_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:      numBitsPerTexel = 2.0;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:
         case GL_COMPRESSED_RGBA_ASTC_10x5_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:     numBitsPerTexel = 2.56; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:
         case GL_COMPRESSED_RGBA_ASTC_10x6_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:     numBitsPerTexel = 2.13; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:
         case GL_COMPRESSED_RGBA_ASTC_10x8_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:     numBitsPerTexel = 1.6;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:
         case GL_COMPRESSED_RGBA_ASTC_10x10_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:    numBitsPerTexel = 1.28; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:
         case GL_COMPRESSED_RGBA_ASTC_12x10_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:    numBitsPerTexel = 1.07; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:
         case GL_COMPRESSED_RGBA_ASTC_12x12_KHR:
-        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:    numBitsPerTexel = 0.89; break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
+        {
+            _size = 0;
+            for (int i = 0; i < std::max(_numMipmapLevels, 1); ++i)
+            {
+                GLint blockSize;
+                GLint size;
+                getCompressedSize(_internalFormat, _width/(1 << i), _height/(1 << i), _depth, blockSize, size);
+                _size += size;
+            }
+            return;
+        }
     }
 
     _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));

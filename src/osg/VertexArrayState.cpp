@@ -109,6 +109,22 @@ protected:
     VertexArrayStateList _vertexArrayStateList;
 };
 
+namespace
+{
+    GLuint callVertexAttribDivisor(GLExtensions* ext, GLuint index, GLuint currentDivisor, GLuint newDivisor)
+    {
+        if (!ext->glVertexAttribDivisor)
+            return 0;
+
+        if (currentDivisor == newDivisor)
+            return currentDivisor;
+
+        VAS_NOTICE<<"    callVertexAttribDivisor: attribute index = " << index << "; currentDivisor = "  << currentDivisor << "; newDivisor = " << newDivisor << std::endl;
+        ext->glVertexAttribDivisor(index, newDivisor);
+        return newDivisor;
+    }
+}// anonymous namespace
+
 #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
 ///////////////////////////////////////////////////////////////////////////////////
 //
@@ -116,52 +132,62 @@ protected:
 //
 struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    VertexArrayDispatch() {}
+    VertexArrayDispatch() : divisor(0) {}
 
     virtual const char* className() const { return "VertexArrayDispatch"; }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    VertexArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<vbo<<std::dec<<")"<<std::endl;
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void enable_and_dispatch(osg::State& /*state*/, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    VertexArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    VertexArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo"<<std::hex<<vbo<<std::dec<<")"<<std::endl;
         glVertexPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glVertexPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void disable(osg::State& /*state*/)
+    virtual void disable(osg::State& state)
     {
         VAS_NOTICE<<"    VertexArrayDispatch::disable()"<<std::endl;
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
+
+    static const GLuint attributeIndex = 0;    // Generic Attribute Index
+    GLuint divisor;
 };
 
 
@@ -171,54 +197,63 @@ struct VertexArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    ColorArrayDispatch() {}
+    ColorArrayDispatch() : divisor(0) {}
 
     virtual const char* className() const { return "ColorArrayDispatch"; }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    ColorArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glEnableClientState(GL_COLOR_ARRAY);
         glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void enable_and_dispatch(osg::State& /*state*/, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glEnableClientState(GL_COLOR_ARRAY);
         glColorPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    ColorArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<std::hex<<vbo<<std::dec<<std::dec<<")"<<std::endl;
 
         glEnableClientState(GL_COLOR_ARRAY);
         glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    ColorArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    ColorArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<vbo<<std::dec<<")"<<std::endl;
         glColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glColorPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void disable(osg::State& /*state*/)
+    virtual void disable(osg::State& state)
     {
         VAS_NOTICE<<"    ColorArrayDispatch::disable()"<<std::endl;
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_COLOR_ARRAY);
     }
 
+    static const GLuint attributeIndex = 3;    // Generic Attribute Index
+    GLuint divisor;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -227,52 +262,62 @@ struct ColorArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    NormalArrayDispatch() {}
+    NormalArrayDispatch() : divisor(0) {}
 
     virtual const char* className() const { return "NormalArrayDispatch"; }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    NormalArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glEnableClientState(GL_NORMAL_ARRAY);
         glNormalPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void enable_and_dispatch(osg::State&, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    NormalArrayDispatch::enable_and_dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<vbo<<std::dec<<")"<<std::endl;
         glEnableClientState(GL_NORMAL_ARRAY);
         glNormalPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void enable_and_dispatch(osg::State& /*state*/, GLint /*size*/, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void enable_and_dispatch(osg::State& state, GLint /*size*/, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glEnableClientState(GL_NORMAL_ARRAY);
         glNormalPointer(type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         VAS_NOTICE<<"    NormalArrayDispatch::dispatch("<<new_array->getNumElements()<<")"<<std::endl;
         glNormalPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, const osg::Array* new_array, const osg::GLBufferObject* vbo)
+    virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         VAS_NOTICE<<"    NormalArrayDispatch::dispatch("<<new_array->getNumElements()<<", vbo="<<std::hex<<vbo<<std::dec<<")"<<std::endl;
         glNormalPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void dispatch(osg::State& /*state*/, GLint /*size*/, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
+    virtual void dispatch(osg::State& state, GLint /*size*/, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         glNormalPointer(type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
-    virtual void disable(osg::State& /*state*/)
+    virtual void disable(osg::State& state)
     {
         VAS_NOTICE<<"    NormalArrayDispatch::disable()"<<std::endl;
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_NORMAL_ARRAY);
     }
+
+    static const GLuint attributeIndex = 2;    // Generic Attribute Index
+    GLuint divisor;
 };
 
 
@@ -290,7 +335,7 @@ struct NormalArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    SecondaryColorArrayDispatch() {}
+    SecondaryColorArrayDispatch() : divisor(0) {}
 
     virtual const char* className() const { return "SecondaryColorArrayDispatch"; }
 
@@ -298,28 +343,36 @@ struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
     {
         glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
         state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
         state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         state.get<GLExtensions>()->glSecondaryColorPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void disable(osg::State& /*state*/)
+    virtual void disable(osg::State& state)
     {
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
     }
+
+    static const GLuint attributeIndex = 4;    // Generic Attribute Index
+    GLuint divisor;
 };
 
 
@@ -337,7 +390,7 @@ struct SecondaryColorArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    FogCoordArrayDispatch() {}
+    FogCoordArrayDispatch() : divisor(0) {}
 
     virtual const char* className() const { return "FogCoordArrayDispatch"; }
 
@@ -345,28 +398,36 @@ struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
     {
         glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         glEnableClientState(GL_FOG_COORDINATE_ARRAY);
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         state.get<GLExtensions>()->glFogCoordPointer(new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
-    virtual void disable(osg::State& /*state*/)
+    virtual void disable(osg::State& state)
     {
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_FOG_COORDINATE_ARRAY);
     }
+
+    static const GLuint attributeIndex = 5;    // Generic Attribute Index
+    GLuint divisor;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +436,7 @@ struct FogCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 //
 struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    TexCoordArrayDispatch(unsigned int in_unit) : unit(in_unit) {}
+    TexCoordArrayDispatch(unsigned int in_unit) : unit(in_unit), attributeIndex(8 + in_unit), divisor(0) {}
 
     virtual const char* className() const { return "TexCoordArrayDispatch"; }
 
@@ -386,6 +447,7 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
         state.setClientActiveTextureUnit(unit);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
@@ -395,6 +457,7 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
         state.setClientActiveTextureUnit(unit);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
@@ -402,6 +465,7 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
         state.setClientActiveTextureUnit(unit);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array)
@@ -410,6 +474,7 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
         state.setClientActiveTextureUnit(unit);
         glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
@@ -418,12 +483,14 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
         state.setClientActiveTextureUnit(unit);
         glTexCoordPointer(new_array->getDataSize(), new_array->getDataType(), 0, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean /*normalized*/)
     {
         state.setClientActiveTextureUnit(unit);
         glTexCoordPointer(size, type, stride, ptr);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0); // Suppose that divisor is 0
     }
 
     virtual void disable(osg::State& state)
@@ -432,10 +499,13 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
         //state.glClientActiveTexture(static_cast<GLenum>(GL_TEXTURE0+unit));
         state.setClientActiveTextureUnit(unit);
+        divisor = callVertexAttribDivisor(state.get<GLExtensions>(), attributeIndex, divisor, 0);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     unsigned int unit;
+    GLuint       attributeIndex;    // Generic Attribute Index
+    GLuint       divisor;
 };
 #endif
 
@@ -446,7 +516,7 @@ struct TexCoordArrayDispatch : public VertexArrayState::ArrayDispatch
 
 struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 {
-    VertexAttribArrayDispatch(unsigned int in_unit) : unit(in_unit) {}
+    VertexAttribArrayDispatch(unsigned int in_unit) : unit(in_unit), divisor(0) {}
 
     virtual const char* className() const { return "VertexAttribArrayDispatch"; }
 
@@ -467,11 +537,6 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
         {
             ext->glVertexAttribPointer(static_cast<GLuint>(unit), new_array->getDataSize(), new_array->getDataType(), new_array->getNormalize(), 0, ptr);
         }
-
-        if (ext->glVertexAttribDivisor && new_array->getDivisor() > 0)
-        {
-            ext->glVertexAttribDivisor(static_cast<GLuint>(unit), new_array->getDivisor());
-        }
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array)
@@ -480,6 +545,7 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 
         ext->glEnableVertexAttribArray( unit );
         callVertexAttribPointer(ext, new_array, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
@@ -488,6 +554,7 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 
         ext->glEnableVertexAttribArray( unit );
         callVertexAttribPointer(ext, new_array, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, new_array->getDivisor());
     }
 
     virtual void enable_and_dispatch(osg::State& state, GLint size, GLenum type, GLsizei stride, const GLvoid *ptr, GLboolean normalized)
@@ -496,27 +563,32 @@ struct VertexAttribArrayDispatch : public VertexArrayState::ArrayDispatch
 
         ext->glEnableVertexAttribArray( unit );
         ext->glVertexAttribPointer(static_cast<GLuint>(unit), size, type, normalized, stride, ptr);
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, 0); // Suppose that divisor is 0
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array)
     {
         GLExtensions* ext = state.get<GLExtensions>();
         callVertexAttribPointer(ext, new_array, new_array->getDataPointer());
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, new_array->getDivisor());
     }
 
     virtual void dispatch(osg::State& state, const osg::Array* new_array, const osg::GLBufferObject* vbo)
     {
         GLExtensions* ext = state.get<GLExtensions>();
         callVertexAttribPointer(ext, new_array, (const GLvoid *)(vbo->getOffset(new_array->getBufferIndex())));
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, new_array->getDivisor());
     }
 
     virtual void disable(osg::State& state)
     {
         GLExtensions* ext = state.get<GLExtensions>();
+        divisor = callVertexAttribDivisor(ext, static_cast<GLuint>(unit), divisor, 0);
         ext->glDisableVertexAttribArray( unit );
     }
 
     unsigned int unit;
+    GLuint       divisor;
 };
 
 

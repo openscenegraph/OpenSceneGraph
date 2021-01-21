@@ -31,58 +31,50 @@
 
 using namespace osgDAE;
 
-osg::Geode* daeReader::getOrCreateGeometry(domGeometry *pDomGeometry, domBind_material* pDomBindMaterial, const osg::Geode** ppOriginalGeode)
+osg::Group* daeReader::getOrCreateGeometry(domGeometry *pDomGeometry, domBind_material* pDomBindMaterial, const osg::Group** ppOriginalGeometryGroup)
 {
     // Check cache if geometry already exists
-    osg::Geode* pOsgGeode;
+    osg::Group* pOsgGeometryGroup;
 
-    domGeometryGeodeMap::iterator iter = _geometryMap.find( pDomGeometry );
-    if ( iter != _geometryMap.end() )
+    domGeometryGroupMap::iterator iter = _geometryGroupMap.find( pDomGeometry );
+    if ( iter != _geometryGroupMap.end() )
     {
-        pOsgGeode = iter->second.get();
+        pOsgGeometryGroup = iter->second.get();
     }
     else
     {
-        pOsgGeode = processGeometry( pDomGeometry );
-        _geometryMap.insert( std::make_pair( pDomGeometry, pOsgGeode ) );
+        pOsgGeometryGroup = processGeometryGroup( pDomGeometry );
+        _geometryGroupMap.insert( std::make_pair( pDomGeometry, pOsgGeometryGroup ) );
     }
 
-    if (ppOriginalGeode)
+    if (ppOriginalGeometryGroup)
     {
-        *ppOriginalGeode = pOsgGeode;
+        *ppOriginalGeometryGroup = pOsgGeometryGroup;
     }
 
-    if (!pOsgGeode)
-        return NULL;
-
-    // Create a copy of the cached Geode with a copy of the drawables,
+    // Create a copy of the cached Group with a copy of the drawables,
     // because we may be using a different material or texture unit bindings.
-    osg::Geode *pCopiedOsgGeode = static_cast<osg::Geode*>(pOsgGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
-    if ( pCopiedOsgGeode == NULL )
+    osg::Group *pCopiedOsgGeometryGroup = static_cast<osg::Group*>(pOsgGeometryGroup->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
+    if ( pCopiedOsgGeometryGroup == NULL )
     {
         OSG_WARN << "Failed to load geometry " << pDomGeometry->getName() << std::endl;
         return NULL;
     }
 
-    // Compute optimized geometry by expanding all indexed arrays so we are no longer rendering with the slow path
-    for(unsigned int i=0;i < pCopiedOsgGeode->getNumDrawables();++i)
+    for(unsigned int i=0;i < pOsgGeometryGroup->getNumChildren();++i)
     {
-        osg::Geometry* geom = pCopiedOsgGeode->getDrawable(i)->asGeometry();
-        if (geom)
-        {
-            if (geom->containsDeprecatedData())
-            {
-                geom->fixDeprecatedData();
-            }
-        }
+        osg::Geometry* geometry = pOsgGeometryGroup->getChild(i)->asGeometry();
+        if (geometry->containsDeprecatedData())
+            geometry->fixDeprecatedData();
     }
+
 
     if (pDomBindMaterial)
     {
-        processBindMaterial( pDomBindMaterial, pDomGeometry, pCopiedOsgGeode, pOsgGeode );
+        processBindMaterial( pDomBindMaterial, pDomGeometry, pCopiedOsgGeometryGroup, pOsgGeometryGroup );
     }
 
-    return pCopiedOsgGeode;
+    return pCopiedOsgGeometryGroup;
 }
 
 osgAnimation::Bone* daeReader::getOrCreateBone(domNode *pDomNode)
@@ -131,7 +123,7 @@ osgAnimation::Skeleton* daeReader::getOrCreateSkeleton(domNode *pDomNode)
 
 
 
-osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *pDomInstanceGeometry )
+osg::Group* daeReader::processInstanceGeometry( domInstance_geometry *pDomInstanceGeometry )
 {
     domGeometry *pDomGeometry = daeSafeCast< domGeometry >(getElementFromURI(pDomInstanceGeometry->getUrl()));
     if (!pDomGeometry)
@@ -160,18 +152,15 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
     }
 
     // Base mesh
-    osg::Geode* pOsgGeode = getOrCreateGeometry(pDomGeometry, pDomBindMaterial);
-    if (!pOsgGeode)
+    osg::Group* pOsgGeometryGroup = getOrCreateGeometry(pDomGeometry, pDomBindMaterial);
+    if (!pOsgGeometryGroup)
         return NULL;
 
-    // Expects a single geometry inside the geode, should change this
-    osg::Geometry* pOsgGeometry = dynamic_cast<osg::Geometry*>(pOsgGeode->getDrawable(0));
-    if (!pOsgGeometry)
-        return NULL;
+    // Expects a single geometry inside the group, should change this
+    osg::Geometry* pOsgGeometry = dynamic_cast<osg::Geometry*>(pOsgGeometryGroup->getChild(0));
 
     osgAnimation::MorphGeometry* pOsgMorphGeometry = new osgAnimation::MorphGeometry(*pOsgGeometry);
-    pOsgGeode->removeDrawables(0);
-    pOsgGeode->addDrawable(pOsgMorphGeometry);
+    pOsgGeometry = pOsgMorphGeometry;
 
     domMorphMethodType morphMethod = pDomMorph->getMethod();
 
@@ -221,10 +210,10 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
 
                         if (pDomGeometry)
                         {
-                            osg::Geode* targetgeode = getOrCreateGeometry(pDomGeometry, NULL);
+                            osg::Group* geometryGroup = getOrCreateGeometry(pDomGeometry, NULL);
 
-                            // Expects a single geometry inside the geode, should change this
-                            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(targetgeode->getDrawable(0));
+                            // Expects a single geometry inside the group, should change this
+                            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geometryGroup->getChild(0));
                             if (geometry)
                             {
                                 pOsgMorphGeometry->addMorphTarget(geometry);
@@ -245,10 +234,10 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
 
                         if (pDomGeometry)
                         {
-                            osg::Geode* targetgeode = getOrCreateGeometry(pDomGeometry, NULL);
+                            osg::Group* geometryGroup = getOrCreateGeometry(pDomGeometry, NULL);
 
-                            // Expects a single geometry inside the geode, should change this
-                            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(targetgeode->getDrawable(0));
+                            // Expects a single geometry inside the group, should change this
+                            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geometryGroup->getChild(0));
                             if (geometry)
                             {
                                 pOsgMorphGeometry->addMorphTarget(geometry);
@@ -285,8 +274,8 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
                 {
                     std::string name = pDomSource->getId() ? pDomSource->getId() : "";
                     osgAnimation::UpdateMorph* pUpdateCallback = new osgAnimation::UpdateMorph(name);
-                    pOsgGeode->setUpdateCallback(pUpdateCallback);
-                    pOsgGeode->setDataVariance(osg::Object::DYNAMIC);
+                    pOsgGeometryGroup->setUpdateCallback(pUpdateCallback);
+                    pOsgGeometryGroup->setDataVariance(osg::Object::DYNAMIC);
 
                     // Associate all animation channels with this update callback
                     do
@@ -305,7 +294,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
         }
     }
 
-    return pOsgGeode;
+    return pOsgGeometryGroup;
 }
 
 // <controller (id) (name)>
@@ -341,14 +330,9 @@ osg::Node* daeReader::processInstanceController( domInstance_controller *pDomIns
 // 1    <vertices>
 // 0..*    <lines>, <linestrips>, <polygons>, <polylist>, <triangles>, <trifans>, <tristrips>
 // 0..* <extra>
-osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
+osg::Group* daeReader::processMesh(domMesh* pDomMesh)
 {
-    osg::Geode* pOsgGeode = new osg::Geode;
-//    if (pDomMesh->getId() != NULL )
-    {
-//        pOsgGeode->setName( pDomMesh->getId() );
-    }
-
+    osg::Group* pOsgGeometryGroup = new osg::Group; //pOsgGeometry = new osg::Geometry;
     // size_t count = mesh->getContents().getCount();
 
     // 1..* <source>
@@ -363,63 +347,63 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
     domLines_Array linesArray = pDomMesh->getLines_array();
     for ( size_t i = 0; i < linesArray.getCount(); i++)
     {
-        processSinglePPrimitive<domLines>(pOsgGeode, pDomMesh, linesArray[i], sources, GL_LINES);
+        processSinglePPrimitive<domLines>(pOsgGeometryGroup, pDomMesh, linesArray[i], sources, GL_LINES);
     }
 
     // 0..*    <linestrips>
     domLinestrips_Array linestripsArray = pDomMesh->getLinestrips_array();
     for ( size_t i = 0; i < linestripsArray.getCount(); i++)
     {
-        processMultiPPrimitive<domLinestrips>(pOsgGeode, pDomMesh, linestripsArray[i], sources, GL_LINE_STRIP);
+        processMultiPPrimitive<domLinestrips>(pOsgGeometryGroup, pDomMesh, linestripsArray[i], sources, GL_LINE_STRIP);
     }
 
     // 0..* <polygons>
     domPolygons_Array polygonsArray = pDomMesh->getPolygons_array();
     for ( size_t i = 0; i < polygonsArray.getCount(); i++)
     {
-        processPolygons<domPolygons>(pOsgGeode, pDomMesh, polygonsArray[i], sources, GL_POLYGON, _pluginOptions.tessellateMode);
+        processPolygons<domPolygons>(pOsgGeometryGroup, pDomMesh, polygonsArray[i], sources, GL_POLYGON, _pluginOptions.tessellateMode);
     }
 
     // 0..* <polylist>
     domPolylist_Array polylistArray = pDomMesh->getPolylist_array();
     for ( size_t i = 0; i < polylistArray.getCount(); i++)
     {
-        processPolylist(pOsgGeode, pDomMesh, polylistArray[i], sources, _pluginOptions.tessellateMode);
+        processPolylist(pOsgGeometryGroup, pDomMesh, polylistArray[i], sources, _pluginOptions.tessellateMode);
     }
 
     // 0..* <triangles>
     domTriangles_Array trianglesArray = pDomMesh->getTriangles_array();
     for ( size_t i = 0; i < trianglesArray.getCount(); i++)
     {
-        processSinglePPrimitive<domTriangles>(pOsgGeode, pDomMesh, trianglesArray[i], sources, GL_TRIANGLES);
+        processSinglePPrimitive<domTriangles>(pOsgGeometryGroup, pDomMesh, trianglesArray[i], sources, GL_TRIANGLES);
     }
 
     // 0..* <trifans>
     domTrifans_Array trifansArray = pDomMesh->getTrifans_array();
     for ( size_t i = 0; i < trifansArray.getCount(); i++)
     {
-        processPolygons<domTrifans>(pOsgGeode, pDomMesh, trifansArray[i], sources, GL_TRIANGLE_FAN, TESSELLATE_NONE);
+        processPolygons<domTrifans>(pOsgGeometryGroup, pDomMesh, trifansArray[i], sources, GL_TRIANGLE_FAN, TESSELLATE_NONE);
     }
 
     // 0..* <tristrips>
     domTristrips_Array tristripsArray = pDomMesh->getTristrips_array();
     for ( size_t i = 0; i < tristripsArray.getCount(); i++)
     {
-        processMultiPPrimitive<domTristrips>(pOsgGeode, pDomMesh, tristripsArray[i], sources, GL_TRIANGLE_STRIP);
+        processMultiPPrimitive<domTristrips>(pOsgGeometryGroup, pDomMesh, tristripsArray[i], sources, GL_TRIANGLE_STRIP);
     }
 
-    return pOsgGeode;
+    return pOsgGeometryGroup;
 }
 
 // <convexmesh>
-osg::Geode *daeReader::processConvexMesh(domConvex_mesh* pDomConvexMesh)
+osg::Group* daeReader::processConvexMesh(domConvex_mesh* pDomConvexMesh)
 {
 //    OSG_WARN << "Unsupported geometry convex mesh '" << pDomConvexMesh->getId() << "'" << std::endl;
     return NULL;
 }
 
 // <spline>
-osg::Geode *daeReader::processSpline(domSpline* pDomSpline)
+osg::Group* daeReader::processSpline(domSpline* pDomSpline)
 {
 //    OSG_WARN << "Unsupported geometry type spline '" << pDomSpline->getId() << "'" << std::endl;
     return NULL;
@@ -429,7 +413,7 @@ osg::Geode *daeReader::processSpline(domSpline* pDomSpline)
 // 0..1 <asset>
 // 1    <convex_mesh>, <mesh>, <spline>
 // 0..* <extra>
-osg::Geode *daeReader::processGeometry(domGeometry *pDomGeometry)
+osg::Group* daeReader::processGeometryGroup(domGeometry *pDomGeometry)
 {
     if (pDomGeometry->getMesh())
     {
@@ -456,10 +440,10 @@ osg::Geode *daeReader::processGeometry(domGeometry *pDomGeometry)
 
 
 template< typename T >
-void daeReader::processSinglePPrimitive(osg::Geode* geode,
+void daeReader::processSinglePPrimitive(osg::Group* geometryGroup,
     const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode)
 {
-    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
+    osg::Geometry* geometry = new osg::Geometry;
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
 
@@ -470,22 +454,22 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode,
     domP_Array domPArray;
     domPArray.append(group->getP());
     std::vector<std::vector<GLuint> > indexLists;
-    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry.get(), sources, indexLists);
+    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry, sources, indexLists);
     if (!indexLists.front().empty())
     {
         pDrawElements->asVector().swap(indexLists.front());
-        geode->addDrawable( geometry.get() );
+        geometryGroup->addChild(geometry);
     }
 }
 
 template< typename T >
-void daeReader::processMultiPPrimitive(osg::Geode* geode,
+void daeReader::processMultiPPrimitive(osg::Group* geometryGroup,
     const domMesh* pDomMesh, const T* group, SourceMap &sources, GLenum mode)
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::Geometry* geometry = new osg::Geometry;
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
-    geode->addDrawable( geometry );
+    geometryGroup->addChild(geometry);
 
     std::vector<std::vector<GLuint> > indexLists;
     resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,
@@ -499,7 +483,7 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode,
     }
 }
 
-void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode)
+void daeReader::processPolylist(osg::Group* geometryGroup, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode)
 {
     const domPolylist::domVcount* pDomVcount = group->getVcount();
     if (!pDomVcount)
@@ -508,10 +492,10 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
         return;
     }
 
-    osg::Geometry* geometry = new osg::Geometry();
+    osg::Geometry* geometry = new osg::Geometry;
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
-    geode->addDrawable(geometry);
+    geometryGroup->addChild(geometry);
 
     std::vector<std::vector<GLuint> > vertexLists;
     domP_Array domPArray;
@@ -579,12 +563,12 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
 }
 
 template< typename T >
-void daeReader::processPolygons(osg::Geode* geode,
+void daeReader::processPolygons(osg::Group* geometryGroup,
     const domMesh* pDomMesh, const T *group, SourceMap& sources, GLenum mode, TessellateMode tessellateMode)
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::Geometry* geometry = new osg::Geometry;
     geometry->setName(group->getMaterial());
-    geode->addDrawable(geometry);
+    geometryGroup->addChild(geometry);
 
     std::vector<std::vector<GLuint> > indexLists;
     resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,

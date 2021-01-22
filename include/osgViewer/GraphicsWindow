@@ -284,7 +284,7 @@ struct GraphicsWindowFunctionProxy
     static osgViewer::GraphicsWindowFunctionProxy graphicswindowproxy_##ext(graphicswindow_##ext);
 
 #if defined(OSG_WINDOWING_SYSTEM_NONE)
-    #define USE_GRAPHICS_WINDOW()
+    #define USE_GRAPHICSWINDOW()
 #elif defined(_WIN32)
     #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Win32)
 #elif defined(__APPLE__)

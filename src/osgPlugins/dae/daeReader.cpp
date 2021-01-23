@@ -292,6 +292,8 @@ bool daeReader::convert( std::istream& fin )
     // set fileURI to null device
     const std::string fileURI("from std::istream");
 
+    fin.imbue(std::locale::classic());
+
     // get the size of the file and rewind
     fin.seekg(0, std::ios::end);
     unsigned long length = static_cast<unsigned long>(fin.tellg());

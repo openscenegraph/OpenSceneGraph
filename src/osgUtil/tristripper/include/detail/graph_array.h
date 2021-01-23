@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2004 Tanguy Fautré.
+// Copyright (C) 2004 Tanguy FautrÃ©.
 // For conditions of distribution and use,
 // see copyright notice in tri_stripper.h
 //
@@ -446,7 +446,8 @@ inline void graph_array<N>::swap(graph_type & Right)
 template <class N>
 inline void unmark_nodes(graph_array<N> & G)
 {
-    std::for_each(G.begin(), G.end(), std::mem_fun_ref(&graph_array<N>::node::unmark));
+    for (typename graph_array<N>::node_iterator it = G.begin(); it != G.end(); ++it)
+        it->unmark();
 }
 
 

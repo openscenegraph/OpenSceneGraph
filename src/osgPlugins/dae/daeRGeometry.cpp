@@ -443,7 +443,7 @@ template< typename T >
 void daeReader::processSinglePPrimitive(osg::Group* geometryGroup,
     const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode)
 {
-    osg::Geometry* geometry = new osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     if (NULL != group->getMaterial())
         geometry->setName(group->getMaterial());
 
@@ -454,7 +454,7 @@ void daeReader::processSinglePPrimitive(osg::Group* geometryGroup,
     domP_Array domPArray;
     domPArray.append(group->getP());
     std::vector<std::vector<GLuint> > indexLists;
-    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry, sources, indexLists);
+    resolveMeshArrays(domPArray, group->getInput_array(), pDomMesh, geometry.get(), sources, indexLists);
     if (!indexLists.front().empty())
     {
         pDrawElements->asVector().swap(indexLists.front());

@@ -15,6 +15,7 @@
 #define OSGUTIL_RAYINTERSECTOR 1
 
 #include <osgUtil/IntersectionVisitor>
+#include <osg/ObserverNodePath>
 
 namespace osgUtil
 {
@@ -62,7 +63,7 @@ class OSGUTIL_EXPORT RayIntersector : public Intersector
             typedef std::vector<double>         RatioList;
 
             double                          distance;
-            osg::NodePath                   nodePath;
+            osg::ObserverNodePath           nodePath;
             osg::ref_ptr<osg::Drawable>     drawable;
             osg::ref_ptr<osg::RefMatrix>    matrix;
             osg::Vec3d                      localIntersectionPoint;

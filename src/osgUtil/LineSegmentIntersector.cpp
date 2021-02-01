@@ -797,26 +797,31 @@ osg::Texture* LineSegmentIntersector::Intersection::getTextureLookUp(osg::Vec3& 
             if (texture) activeTexture = texture;
         }
 
-        for(osg::NodePath::const_reverse_iterator itr = nodePath.rbegin();
-            itr != nodePath.rend() && (!activeTexMat || !activeTexture);
-            ++itr)
-        {
-            const osg::Node* node = *itr;
-            if (node->getStateSet())
-            {
-                if (!activeTexMat)
-                {
-                    const osg::TexMat* texMat = dynamic_cast<const osg::TexMat*>(node->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
-                    if (texMat) activeTexMat = texMat;
-                }
+		osg::NodePath np;
 
-                if (!activeTexture)
-                {
-                    const osg::Texture* texture = dynamic_cast<const osg::Texture*>(node->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
-                    if (texture) activeTexture = texture;
-                }
-            }
-        }
+		if (nodePath.getNodePath(np))
+		{
+			for (osg::NodePath::const_reverse_iterator itr = np.rbegin();
+				itr != np.rend() && (!activeTexMat || !activeTexture);
+				++itr)
+			{
+				const osg::Node* node = *itr;
+				if (node->getStateSet())
+				{
+					if (!activeTexMat)
+					{
+						const osg::TexMat* texMat = dynamic_cast<const osg::TexMat*>(node->getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXMAT));
+						if (texMat) activeTexMat = texMat;
+					}
+
+					if (!activeTexture)
+					{
+						const osg::Texture* texture = dynamic_cast<const osg::Texture*>(node->getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE));
+						if (texture) activeTexture = texture;
+					}
+				}
+			}
+		}
 
         if (activeTexMat)
         {

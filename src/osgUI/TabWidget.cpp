@@ -67,8 +67,12 @@ bool TabWidget::handleImplementation(osgGA::EventVisitor* ev, osgGA::Event* even
         if (aa->computeIntersections(*ea, nodePath, intersections))
         {
             const osgUtil::LineSegmentIntersector::Intersection& Intersection = *intersections.begin();
-            for(osg::NodePath::const_iterator itr = Intersection.nodePath.begin();
-                itr != Intersection.nodePath.end();
+
+			osg::NodePath np;
+			Intersection.nodePath.getNodePath(np);
+
+			for (osg::NodePath::const_iterator itr = np.begin();
+				itr != np.end();
                 ++itr)
             {
                 if ((*itr)->getUserValue("index",tabHeaderContainsPointer)) break;

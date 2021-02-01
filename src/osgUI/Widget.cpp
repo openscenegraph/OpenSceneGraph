@@ -378,8 +378,13 @@ struct SortTraversalOrder
         if (lhs->ratio > (rhs->ratio+epsilon)) return true;
         if (lhs->ratio < (rhs->ratio-epsilon)) return false;
 
-        const osg::NodePath& np_lhs = lhs->nodePath;
-        const osg::NodePath& np_rhs = rhs->nodePath;
+		osg::NodePath npLhs;
+		lhs->nodePath.getNodePath(npLhs);
+		const osg::NodePath &np_lhs = npLhs;
+
+		osg::NodePath npRhs;
+		rhs->nodePath.getNodePath(npRhs);
+		const osg::NodePath &np_rhs = npRhs;
 
         osg::NodePath::const_iterator itr_lhs = np_lhs.begin();
         osg::NodePath::const_iterator end_lhs = np_lhs.end();

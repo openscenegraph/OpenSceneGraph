@@ -398,7 +398,9 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                         hitr != intersections.end();
                         ++hitr)
                     {
-                        _pointer.addIntersection(hitr->nodePath, hitr->getLocalIntersectPoint());
+						osg::NodePath np;
+						hitr->nodePath.getNodePath(np);
+						_pointer.addIntersection(np, hitr->getLocalIntersectPoint());
                     }
                     for (osg::NodePath::iterator itr = _pointer._hitList.front().first.begin();
                             itr != _pointer._hitList.front().first.end();

@@ -15,6 +15,7 @@
 #define OSGUTIL_LINESEGMENTINTERSECTOR 1
 
 #include <osgUtil/IntersectionVisitor>
+#include <osg/ObserverNodePath>
 
 namespace osgUtil
 {
@@ -50,7 +51,7 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
             typedef std::vector<double>         RatioList;
 
             double                          ratio;
-            osg::NodePath                   nodePath;
+            osg::ObserverNodePath           nodePath;
             osg::ref_ptr<osg::Drawable>     drawable;
             osg::ref_ptr<osg::RefMatrix>    matrix;
             osg::Vec3d                      localIntersectionPoint;

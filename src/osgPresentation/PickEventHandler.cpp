@@ -113,7 +113,10 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                         const osg::BoundingBox bb(hitr->drawable->getBoundingBox());
 
                         osg::Camera* camera = viewer->getCamera();
-                        osg::Matrix matrix = osg::computeLocalToWorld(hitr->nodePath, false) * camera->getViewMatrix() * camera->getProjectionMatrix();
+
+						osg::NodePath np;
+						hitr->nodePath.getNodePath(np);
+						osg::Matrix matrix = osg::computeLocalToWorld(np, false) * camera->getViewMatrix() * camera->getProjectionMatrix();
                         matrix.postMult(camera->getViewport()->computeWindowMatrix());
 
                         osg::Matrixd inverse;

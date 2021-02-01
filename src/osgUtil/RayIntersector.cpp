@@ -322,43 +322,48 @@ Texture* RayIntersector::Intersection::getTextureLookUp(Vec3& tc) const
             if (texture) activeTexture = texture;
         }
 
-        for(NodePath::const_reverse_iterator itr = nodePath.rbegin();
-            itr != nodePath.rend() && (!activeTexMat || !activeTexture);
-            ++itr)
-            {
-                const Node* node = *itr;
-                if (node->getStateSet())
-                {
-                    if (!activeTexMat)
-                    {
-                        const TexMat* texMat = dynamic_cast<const TexMat*>(node->getStateSet()->getTextureAttribute(0,StateAttribute::TEXMAT));
-                        if (texMat) activeTexMat = texMat;
-                    }
+		osg::NodePath np;
 
-                    if (!activeTexture)
-                    {
-                        const Texture* texture = dynamic_cast<const Texture*>(node->getStateSet()->getTextureAttribute(0,StateAttribute::TEXTURE));
-                        if (texture) activeTexture = texture;
-                    }
-                }
-            }
+		if (nodePath.getNodePath(np))
+		{
+			for (NodePath::const_reverse_iterator itr = np.rbegin();
+				itr != np.rend() && (!activeTexMat || !activeTexture);
+				++itr)
+			{
+				const Node* node = *itr;
+				if (node->getStateSet())
+				{
+					if (!activeTexMat)
+					{
+						const TexMat* texMat = dynamic_cast<const TexMat*>(node->getStateSet()->getTextureAttribute(0, StateAttribute::TEXMAT));
+						if (texMat) activeTexMat = texMat;
+					}
 
-            if (activeTexMat)
-            {
-                Vec4 tc_transformed = Vec4(tc.x(), tc.y(), tc.z() ,0.0f) * activeTexMat->getMatrix();
-                tc.x() = tc_transformed.x();
-                tc.y() = tc_transformed.y();
-                tc.z() = tc_transformed.z();
+					if (!activeTexture)
+					{
+						const Texture* texture = dynamic_cast<const Texture*>(node->getStateSet()->getTextureAttribute(0, StateAttribute::TEXTURE));
+						if (texture) activeTexture = texture;
+					}
+				}
+			}
 
-                if (activeTexture && activeTexMat->getScaleByTextureRectangleSize())
-                {
-                    tc.x() *= static_cast<float>(activeTexture->getTextureWidth());
-                    tc.y() *= static_cast<float>(activeTexture->getTextureHeight());
-                    tc.z() *= static_cast<float>(activeTexture->getTextureDepth());
-                }
-            }
+			if (activeTexMat)
+			{
+				Vec4 tc_transformed = Vec4(tc.x(), tc.y(), tc.z(), 0.0f) * activeTexMat->getMatrix();
+				tc.x() = tc_transformed.x();
+				tc.y() = tc_transformed.y();
+				tc.z() = tc_transformed.z();
 
-            return const_cast<Texture*>(activeTexture);
+				if (activeTexture && activeTexMat->getScaleByTextureRectangleSize())
+				{
+					tc.x() *= static_cast<float>(activeTexture->getTextureWidth());
+					tc.y() *= static_cast<float>(activeTexture->getTextureHeight());
+					tc.z() *= static_cast<float>(activeTexture->getTextureDepth());
+				}
+			}
+
+			return const_cast<Texture*>(activeTexture);
+		}
 
     }
     return 0;

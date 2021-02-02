@@ -137,9 +137,18 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
                 // Extract color components from LAS point
                 liblas::Color c = p.GetColor();
-                uint32_t r = c.GetRed() >> 8;
-                uint32_t g = c.GetGreen() >> 8;
-                uint32_t b = c.GetBlue() >> 8;
+
+				uint32_t r = c.GetRed();
+				uint32_t g = c.GetGreen();
+				uint32_t b = c.GetBlue();
+
+				if (r > 255 || g > 255 || b > 255)
+				{
+					r = c.GetRed() >> 8;
+					g = c.GetGreen() >> 8;
+					b = c.GetBlue() >> 8;
+				}
+
                 uint32_t a = 255;    // default value, since LAS point has no alpha information
 
                 if (vertices->size() == 0)

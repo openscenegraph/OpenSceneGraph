@@ -746,7 +746,7 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     isOcclusionQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query");
     isARBOcclusionQuerySupported = validContext && (OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query"));
 
-    isTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query");
+    isTimerQuerySupported = validContext && (osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query") || osg::isGLExtensionSupported(contextID, "GL_EXT_disjoint_timer_query"));
     isARBTimerQuerySupported = validContext && osg::isGLExtensionSupported(contextID, "GL_ARB_timer_query");
 
 
@@ -781,19 +781,19 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glGetOcclusionQueryiv, "glGetOcclusionQueryiv","glGetOcclusionQueryivNV", validContext);
     setGLExtensionFuncPtr(glGetOcclusionQueryuiv, "glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV", validContext);
 
-    setGLExtensionFuncPtr(glGenQueries, "glGenQueries", "glGenQueriesARB", validContext);
-    setGLExtensionFuncPtr(glDeleteQueries, "glDeleteQueries", "glDeleteQueriesARB", validContext);
-    setGLExtensionFuncPtr(glIsQuery, "glIsQuery", "glIsQueryARB", validContext);
-    setGLExtensionFuncPtr(glBeginQuery, "glBeginQuery", "glBeginQueryARB", validContext);
-    setGLExtensionFuncPtr(glEndQuery, "glEndQuery", "glEndQueryARB", validContext);
+    setGLExtensionFuncPtr(glGenQueries, "glGenQueries", "glGenQueriesARB", "glGenQueriesEXT", validContext);
+    setGLExtensionFuncPtr(glDeleteQueries, "glDeleteQueries", "glDeleteQueriesARB", "glDeleteQueriesEXT", validContext);
+    setGLExtensionFuncPtr(glIsQuery, "glIsQuery", "glIsQueryARB", "glIsQueryEXT", validContext);
+    setGLExtensionFuncPtr(glBeginQuery, "glBeginQuery", "glBeginQueryARB", "glBeginQueryEXT", validContext);
+    setGLExtensionFuncPtr(glEndQuery, "glEndQuery", "glEndQueryARB", "glEndQueryEXT", validContext);
     setGLExtensionFuncPtr(glBeginQueryIndexed, "glBeginQueryIndexed", "glBeginQueryIndexedARB", validContext);
     setGLExtensionFuncPtr(glEndQueryIndexed, "glEndQueryIndexed", "glEndQueryIndexedARB", validContext);
-    setGLExtensionFuncPtr(glGetQueryiv, "glGetQueryiv", "glGetQueryivARB", validContext);
-    setGLExtensionFuncPtr(glGetQueryObjectiv, "glGetQueryObjectiv","glGetQueryObjectivARB", validContext);
-    setGLExtensionFuncPtr(glGetQueryObjectuiv, "glGetQueryObjectuiv","glGetQueryObjectuivARB", validContext);
-    setGLExtensionFuncPtr(glGetQueryObjectui64v, "glGetQueryObjectui64v","glGetQueryObjectui64vEXT", validContext);
-    setGLExtensionFuncPtr(glQueryCounter, "glQueryCounter", validContext);
-    setGLExtensionFuncPtr(glGetInteger64v, "glGetInteger64v", validContext);
+    setGLExtensionFuncPtr(glGetQueryiv, "glGetQueryiv", "glGetQueryivARB", "glGetQueryivEXT", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectiv, "glGetQueryObjectiv","glGetQueryObjectivARB", "glGetQueryObjectivEXT", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectuiv, "glGetQueryObjectuiv","glGetQueryObjectuivARB", "glGetQueryObjectuivEXT", validContext);
+    setGLExtensionFuncPtr(glGetQueryObjectui64v, "glGetQueryObjectui64v","glGetQueryObjectui64vEXT", "glGetQueryObjectui64vEXT", validContext);
+    setGLExtensionFuncPtr(glQueryCounter, "glQueryCounter", "glQueryCounterEXT", validContext);
+    setGLExtensionFuncPtr(glGetInteger64v, "glGetInteger64v", "glGetInteger64vEXT", validContext);
 
 
     // SampleMaski functionality

@@ -55,7 +55,6 @@ void IndexMeshVisitor::process(osg::Geometry& geom) {
     new_primitives.reserve(primitives.size());
 
     // compute duplicate vertices
-    typedef std::vector<unsigned int> IndexList;
     unsigned int numVertices = geom.getVertexArray()->getNumElements();
     IndexList indices(numVertices);
     unsigned int i, j;

@@ -446,7 +446,7 @@ inline void graph_array<N>::swap(graph_type & Right)
 template <class N>
 inline void unmark_nodes(graph_array<N> & G)
 {
-    std::for_each(G.begin(), G.end(), std::mem_fun_ref(&graph_array<N>::node::unmark));
+    for(typename graph_array<N>::node_iterator itr = G.begin(); itr != G.end(); ++itr) itr->unmark();
 }
 
 

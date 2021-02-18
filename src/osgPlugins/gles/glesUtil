@@ -222,9 +222,6 @@ namespace glesUtil {
         virtual void apply(osg::Vec2ubArray& array) { remap(array); }
 
         virtual void apply(osg::MatrixfArray& array) { remap(array); }
-
-    protected:
-        RemapArray& operator= (const RemapArray&) { return *this; }
     };
 
 
@@ -252,9 +249,6 @@ namespace glesUtil {
             }
             return 0;
         }
-
-        protected:
-            VertexAttribComparitor& operator= (const VertexAttribComparitor&) { return *this; }
     };
 
     // Move the values in an array to new positions, based on the

@@ -63,6 +63,13 @@ class BoundingSphereImpl
           * otherwise. */
         inline bool valid() const { return _radius>=0.0; }
 
+        inline BoundingSphereImpl& operator = (const BoundingSphereImpl& rhs)
+        {
+            _center = rhs._center;
+            _radius = rhs._radius;
+            return *this;
+        }
+
         inline bool operator == (const BoundingSphereImpl& rhs) const { return _center==rhs._center && _radius==rhs._radius; }
         inline bool operator != (const BoundingSphereImpl& rhs) const { return _center!=rhs._center || _radius!=rhs._radius; }
 

@@ -731,7 +731,9 @@ OPTION(BUILD_OSG_PLUGINS "Build OSG Plugins - Disable for compile testing exampl
 mark_as_advanced(BUILD_OSG_PLUGINS)
 ################################################################################
 # 3rd Party Dependency Stuff
-IF(WIN32 AND NOT ANDROID)
+OPTION(OSG_FIND_3RD_PARTY_DEPS "Enable to search for Android or Windows dependencies in ./3rdparty" ON)
+
+IF(WIN32 AND NOT ANDROID AND OSG_FIND_3RD_PARTY_DEPS)
     INCLUDE(Find3rdPartyDependencies)
 ENDIF()
 
@@ -742,7 +744,7 @@ OPTION(OSG_USE_LOCAL_LUA_SOURCE "Enable to use local Lua source when building th
 # you can use the following style of command line option when invoking Cmake (here illustrating ignoring PythonLibs) :
 # cmake -DCMAKE_DISABLE_FIND_PACKAGE_PythonLibs=1 .
 #
-IF(ANDROID)
+IF(ANDROID AND OSG_FIND_3RD_PARTY_DEPS)
     ANDROID_3RD_PARTY()
 ELSE()
 # Common to all platforms except android:
@@ -819,7 +821,7 @@ ENDIF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
 # Image readers/writers depend on 3rd party libraries except for OS X which
 # can use Quicktime.
-IF(NOT ANDROID)
+IF(NOT (ANDROID AND OSG_FIND_3RD_PARTY_DEPS))
     IF(NOT APPLE)
         FIND_PACKAGE(GIFLIB)
         FIND_PACKAGE(JPEG)

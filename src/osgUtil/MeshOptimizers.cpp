@@ -109,6 +109,11 @@ struct VertexAttribComparitor : public GeometryArrayGatherer
     {
     }
 
+    VertexAttribComparitor(const VertexAttribComparitor& rhs)
+        : GeometryArrayGatherer(rhs)
+    {
+    }
+
     bool operator() (unsigned int lhs, unsigned int rhs) const
     {
         for(ArrayList::const_iterator itr=_arrayList.begin();

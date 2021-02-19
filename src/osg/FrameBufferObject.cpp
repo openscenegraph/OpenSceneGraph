@@ -540,7 +540,7 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         {
             if (ext->glFramebufferTextureMultiviewOVR)
             {
-                ext->glFramebufferTextureMultiviewOVR(target, attachment_point, tobj->id(), _ximpl->level, 0, 2);
+                ext->glFramebufferTextureMultiviewOVR(target, attachment_point, tobj->id(), _ximpl->level, 0, _ximpl->textureTarget->getTextureDepth());
             }
         }
         else

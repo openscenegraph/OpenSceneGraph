@@ -318,9 +318,6 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl)
         // to that Window.
         for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
 
-            Widget* widget = dynamic_cast<Widget*>(i->drawable.get());
-            if(!widget) continue;
-
             Window* win = 0;
             const osg::NodePath& nodePath = i->nodePath;
             for(osg::NodePath::const_reverse_iterator np_itr = nodePath.rbegin(); np_itr != nodePath.rend(); ++np_itr)
@@ -345,6 +342,8 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl)
             // If we've found a new Widnow, break out!
             else if(activeWin != win) break;
 
+            Widget* widget = dynamic_cast<Widget*>(i->drawable.get());
+            if(!widget) continue;
 
             // We need to return a list of every Widget that was picked, so
             // that the handler can operate on it accordingly.

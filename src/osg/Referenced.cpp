@@ -79,12 +79,11 @@ struct ResetPointer
 };
 
 typedef ResetPointer<DeleteHandler> DeleteHandlerPointer;
-typedef ResetPointer<OpenThreads::Mutex> GlobalMutexPointer;
 
 OpenThreads::Mutex* Referenced::getGlobalReferencedMutex()
 {
-    static GlobalMutexPointer s_ReferencedGlobalMutext = new OpenThreads::Mutex;
-    return s_ReferencedGlobalMutext.get();
+    static OpenThreads::Mutex* s_ReferencedGlobalMutext = new OpenThreads::Mutex;
+    return s_ReferencedGlobalMutext;
 }
 
 // helper class for forcing the global mutex to be constructed when the library is loaded.

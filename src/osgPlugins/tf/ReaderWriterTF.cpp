@@ -162,8 +162,6 @@ class ReaderWriterTF : public osgDB::ReaderWriter
 
         virtual WriteResult writeObject(const osg::Object& object, const std::string& fileName, const osgDB::ReaderWriter::Options*) const
         {
-            OSG_NOTICE<<"ReaderWriterTF::writeObject"<<fileName<<std::endl;
-
             const osg::TransferFunction1D* tf = dynamic_cast<const osg::TransferFunction1D*>(&object);
             if (!tf) return WriteResult::FILE_NOT_HANDLED;
 

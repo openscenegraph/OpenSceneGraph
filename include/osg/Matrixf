@@ -253,6 +253,7 @@ class OSG_EXPORT Matrixf
 
         //basic utility functions to create new matrices
         inline static Matrixf identity( void );
+        inline static Matrixf transpose4x4( const Matrixd& matrix );
         inline static Matrixf scale( const Vec3f& sv);
         inline static Matrixf scale( const Vec3d& sv);
         inline static Matrixf scale( value_type sx, value_type sy, value_type sz);
@@ -632,6 +633,14 @@ inline Matrixf Matrixf::rotate( value_type angle1, const Vec3d& axis1,
     m.makeRotate(angle1,axis1,angle2,axis2,angle3,axis3);
     return m;
 }
+
+inline Matrixf Matrixf::transpose4x4( const Matrixd& matrix )
+{
+    Matrixf m;   
+    m.transpose(m);
+    return m;
+}
+
 inline Matrixf Matrixf::rotate(const Vec3f& from, const Vec3f& to )
 {
     Matrixf m;

@@ -19,7 +19,8 @@ IF(ANDROID)
 ELSE(ANDROID)
 
 IF(DYNAMIC_OPENSCENEGRAPH)
-
+	
+		
     ADD_SUBDIRECTORY(osgsimpleMDI)
     ADD_SUBDIRECTORY(osg2cpp)
     ADD_SUBDIRECTORY(osganalysis)
@@ -28,6 +29,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgautocapture)
     ADD_SUBDIRECTORY(osgautotransform)
     ADD_SUBDIRECTORY(osgbillboard)
+	ADD_SUBDIRECTORY(osgbinshader)
     ADD_SUBDIRECTORY(osgblenddrawbuffers)
     ADD_SUBDIRECTORY(osgblendequation)
     ADD_SUBDIRECTORY(osgcallback)

@@ -18,6 +18,7 @@
  * author: Mike Weiblen 2008-01-02
  *         Holger Helmich 2010-10-21
 */
+#include <GL/glew.h>
 
 #include <fstream>
 #include <list>
@@ -579,6 +580,17 @@ namespace
     }
 }
 
+bool static loadBinaryShader(const unsigned char* bin, size_t size, GLuint binaryFormat, GLuint& shader, osg::ref_ptr<osg::GLExtensions> _extensions)
+{
+    GLint compiled = GL_FALSE;
+    
+	_extensions->glShaderBinary(1, &shader, binaryFormat, bin, size);
+	_extensions->glSpecializeShaderARB(shader, "main", 0, nullptr, nullptr);
+	_extensions->glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+
+    return compiled == GL_TRUE;
+}
+
 void Shader::PerContextShader::compileShader(osg::State& state)
 {
     if( ! _needsCompile ) return;
@@ -632,16 +644,27 @@ void Shader::PerContextShader::compileShader(osg::State& state)
             }
         }
     }
-#endif
+#else
 
-    std::string source = _shader->getShaderSource();
+    GLint compiled = GL_FALSE;
+
+    if (_shader->getShaderBinary())
+    {
+        compiled = loadBinaryShader(
+            _shader->getShaderBinary()->getData(),
+            _shader->getShaderBinary()->getSize(),
+            GL_SHADER_BINARY_FORMAT_SPIR_V_ARB,
+            _glShaderHandle,
+        _extensions);
+
+    }
+    else
+    {
+        std::string source = _shader->getShaderSource();
     // if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))
     {
         state.convertVertexShaderSourceToOsgBuiltIns(source);
     }
-
-
-    GLint compiled = GL_FALSE;
 
     // OSG_NOTICE<<"Compiling PerContextShader "<<this<<" ShaderDefine="<<getDefineString()<<std::endl;
     bool printOutShaders = osg::getNotifyLevel()>=osg::INFO;//NOTICE;
@@ -759,6 +782,9 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     }
     _extensions->glCompileShader( _glShaderHandle );
     _extensions->glGetShaderiv( _glShaderHandle, GL_COMPILE_STATUS, &compiled );
+#endif
+
+    
 
     _isCompiled = (compiled == GL_TRUE);
     if( ! _isCompiled )

@@ -18,7 +18,6 @@
 #include <osg/StateSet>
 #include <osg/Program>
 #include <osg/Shader>
-#include "C:/Program Files/NVIDIA Corporation/NvToolsExt/include/nvToolsExt.h"
 #include "osgGA/NodeTrackerManipulator"
 #include "osg/MatrixTransform"
 #include "osg/LineWidth"

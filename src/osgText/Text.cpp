@@ -1304,6 +1304,43 @@ bool Text::getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::V
     return true;
 }
 
+void Text::compileGLObjects(osg::RenderInfo& renderInfo) const
+{
+    TextBase::compileGLObjects(renderInfo);
+
+    State& state = *renderInfo.getState();
+    if (state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) &&
+        !state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        unsigned int contextID = state.getContextID();
+        GLExtensions* extensions = state.get<GLExtensions>();
+
+        for(TextureGlyphQuadMap::const_iterator titr=_textureGlyphQuadMap.begin();
+            titr!=_textureGlyphQuadMap.end();
+            ++titr)
+        {
+            const GlyphQuads& glyphquad = titr->second;
+            if (glyphquad._primitives.valid())
+            {
+                BufferObject* bufferObject = glyphquad._primitives->getBufferObject();
+                if (bufferObject)
+                {
+                    GLBufferObject* glBufferObject = bufferObject->getOrCreateGLBufferObject(contextID);
+                    if (glBufferObject && glBufferObject->isDirty())
+                    {
+                        // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
+                        glBufferObject->compileBuffer();
+                    }
+                }
+            }
+        }
+
+        // unbind the BufferObjects
+        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
+}
+
 void Text::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);

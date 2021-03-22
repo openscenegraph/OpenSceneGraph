@@ -185,6 +185,10 @@ public:
     /** Get the coordinates of the character corners in local coordinates. Use Text::getMatrix() or Text::computeMatrix(..) to get the transform into model coordinates (see TextBase header.) */
     bool getCharacterCorners(unsigned int index, osg::Vec3& bottomLeft, osg::Vec3& bottomRight, osg::Vec3& topLeft, osg::Vec3& topRight) const;
 
+    /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+      * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used. */
+    virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
+
     /** Resize any per context GLObject buffers to specified size. */
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
 

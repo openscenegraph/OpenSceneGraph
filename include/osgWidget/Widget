@@ -75,7 +75,7 @@ public:
         Widget (const std::string& = "", point_type = 0.0f, point_type = 0.0f);
         Widget (const Widget&, const osg::CopyOp&);
 
-        META_Object   (osgWidget, Widget);
+        META_Node   (osgWidget, Widget);
 
         virtual ~Widget() {
         }

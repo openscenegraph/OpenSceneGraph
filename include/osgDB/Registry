@@ -50,7 +50,8 @@ namespace osgDB {
     The RegisterReaderWriterProxy can be used to automatically
     register at runtime a reader/writer with the Registry.
 */
-class OSGDB_EXPORT Registry : public osg::Referenced
+class OSGDB_EXPORT Registry : osg::depends_on<OpenThreads::Mutex*, osg::Referenced::getGlobalReferencedMutex>,
+                              public osg::Referenced
 {
     public:
 

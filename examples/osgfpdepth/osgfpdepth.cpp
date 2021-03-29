@@ -138,9 +138,7 @@ void getPossibleConfigs(GraphicsContext* gc, BufferConfigList& colorConfigs,
         return;
     if (ext->isMultisampleSupported)
         glGetIntegerv(GL_MAX_SAMPLES_EXT, &maxSamples);
-    // isMultisampleCoverageSupported
-    if (isGLExtensionSupported(contextID,
-                               "GL_NV_framebuffer_multisample_coverage"))
+    if (ext->isRenderbufferMultisampleCoverageSupported())
     {
         glGetIntegerv(GL_MAX_MULTISAMPLE_COVERAGE_MODES_NV,
                       &coverageSampleConfigs);

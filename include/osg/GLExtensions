@@ -822,6 +822,17 @@ class OSG_EXPORT GLExtensions : public osg::Referenced
         void (GL_APIENTRY * glFogCoordPointer) (GLenum type, GLsizei stride, const GLvoid *pointer);
         void (GL_APIENTRY * glSecondaryColorPointer) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
 
+
+        // Mesh shader extensions
+        bool isMeshShaderSupported;
+
+        void (GL_APIENTRY * glDrawMeshTasksNV) (GLuint first, GLuint count);
+        void (GL_APIENTRY * glDrawMeshTasksIndirectNV) (GLintptr indirect);
+        void (GL_APIENTRY * glMultiDrawMeshTasksIndirectNV) (GLintptr indirect, GLsizei drawcount, GLsizei stride);
+        void (GL_APIENTRY * glMultiDrawMeshTasksIndirectCountNV) (GLintptr indirect, GLintptr drawcount, GLsizei maxdrawcount, GLsizei stride);
+
+
+        // Max texture properties
         GLint  glMaxTextureCoords;
         GLint  glMaxTextureUnits;
 

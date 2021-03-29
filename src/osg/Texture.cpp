@@ -176,30 +176,60 @@ InternalPixelRelations sizedDepthAndStencilInternalFormats[] = {
 };
 
 InternalPixelRelations compressedInternalFormats[] = {
- // , { GL_COMPRESSED_RED                      , GL_RED              , GL_COMPRESSED_RED                            }
- // , { GL_COMPRESSED_RG                       , GL_RG               , GL_COMPRESSED_RG                             }
-      { GL_COMPRESSED_RGB                      , GL_RGB              , GL_COMPRESSED_RGB                            }
-    , { GL_COMPRESSED_RGBA                     , GL_RGBA             , GL_COMPRESSED_RGBA                           }
-    , { GL_COMPRESSED_SRGB                     , GL_RGB              , GL_COMPRESSED_SRGB                           }
-    , { GL_COMPRESSED_SRGB_ALPHA               , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA                     }
-    , { GL_COMPRESSED_RED_RGTC1_EXT            , GL_RED              , GL_COMPRESSED_RED_RGTC1_EXT                  }
-    , { GL_COMPRESSED_SIGNED_RED_RGTC1_EXT     , GL_RED              , GL_COMPRESSED_SIGNED_RED_RGTC1_EXT           }
- // , { GL_COMPRESSED_RG_RGTC2                 , GL_RG               , GL_COMPRESSED_RG_RGTC2                       }
- // , { GL_COMPRESSED_SIGNED_RG_RGTC2          , GL_RG               , GL_COMPRESSED_SIGNED_RG_RGTC2                }
- // , { GL_COMPRESSED_RGBA_BPTC_UNORM          , GL_RGBA             , GL_COMPRESSED_RGBA_BPTC_UNORM                }
- // , { GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM    , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM          }
- // , { GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT    , GL_RGB              , GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT          }
- // , { GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT  , GL_RGB              , GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT        }
+ // , { GL_COMPRESSED_RED                          , GL_RED          , GL_COMPRESSED_RED                            }
+ // , { GL_COMPRESSED_RG                           , GL_RG           , GL_COMPRESSED_RG                             }
+      { GL_COMPRESSED_RGB                          , GL_RGB          , GL_COMPRESSED_RGB                            }
+    , { GL_COMPRESSED_RGBA                         , GL_RGBA         , GL_COMPRESSED_RGBA                           }
+    , { GL_COMPRESSED_SRGB                         , GL_RGB          , GL_COMPRESSED_SRGB                           }
+    , { GL_COMPRESSED_SRGB_ALPHA                   , GL_RGBA         , GL_COMPRESSED_SRGB_ALPHA                     }
+    , { GL_COMPRESSED_RED_RGTC1_EXT                , GL_RED          , GL_COMPRESSED_RED_RGTC1_EXT                  }
+    , { GL_COMPRESSED_SIGNED_RED_RGTC1_EXT         , GL_RED          , GL_COMPRESSED_SIGNED_RED_RGTC1_EXT           }
+ // , { GL_COMPRESSED_RG_RGTC2                     , GL_RG           , GL_COMPRESSED_RG_RGTC2                       }
+ // , { GL_COMPRESSED_SIGNED_RG_RGTC2              , GL_RG           , GL_COMPRESSED_SIGNED_RG_RGTC2                }
+ // , { GL_COMPRESSED_RGBA_BPTC_UNORM              , GL_RGBA         , GL_COMPRESSED_RGBA_BPTC_UNORM                }
+ // , { GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM        , GL_RGBA         , GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM          }
+ // , { GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT        , GL_RGB          , GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT          }
+ // , { GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT      , GL_RGB          , GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT        }
 
-    , { GL_COMPRESSED_RGB_S3TC_DXT1_EXT        , GL_RGB              , GL_COMPRESSED_RGB_S3TC_DXT1_EXT              }
-    , { GL_COMPRESSED_RGBA_S3TC_DXT1_EXT       , GL_RGBA             , GL_COMPRESSED_RGBA_S3TC_DXT1_EXT             }
-    , { GL_COMPRESSED_RGBA_S3TC_DXT3_EXT       , GL_RGBA             , GL_COMPRESSED_RGBA_S3TC_DXT3_EXT             }
-    , { GL_COMPRESSED_RGBA_S3TC_DXT5_EXT       , GL_RGBA             , GL_COMPRESSED_RGBA_S3TC_DXT5_EXT             }
+    , { GL_COMPRESSED_RGB_S3TC_DXT1_EXT            , GL_RGB          , GL_COMPRESSED_RGB_S3TC_DXT1_EXT              }
+    , { GL_COMPRESSED_RGBA_S3TC_DXT1_EXT           , GL_RGBA         , GL_COMPRESSED_RGBA_S3TC_DXT1_EXT             }
+    , { GL_COMPRESSED_RGBA_S3TC_DXT3_EXT           , GL_RGBA         , GL_COMPRESSED_RGBA_S3TC_DXT3_EXT             }
+    , { GL_COMPRESSED_RGBA_S3TC_DXT5_EXT           , GL_RGBA         , GL_COMPRESSED_RGBA_S3TC_DXT5_EXT             }
 
-    , { GL_COMPRESSED_SRGB_S3TC_DXT1_EXT       , GL_RGB              , GL_COMPRESSED_SRGB_S3TC_DXT1_EXT             }
-    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT       }
-    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT       }
-    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT , GL_RGBA             , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT       }
+    , { GL_COMPRESSED_SRGB_S3TC_DXT1_EXT           , GL_RGB          , GL_COMPRESSED_SRGB_S3TC_DXT1_EXT             }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT     , GL_RGBA         , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT       }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT     , GL_RGBA         , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT       }
+    , { GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT     , GL_RGBA         , GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT       }
+
+    , { GL_COMPRESSED_RGBA_ASTC_4x4_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_4x4_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_5x4_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_5x4_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_5x5_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_5x5_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_6x5_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_6x5_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_6x6_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_6x6_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_8x5_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_8x5_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_8x6_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_8x6_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_8x8_KHR            , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_8x8_KHR              }
+    , { GL_COMPRESSED_RGBA_ASTC_10x5_KHR           , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_10x5_KHR             }
+    , { GL_COMPRESSED_RGBA_ASTC_10x6_KHR           , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_10x6_KHR             }
+    , { GL_COMPRESSED_RGBA_ASTC_10x8_KHR           , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_10x8_KHR             }
+    , { GL_COMPRESSED_RGBA_ASTC_10x10_KHR          , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_10x10_KHR            }
+    , { GL_COMPRESSED_RGBA_ASTC_12x10_KHR          , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_12x10_KHR            }
+    , { GL_COMPRESSED_RGBA_ASTC_12x12_KHR          , GL_RGBA         , GL_COMPRESSED_RGBA_ASTC_12x12_KHR            }
+
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR    , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR      }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR   , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR     }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR   , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR     }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR   , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR     }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR  , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR    }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR  , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR    }
+    , { GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR  , GL_RGBA         , GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR    }
 };
 
 bool isSizedInternalFormat(GLint internalFormat)
@@ -291,57 +321,109 @@ void Texture::TextureProfile::computeSize()
 
     switch(_internalFormat)
     {
-        case(1): numBitsPerTexel = 8; break;
-        case(GL_ALPHA): numBitsPerTexel = 8; break;
-        case(GL_LUMINANCE): numBitsPerTexel = 8; break;
-        case(GL_INTENSITY): numBitsPerTexel = 8; break;
+        case 1:
+        case GL_ALPHA:
+        case GL_LUMINANCE:
+        case GL_INTENSITY:
+        case GL_RED:
+            numBitsPerTexel = 8;
+            break;
 
-        case(GL_LUMINANCE_ALPHA): numBitsPerTexel = 16; break;
-        case(2): numBitsPerTexel = 16; break;
+        case 2:
+        case GL_LUMINANCE_ALPHA:
+        case GL_RG:
+            numBitsPerTexel = 16;
+            break;
 
-        case(GL_RGB): numBitsPerTexel = 24; break;
-        case(GL_BGR): numBitsPerTexel = 24; break;
-        case(3): numBitsPerTexel = 24; break;
+        case 3:
+        case GL_RGB:
+        case GL_BGR:
+            numBitsPerTexel = 24;
+            break;
 
-        case(GL_RGBA): numBitsPerTexel = 32; break;
-        case(4): numBitsPerTexel = 32; break;
+        case 4:
+        case GL_RGBA:
+        case GL_BGRA:
+            numBitsPerTexel = 32;
+            break;
 
-        case(GL_COMPRESSED_ALPHA_ARB):                 numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_INTENSITY_ARB):             numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):       numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):         numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):        numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):        numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):  numBitsPerTexel = 4; break;
+        case GL_COMPRESSED_ALPHA_ARB:                      numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_INTENSITY_ARB:                  numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_LUMINANCE_ALPHA_ARB:            numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:              numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB_S3TC_DXT1_EXT:             numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:             numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:       numBitsPerTexel = 4;  break;
 
-        case(GL_COMPRESSED_RGB_ARB):                   numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):        numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):  numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):        numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):  numBitsPerTexel = 8; break;
+        case GL_COMPRESSED_RGB_ARB:                        numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:             numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:       numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:             numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:       numBitsPerTexel = 8;  break;
 
-        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):       numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RED_RGTC1_EXT):              numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):        numBitsPerTexel = 8; break;
+        case GL_COMPRESSED_SIGNED_RED_RGTC1_EXT:           numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RED_RGTC1_EXT:                  numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:     numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RED_GREEN_RGTC2_EXT:            numBitsPerTexel = 8;  break;
 
-        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):  numBitsPerTexel = 2; break;
-        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): numBitsPerTexel = 2; break;
-        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):  numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): numBitsPerTexel = 4; break;
+        case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:           numBitsPerTexel = 2;  break;
+        case GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:          numBitsPerTexel = 2;  break;
+        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:           numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:          numBitsPerTexel = 4;  break;
 
-        case(GL_ETC1_RGB8_OES):                       numBitsPerTexel = 4; break;
+        case GL_ETC1_RGB8_OES:                             numBitsPerTexel = 4;  break;
 
-        case(GL_COMPRESSED_RGB8_ETC2):                      numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_SRGB8_ETC2):                     numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):  numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2): numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_RGBA8_ETC2_EAC):                 numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):          numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_R11_EAC):                        numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_SIGNED_R11_EAC):                 numBitsPerTexel = 4; break;
-        case(GL_COMPRESSED_RG11_EAC):                       numBitsPerTexel = 8; break;
-        case(GL_COMPRESSED_SIGNED_RG11_EAC):                numBitsPerTexel = 8; break;
+        case GL_COMPRESSED_RGB8_ETC2:                      numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SRGB8_ETC2:                     numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_RGBA8_ETC2_EAC:                 numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:          numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_R11_EAC:                        numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_SIGNED_R11_EAC:                 numBitsPerTexel = 4;  break;
+        case GL_COMPRESSED_RG11_EAC:                       numBitsPerTexel = 8;  break;
+        case GL_COMPRESSED_SIGNED_RG11_EAC:                numBitsPerTexel = 8;  break;
+
+        // ASTC
+        case GL_COMPRESSED_RGBA_ASTC_4x4_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_5x4_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_5x5_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_6x5_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_6x6_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_8x5_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_8x6_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_8x8_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_10x5_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_10x6_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_10x8_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_10x10_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_12x10_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:
+        case GL_COMPRESSED_RGBA_ASTC_12x12_KHR:
+        case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
+        {
+            _size = 0;
+            for (int i = 0; i < std::max(_numMipmapLevels, 1); ++i)
+            {
+                GLint blockSize;
+                GLint size;
+                getCompressedSize(_internalFormat, _width/(1 << i), _height/(1 << i), _depth, blockSize, size);
+                _size += size;
+            }
+            return;
+        }
     }
 
     _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));
@@ -1794,39 +1876,67 @@ bool Texture::isCompressedInternalFormat() const
 
 bool Texture::isCompressedInternalFormat(GLint internalFormat)
 {
-    switch(internalFormat)
+    switch (internalFormat)
     {
-        case(GL_COMPRESSED_ALPHA_ARB):
-        case(GL_COMPRESSED_INTENSITY_ARB):
-        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
-        case(GL_COMPRESSED_LUMINANCE_ARB):
-        case(GL_COMPRESSED_RGBA_ARB):
-        case(GL_COMPRESSED_RGB_ARB):
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
-        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
-		case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
-        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
-        case(GL_COMPRESSED_RED_RGTC1_EXT):
-        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
-        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
-        case(GL_ETC1_RGB8_OES):
-        case(GL_COMPRESSED_RGB8_ETC2):
-        case(GL_COMPRESSED_SRGB8_ETC2):
-        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
-        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
-        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
-        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
-        case(GL_COMPRESSED_R11_EAC):
-        case(GL_COMPRESSED_SIGNED_R11_EAC):
-        case(GL_COMPRESSED_RG11_EAC):
-        case(GL_COMPRESSED_SIGNED_RG11_EAC):
-        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
-        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_ALPHA_ARB):
+        case (GL_COMPRESSED_INTENSITY_ARB):
+        case (GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
+        case (GL_COMPRESSED_LUMINANCE_ARB):
+        case (GL_COMPRESSED_RGBA_ARB):
+        case (GL_COMPRESSED_RGB_ARB):
+        case (GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
+        case (GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
+        case (GL_COMPRESSED_RED_RGTC1_EXT):
+        case (GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
+        case (GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case (GL_ETC1_RGB8_OES):
+        case (GL_COMPRESSED_RGB8_ETC2):
+        case (GL_COMPRESSED_SRGB8_ETC2):
+        case (GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case (GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case (GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case (GL_COMPRESSED_R11_EAC):
+        case (GL_COMPRESSED_SIGNED_R11_EAC):
+        case (GL_COMPRESSED_RG11_EAC):
+        case (GL_COMPRESSED_SIGNED_RG11_EAC):
+        case (GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case (GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR):
             return true;
         default:
             return false;
@@ -1870,7 +1980,7 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
 
          size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
          return;
-     }
+    }
     else if (internalFormat == GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG || internalFormat == GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG)
     {
          blockSize = 4 * 4; // Pixel by pixel block size for 4bpp
@@ -1886,6 +1996,91 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
 
          size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
          return;
+    }
+    // ASTC compression (block size is always equal to 16)
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_4x4_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/4.0)*ceil(height/4.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_5x4_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/5.0)*ceil(height/4.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_5x5_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/5.0)*ceil(height/5.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_6x5_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/6.0)*ceil(height/5.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_6x6_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/6.0)*ceil(height/6.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_8x5_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/8.0)*ceil(height/5.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_8x6_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/8.0)*ceil(height/6.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_8x8_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/8.0)*ceil(height/8.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_10x5_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/10.0)*ceil(height/5.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_10x6_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/10.0)*ceil(height/6.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_10x8_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/10.0)*ceil(height/8.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_10x10_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/10.0)*ceil(height/10.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_12x10_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/12.0)*ceil(height/10.0)*blockSize;
+        return;
+    }
+    else if (internalFormat == GL_COMPRESSED_RGBA_ASTC_12x12_KHR || internalFormat == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR)
+    {
+        blockSize = 16;
+        size = ceil(width/12.0)*ceil(height/12.0)*blockSize;
+        return;
     }
     else
     {
@@ -2040,7 +2235,8 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         glTexParameterf(target, GL_TEXTURE_MAX_LOD, _maxlod);
     }
 
-    glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
+    if (extensions->isTextureLODBiasSupported)
+        glTexParameterf(target, GL_TEXTURE_LOD_BIAS, _lodbias);
 
     getTextureParameterDirty(state.getContextID()) = false;
 

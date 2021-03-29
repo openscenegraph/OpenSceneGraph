@@ -187,4 +187,16 @@ When your app begins rendering, it displays information about the actual context
 it is using:
     glVersion=3.1, isGlslSupported=YES, glslLanguageVersion=1.4
 
+
+
+--
+
+Under Linux the follow is sufficient to configure the OSG build for a GL3 core profile build:
+
+   cmake . -DOSG_GL3_AVAILABLE=ON \
+      -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES1_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=OFF \
+      -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
+      -DOSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE=OFF -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF
+
+
 */

@@ -191,6 +191,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgtessellate)
     ADD_SUBDIRECTORY(osgtessellationshaders)
     ADD_SUBDIRECTORY(osgcomputeshaders)
+    ADD_SUBDIRECTORY(osgmeshshader)
 
     ADD_SUBDIRECTORY(osgpdf)
 

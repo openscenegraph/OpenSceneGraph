@@ -96,6 +96,8 @@ class OSG_EXPORT Shader : public osg::Object
             GEOMETRY = GL_GEOMETRY_SHADER,
             FRAGMENT = GL_FRAGMENT_SHADER,
             COMPUTE = GL_COMPUTE_SHADER,
+            MESH = GL_MESH_SHADER_NV,
+            TASK = GL_TASK_SHADER_NV,
             UNDEFINED = -1
         };
 

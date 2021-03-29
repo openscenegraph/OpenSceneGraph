@@ -34,7 +34,6 @@
 #include <Producer/CameraConfig>
 
 
-using namespace std;
 using namespace Producer;
 
 static void ConfigParser_error( const char * );

@@ -75,6 +75,7 @@ SET(TARGET_H
     ${HEADER_PATH}/Drawable
     ${HEADER_PATH}/DrawMeshTasks
     ${HEADER_PATH}/DrawMeshTasksIndirect
+    ${HEADER_PATH}/MultiDrawMeshTasksIndirect
     ${HEADER_PATH}/DrawPixels
     ${HEADER_PATH}/Endian
     ${HEADER_PATH}/Export
@@ -293,6 +294,7 @@ SET(TARGET_SRC
     Drawable.cpp
     DrawMeshTasks.cpp
     DrawMeshTasksIndirect.cpp
+    MultiDrawMeshTasksIndirect.cpp
     DrawPixels.cpp
     dxtctool.cpp
     dxtctool.h

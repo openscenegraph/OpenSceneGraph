@@ -24,6 +24,8 @@ DrawMeshTasksIndirect::DrawMeshTasksIndirect() :
 DrawMeshTasksIndirect::DrawMeshTasksIndirect(GLintptr offset):
     _offset(offset)
 {
+    // turn off display lists as they are inappropriate
+    setSupportsDisplayList(false);
 }
 
 DrawMeshTasksIndirect::DrawMeshTasksIndirect(const DrawMeshTasksIndirect& dmt,const CopyOp& copyop):

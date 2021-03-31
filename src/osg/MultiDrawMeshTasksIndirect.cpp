@@ -10,47 +10,50 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/DrawMeshTasks>
+#include <osg/MultiDrawMeshTasksIndirect>
 
 using namespace osg;
 
-DrawMeshTasks::DrawMeshTasks():
-    _first(0),
-    _count(0)
+MultiDrawMeshTasksIndirect::MultiDrawMeshTasksIndirect() :
+    _offset(0),
+    _drawCount(0),
+    _stride(0)
 {
     // turn off display lists as they are inappropriate
     setSupportsDisplayList(false);
 }
 
-DrawMeshTasks::DrawMeshTasks(GLuint first, GLuint count):
-    _first(first),
-    _count(count)
+MultiDrawMeshTasksIndirect::MultiDrawMeshTasksIndirect(GLintptr offset, GLsizei drawCount, GLsizei stride):
+    _offset(offset),
+    _drawCount(drawCount),
+    _stride(stride)
 {
     // turn off display lists as they are inappropriate
     setSupportsDisplayList(false);
 }
 
-DrawMeshTasks::DrawMeshTasks(const DrawMeshTasks& dmt,const CopyOp& copyop):
+MultiDrawMeshTasksIndirect::MultiDrawMeshTasksIndirect(const MultiDrawMeshTasksIndirect& dmt,const CopyOp& copyop):
     Drawable(dmt, copyop),
-    _first(dmt._first),
-    _count(dmt._count)
+    _offset(dmt._offset),
+    _drawCount(dmt._drawCount),
+    _stride(dmt._stride)
 {
 }
 
-DrawMeshTasks::~DrawMeshTasks()
+MultiDrawMeshTasksIndirect::~MultiDrawMeshTasksIndirect()
 {
 }
 
-void DrawMeshTasks::drawImplementation(RenderInfo& renderInfo) const
+void MultiDrawMeshTasksIndirect::drawImplementation(RenderInfo& renderInfo) const
 {
     const GLExtensions* extensions = renderInfo.getState()->get<GLExtensions>();
-    if (extensions->isMeshShaderSupported && extensions->glDrawMeshTasksNV)
+    if (extensions->isMeshShaderSupported && extensions->glMultiDrawMeshTasksIndirectNV)
     {
-        extensions->glDrawMeshTasksNV(_first, _count);
+        extensions->glMultiDrawMeshTasksIndirectNV(_offset, _drawCount, _stride);
     }
     else
     {
-        OSG_NOTICE<<"glDrawMeshTasksNV not supported. "<<std::endl;
+        OSG_NOTICE<<"glMultiDrawMeshTasksIndirectNV not supported. "<<std::endl;
     }
 }
 

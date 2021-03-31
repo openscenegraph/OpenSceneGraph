@@ -1,0 +1,59 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_MULTIDRAWMESHTASKSINDIRECT
+#define OSG_MULTIDRAWMESHTASKSINDIRECT 1
+
+#include <osg/Drawable>
+
+namespace osg {
+
+/** MultiDrawMeshTasksIndirect is an osg::Drawable subclass which encapsulates glMultiDrawMeshTasksIndirectNV.*/
+class OSG_EXPORT MultiDrawMeshTasksIndirect : public Drawable
+{
+    public:
+
+        MultiDrawMeshTasksIndirect();
+
+        MultiDrawMeshTasksIndirect(GLintptr offset, GLsizei drawCount, GLsizei stride);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        MultiDrawMeshTasksIndirect(const MultiDrawMeshTasksIndirect& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, MultiDrawMeshTasksIndirect);
+
+        void setOffset(GLintptr offset) { _offset = offset; }
+        GLintptr getOffset() const { return _offset; }
+
+        void setDrawCount(GLsizei count) { _drawCount = count; }
+        GLsizei getDrawCount() const { return _drawCount; }
+
+        void setStride(GLsizei stride) { _stride = stride; }
+        GLsizei getStride() const { return _stride; }
+
+        virtual void drawImplementation(RenderInfo& renderInfo) const;
+
+    protected:
+
+        MultiDrawMeshTasksIndirect& operator = (const MultiDrawMeshTasksIndirect&) { return *this;}
+
+        virtual ~MultiDrawMeshTasksIndirect();
+
+        GLintptr _offset;
+        GLsizei  _drawCount;
+        GLsizei  _stride;
+};
+
+}
+
+#endif

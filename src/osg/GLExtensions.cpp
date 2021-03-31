@@ -395,7 +395,26 @@ OSG_INIT_SINGLETON_PROXY(GLExtensionDisableStringInitializationProxy, osg::getGL
 
     #elif defined (__linux__)
 
-        return dlsym(0, funcName);
+        struct GetAddress
+        {
+            typedef void* (* GLXGetProcAddress)(const GLubyte *) ;
+            GLXGetProcAddress _glxGetProcAddress;
+
+            GetAddress()
+            {
+                _glxGetProcAddress = reinterpret_cast<GLXGetProcAddress>(dlsym(0, "glXGetProcAddress"));
+                if (_glxGetProcAddress==0) _glxGetProcAddress = reinterpret_cast<GLXGetProcAddress>(dlsym(0, "glXGetProcAddressARB"));
+            }
+
+            void* operator() (const char* funcName) const
+            {
+                return _glxGetProcAddress ? reinterpret_cast<void*>(_glxGetProcAddress(reinterpret_cast<const GLubyte *>(funcName))) : dlsym(0, funcName);
+            }
+        };
+
+        static GetAddress s_GetProcAddress;
+
+        return s_GetProcAddress(funcName);
 
     #elif defined (__QNX__)
 

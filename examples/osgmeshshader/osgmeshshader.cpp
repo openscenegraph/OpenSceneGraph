@@ -41,22 +41,15 @@ public:
     virtual void drawImplementation(osg::RenderInfo& renderInfo) const
     {
         const osg::GLExtensions* extensions = renderInfo.getState()->get<osg::GLExtensions>();
-
-        void* (* my_glXGetProcAddress) (const GLchar *name);
-        osg::setGLExtensionFuncPtr(my_glXGetProcAddress, "glXGetProcAddress", "glXGetProcAddressARB");
-
-        void (GL_APIENTRY * my_glDrawMeshTasksNV) (GLuint first, GLuint count);
-
-        osg::convertPointer(my_glDrawMeshTasksNV, my_glXGetProcAddress("glDrawMeshTasksNV"));
-
-        if (extensions->isMeshShaderSupported && my_glDrawMeshTasksNV)
+        if (extensions->isMeshShaderSupported && extensions->glDrawMeshTasksNV)
         {
-            my_glDrawMeshTasksNV(first, count);
+            extensions->glDrawMeshTasksNV(first, count);
         }
         else
         {
             OSG_NOTICE<<"glDrawMeshTasksNV not supported. "<<std::endl;
         }
+
     }
 };
 

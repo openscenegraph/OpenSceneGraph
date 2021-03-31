@@ -1,0 +1,57 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_DRAWPIXELS
+#define OSG_DRAWPIXELS 1
+
+#include <osg/Drawable>
+#include <osg/Vec3>
+#include <osg/Image>
+
+namespace osg {
+
+/** DrawMeshTasks is an osg::Drawable subclass which encapsulates glDrawMeshTasksNV.*/
+class OSG_EXPORT DrawMeshTasks : public Drawable
+{
+    public:
+
+        DrawMeshTasks();
+
+        DrawMeshTasks(GLuint first, GLuint count);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        DrawMeshTasks(const DrawMeshTasks& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, DrawMeshTasks);
+
+        void setFirst(GLuint first) { _first = first; }
+        GLuint getFirst() const { return _first; }
+
+        void setCount(GLuint count) { _count = count; }
+        GLuint getCount() const { return _count; }
+
+        virtual void drawImplementation(RenderInfo& renderInfo) const;
+
+    protected:
+
+        DrawMeshTasks& operator = (const DrawMeshTasks&) { return *this;}
+
+        virtual ~DrawMeshTasks();
+
+        GLuint _first;
+        GLuint _count;
+};
+
+}
+
+#endif

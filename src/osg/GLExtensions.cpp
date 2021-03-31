@@ -1331,12 +1331,6 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     osg::setGLExtensionFuncPtr(glDrawMeshTasksIndirectNV, "glDrawMeshTasksIndirectNV", validContext);
     osg::setGLExtensionFuncPtr(glMultiDrawMeshTasksIndirectNV, "glMultiDrawMeshTasksIndirectNV", validContext);
     osg::setGLExtensionFuncPtr(glMultiDrawMeshTasksIndirectCountNV, "glMultiDrawMeshTasksIndirectCountNV", validContext);
-
-    OSG_NOTICE<<"isMeshShaderSupported = "<<isMeshShaderSupported<<std::endl;
-    OSG_NOTICE<<"glDrawMeshTasksNV = "<<(void*)(glDrawMeshTasksNV)<<std::endl;
-    OSG_NOTICE<<"glDrawMeshTasksIndirectNV = "<<(void*)(glDrawMeshTasksIndirectNV)<<std::endl;
-    OSG_NOTICE<<"glMultiDrawMeshTasksIndirectNV = "<<(void*)(glMultiDrawMeshTasksIndirectNV)<<std::endl;
-    OSG_NOTICE<<"glMultiDrawMeshTasksIndirectCountNV = "<<(void*)(glMultiDrawMeshTasksIndirectCountNV)<<std::endl;
 }
 
 GLExtensions::~GLExtensions()

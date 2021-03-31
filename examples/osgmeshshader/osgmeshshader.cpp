@@ -10,48 +10,15 @@
 
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osg/GraphicsContext>
 #include <osg/Camera>
 #include <osg/Viewport>
 #include <osg/StateSet>
 #include <osg/Program>
 #include <osg/Shader>
+#include <osg/DrawMeshTasks>
 #include <osgUtil/Optimizer>
-
-
-class DrawMeshTasks : public osg::Drawable
-{
-public:
-
-    DrawMeshTasks() :
-        first(0),
-        count(0)
-    {
-    }
-
-    DrawMeshTasks(GLuint in_first, GLuint in_count) :
-        first(in_first),
-        count(in_count)
-    {
-    }
-
-    GLuint first;
-    GLuint count;
-
-    virtual void drawImplementation(osg::RenderInfo& renderInfo) const
-    {
-        const osg::GLExtensions* extensions = renderInfo.getState()->get<osg::GLExtensions>();
-        if (extensions->isMeshShaderSupported && extensions->glDrawMeshTasksNV)
-        {
-            extensions->glDrawMeshTasksNV(first, count);
-        }
-        else
-        {
-            OSG_NOTICE<<"glDrawMeshTasksNV not supported. "<<std::endl;
-        }
-
-    }
-};
 
 int main( int argc, char** argv )
 {
@@ -90,8 +57,10 @@ int main( int argc, char** argv )
     program->addShader( vShader.get() );
     program->addShader( fShader.get() );
 
-    osg::ref_ptr<osg::Node> drawMesh = new DrawMeshTasks(0, 1);
+    osg::ref_ptr<osg::Node> drawMesh = new osg::DrawMeshTasks(0, 1);
     drawMesh->getOrCreateStateSet()->setAttribute( program.get() );
+
+    osgDB::writeNodeFile(*drawMesh, "test.osgt");
 
     osgViewer::Viewer viewer(arguments);
 

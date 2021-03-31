@@ -10,45 +10,42 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/DrawMeshTasks>
+#include <osg/DrawMeshTasksIndirect>
 
 using namespace osg;
 
-DrawMeshTasks::DrawMeshTasks():
-    _first(0),
-    _count(0)
+DrawMeshTasksIndirect::DrawMeshTasksIndirect() :
+    _offset(0)
 {
     // turn off display lists as they are inappropriate
     setSupportsDisplayList(false);
 }
 
-DrawMeshTasks::DrawMeshTasks(GLuint first, GLuint count):
-    _first(first),
-    _count(count)
+DrawMeshTasksIndirect::DrawMeshTasksIndirect(GLintptr offset):
+    _offset(offset)
 {
 }
 
-DrawMeshTasks::DrawMeshTasks(const DrawMeshTasks& dmt,const CopyOp& copyop):
+DrawMeshTasksIndirect::DrawMeshTasksIndirect(const DrawMeshTasksIndirect& dmt,const CopyOp& copyop):
     Drawable(dmt, copyop),
-    _first(dmt._first),
-    _count(dmt._count)
+    _offset(dmt._offset)
 {
 }
 
-DrawMeshTasks::~DrawMeshTasks()
+DrawMeshTasksIndirect::~DrawMeshTasksIndirect()
 {
 }
 
-void DrawMeshTasks::drawImplementation(RenderInfo& renderInfo) const
+void DrawMeshTasksIndirect::drawImplementation(RenderInfo& renderInfo) const
 {
     const GLExtensions* extensions = renderInfo.getState()->get<GLExtensions>();
-    if (extensions->isMeshShaderSupported && extensions->glDrawMeshTasksNV)
+    if (extensions->isMeshShaderSupported && extensions->glDrawMeshTasksIndirectNV)
     {
-        extensions->glDrawMeshTasksNV(_first, _count);
+        extensions->glDrawMeshTasksIndirectNV(_offset);
     }
     else
     {
-        OSG_NOTICE<<"glDrawMeshTasksNV not supported. "<<std::endl;
+        OSG_NOTICE<<"glDrawMeshTasksIndirectNV not supported. "<<std::endl;
     }
 }
 

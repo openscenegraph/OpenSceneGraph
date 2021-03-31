@@ -18,6 +18,7 @@
 #include <osg/Program>
 #include <osg/Shader>
 #include <osg/DrawMeshTasks>
+#include <osg/DrawMeshTasksIndirect>
 #include <osgUtil/Optimizer>
 
 int main( int argc, char** argv )
@@ -57,14 +58,18 @@ int main( int argc, char** argv )
     program->addShader( vShader.get() );
     program->addShader( fShader.get() );
 
-    osg::ref_ptr<osg::Node> drawMesh = new osg::DrawMeshTasks(0, 1);
-    drawMesh->getOrCreateStateSet()->setAttribute( program.get() );
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->getOrCreateStateSet()->setAttribute( program.get() );
 
-    osgDB::writeNodeFile(*drawMesh, "test.osgt");
+    group->addChild( new osg::DrawMeshTasks(0, 1) );
+
+    // group->addChild( new osg::DrawMeshTasksIndirect(0) ); // will require a buffer to be bound.
+
+    osgDB::writeNodeFile(*group, "test.osgt");
 
     osgViewer::Viewer viewer(arguments);
 
-    viewer.setSceneData( drawMesh );
+    viewer.setSceneData( group );
 
     // for non GL3/GL4 and non GLES2 platforms we need enable the osg_ uniforms that the shaders will use,
     // you don't need thse two lines on GL3/GL4 and GLES2 specific builds as these will be enable by default.

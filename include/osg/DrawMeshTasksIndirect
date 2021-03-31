@@ -11,43 +11,39 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_DRAWMESHTASKS
-#define OSG_DRAWMESHTASKS 1
+#ifndef OSG_DRAWMESHTASKSINDIRECT
+#define OSG_DRAWMESHTASKSINDIRECT 1
 
 #include <osg/Drawable>
 
 namespace osg {
 
-/** DrawMeshTasks is an osg::Drawable subclass which encapsulates glDrawMeshTasksNV.*/
-class OSG_EXPORT DrawMeshTasks : public Drawable
+/** DrawMeshTasksIndirect is an osg::Drawable subclass which encapsulates glDrawMeshTasksIndirectNV.*/
+class OSG_EXPORT DrawMeshTasksIndirect : public Drawable
 {
     public:
 
-        DrawMeshTasks();
+        DrawMeshTasksIndirect();
 
-        DrawMeshTasks(GLuint first, GLuint count);
+        DrawMeshTasksIndirect(GLintptr offset);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        DrawMeshTasks(const DrawMeshTasks& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        DrawMeshTasksIndirect(const DrawMeshTasksIndirect& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Node(osg, DrawMeshTasks);
+        META_Node(osg, DrawMeshTasksIndirect);
 
-        void setFirst(GLuint first) { _first = first; }
-        GLuint getFirst() const { return _first; }
-
-        void setCount(GLuint count) { _count = count; }
-        GLuint getCount() const { return _count; }
+        void setOffset(GLintptr offset) { _offset = offset; }
+        GLintptr getOffset() const { return _offset; }
 
         virtual void drawImplementation(RenderInfo& renderInfo) const;
 
     protected:
 
-        DrawMeshTasks& operator = (const DrawMeshTasks&) { return *this;}
+        DrawMeshTasksIndirect& operator = (const DrawMeshTasksIndirect&) { return *this;}
 
-        virtual ~DrawMeshTasks();
+        virtual ~DrawMeshTasksIndirect();
 
-        GLuint _first;
-        GLuint _count;
+        GLintptr _offset;
 };
 
 }

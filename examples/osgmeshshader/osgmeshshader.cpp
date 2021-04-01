@@ -20,6 +20,7 @@
 #include <osg/DrawMeshTasks>
 #include <osg/DrawMeshTasksIndirect>
 #include <osg/MultiDrawMeshTasksIndirect>
+#include <osg/MultiDrawMeshTasksIndirectCount>
 #include <osgUtil/Optimizer>
 
 int main( int argc, char** argv )
@@ -63,8 +64,9 @@ int main( int argc, char** argv )
     group->getOrCreateStateSet()->setAttribute( program.get() );
 
     group->addChild( new osg::DrawMeshTasks(0, 1) );
-    // group->addChild( new osg::MultiDrawMeshTasksIndirect(0, 0, 0) ); // will require a buffer to be bound.
     // group->addChild( new osg::DrawMeshTasksIndirect(0) ); // will require a buffer to be bound.
+    // group->addChild( new osg::MultiDrawMeshTasksIndirect(0, 0, 0) ); // will require a buffer to be bound.
+    // group->addChild( new osg::MultiDrawMeshTasksIndirectCount(0, 0, 0, 0) ); // will require a buffer to be bound.
 
     osgDB::writeNodeFile(*group, "test.osgt");
 

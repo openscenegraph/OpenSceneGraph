@@ -1,0 +1,63 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_MULTIDRAWMESHTASKSINDIRECTCOUNT
+#define OSG_MULTIDRAWMESHTASKSINDIRECTCOUNT 1
+
+#include <osg/Drawable>
+
+namespace osg {
+
+/** MultiDrawMeshTasksIndirectCount is an osg::Drawable subclass which encapsulates glMultiDrawMeshTasksIndirectCountNV.*/
+class OSG_EXPORT MultiDrawMeshTasksIndirectCount : public Drawable
+{
+    public:
+
+        MultiDrawMeshTasksIndirectCount();
+
+        MultiDrawMeshTasksIndirectCount(GLintptr offset, GLintptr drawCount, GLsizei maxDrawCount, GLsizei stride);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        MultiDrawMeshTasksIndirectCount(const MultiDrawMeshTasksIndirectCount& drawimage,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Node(osg, MultiDrawMeshTasksIndirectCount);
+
+        void setOffset(GLintptr offset) { _offset = offset; }
+        GLintptr getOffset() const { return _offset; }
+
+        void setDrawCount(GLintptr count) { _drawCount = count; }
+        GLintptr getDrawCount() const { return _drawCount; }
+
+        void setMaxDrawCount(GLsizei count) { _maxDrawCount = count; }
+        GLsizei getMaxDrawCount() const { return _maxDrawCount; }
+
+        void setStride(GLsizei stride) { _stride = stride; }
+        GLsizei getStride() const { return _stride; }
+
+        virtual void drawImplementation(RenderInfo& renderInfo) const;
+
+    protected:
+
+        MultiDrawMeshTasksIndirectCount& operator = (const MultiDrawMeshTasksIndirectCount&) { return *this;}
+
+        virtual ~MultiDrawMeshTasksIndirectCount();
+
+        GLintptr _offset;
+        GLintptr _drawCount;
+        GLsizei  _maxDrawCount;
+        GLsizei  _stride;
+};
+
+}
+
+#endif

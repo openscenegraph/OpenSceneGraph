@@ -22,6 +22,10 @@
 #include <string>
 #endif
 
+#if __cplusplus >= 201103L
+#include <utility>
+#endif
+
 namespace osg {
 
 template<typename T> class observer_ptr;
@@ -36,6 +40,9 @@ class ref_ptr
         ref_ptr() : _ptr(0) {}
         ref_ptr(T* ptr) : _ptr(ptr) { if (_ptr) _ptr->ref(); }
         ref_ptr(const ref_ptr& rp) : _ptr(rp._ptr) { if (_ptr) _ptr->ref(); }
+#if __cplusplus >= 201103L
+        ref_ptr(ref_ptr&& rp) noexcept : _ptr(rp._ptr) { rp._ptr = 0; }
+#endif
         template<class Other> ref_ptr(const ref_ptr<Other>& rp) : _ptr(rp._ptr) { if (_ptr) _ptr->ref(); }
         ref_ptr(observer_ptr<T>& optr) : _ptr(0) { optr.lock(*this); }
         ~ref_ptr() { if (_ptr) _ptr->unref();  _ptr = 0; }
@@ -51,6 +58,17 @@ class ref_ptr
             assign(rp);
             return *this;
         }
+
+#if __cplusplus >= 201103L
+        template<class Other> ref_ptr& operator = (ref_ptr<Other>&& rp)
+        {
+            if (_ptr == rp._ptr) return *this;
+            if (_ptr != nullptr) _ptr->unref();
+            _ptr = rp._ptr;
+            rp._ptr = nullptr;
+            return *this;
+        }
+#endif
 
         inline ref_ptr& operator = (T* ptr)
         {

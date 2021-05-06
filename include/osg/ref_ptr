@@ -22,10 +22,6 @@
 #include <string>
 #endif
 
-#if __cplusplus >= 201103L
-#include <utility>
-#endif
-
 namespace osg {
 
 template<typename T> class observer_ptr;

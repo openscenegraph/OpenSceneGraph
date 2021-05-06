@@ -70,6 +70,8 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
     Shaders geometryShaders;
     Shaders fragmentShaders;
     Shaders computeShaders;
+    Shaders meshShaders;
+    Shaders taskShaders;
 
     OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(shaderComponents.size()=="<<shaderComponents.size()<<std::endl;
 
@@ -101,6 +103,12 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
                     break;
                 case(Shader::COMPUTE):
                     computeShaders.push_back(shader);
+                    break;
+                case(Shader::MESH):
+                    meshShaders.push_back(shader);
+                    break;
+                case(Shader::TASK):
+                    taskShaders.push_back(shader);
                     break;
                 case(Shader::UNDEFINED):
                     OSG_WARN<<"Warning: ShaderCompose::getOrCreateProgam(ShaderComponts) encountered invalid Shader::Type."<<std::endl;
@@ -139,6 +147,16 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
     if (!computeShaders.empty())
     {
         addShaderToProgram(program.get(), computeShaders);
+    }
+
+    if (!meshShaders.empty())
+    {
+        addShaderToProgram(program.get(), meshShaders);
+    }
+
+    if (!taskShaders.empty())
+    {
+        addShaderToProgram(program.get(), taskShaders);
     }
 
     // assign newly created program to map.

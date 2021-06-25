@@ -774,7 +774,7 @@ ELSE()
     FIND_PACKAGE(DirectInput)
     FIND_PACKAGE(NVTT)
     IF (NOT WIN32)
-        FIND_PACKAGE(Asio)
+        # FIND_PACKAGE(Asio)
     ENDIF()
     FIND_PACKAGE(ZeroConf)
 

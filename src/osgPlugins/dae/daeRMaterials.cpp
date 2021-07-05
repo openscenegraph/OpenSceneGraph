@@ -119,7 +119,7 @@ bool daeReader::findInvertTransparency(daeDatabase* database) const
 //        id
 //        name
 //        type
-void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode, osg::Geode *cachedGeode )
+void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Group *geometryGroup, osg::Group *cachedGeometryGroup )
 {
     if (bm->getTechnique_common() == NULL )
     {
@@ -127,11 +127,11 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
         return;
     }
 
-    for (size_t i =0; i < geode->getNumDrawables(); i++)
+    for (size_t i =0; i < geometryGroup->getNumChildren(); i++)
     {
-        osg::Drawable* drawable = geode->getDrawable(i);
+        osg::Drawable* drawable = geometryGroup->getChild(i)->asGeometry();
         std::string materialName = drawable->getName();
-        osg::Geometry *cachedGeometry = dynamic_cast<osg::Geometry*>(cachedGeode->getDrawable(i)->asGeometry());
+        osg::Geometry *cachedGeometry = dynamic_cast<osg::Geometry*>(cachedGeometryGroup->getChild(i)->asGeometry());
 
         domInstance_material_Array &ima = bm->getTechnique_common()->getInstance_material_array();
         std::string symbol;

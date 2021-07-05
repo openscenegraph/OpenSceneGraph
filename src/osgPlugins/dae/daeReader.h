@@ -248,7 +248,7 @@ public:
         InterpolationType interpolation;
     };
 
-    typedef std::map<domGeometry*, osg::ref_ptr<osg::Geode> >    domGeometryGeodeMap;
+    typedef std::map<domGeometry*, osg::ref_ptr<osg::Group> >    domGeometryGroupMap;
     typedef std::map<domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
     typedef std::map<std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
     typedef std::multimap< daeElement*, domChannel*> daeElementDomChannelMap;
@@ -312,15 +312,15 @@ private:
     osg::Group* processOsgSequence(domTechnique* teq);
 
     // geometry processing
-    osg::Geode* getOrCreateGeometry(domGeometry *geom, domBind_material* pDomBindMaterial, const osg::Geode** ppOriginalGeode = NULL);
+    osg::Group* getOrCreateGeometry(domGeometry *geom, domBind_material* pDomBindMaterial, const osg::Group** ppOriginalGeometry = NULL);
     osgAnimation::Bone* getOrCreateBone(domNode *pDomNode);
     osgAnimation::Skeleton* getOrCreateSkeleton(domNode *pDomNode);
-    osg::Geode* processInstanceGeometry( domInstance_geometry *ig );
+    osg::Group* processInstanceGeometry( domInstance_geometry *ig );
 
-    osg::Geode* processMesh(domMesh* pDomMesh);
-    osg::Geode* processConvexMesh(domConvex_mesh* pDomConvexMesh);
-    osg::Geode* processSpline(domSpline* pDomSpline);
-    osg::Geode* processGeometry(domGeometry *pDomGeometry);
+    osg::Group* processMesh(domMesh* pDomMesh);
+    osg::Group* processConvexMesh(domConvex_mesh* pDomConvexMesh);
+    osg::Group* processSpline(domSpline* pDomSpline);
+    osg::Group* processGeometryGroup(domGeometry *pDomGeometry);
 
     typedef std::vector<domInstance_controller*> domInstance_controllerList;
 
@@ -332,15 +332,15 @@ private:
     osg::Node* processInstanceController( domInstance_controller *ictrl );
 
     template< typename T >
-    void processSinglePPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
+    void processSinglePPrimitive(osg::Group* geometryGroup, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
 
     template< typename T >
-    void processMultiPPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
+    void processMultiPPrimitive(osg::Group* geometryGroup, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
 
-    void processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode);
+    void processPolylist(osg::Group* geometryGroup, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode);
 
     template< typename T >
-    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const T *group, SourceMap &sources, GLenum mode, TessellateMode tessellateMode);
+    void processPolygons(osg::Group* geometryGroup, const domMesh* pDomMesh, const T *group, SourceMap &sources, GLenum mode, TessellateMode tessellateMode);
 
     void resolveMeshArrays(const domP_Array&,
         const domInputLocalOffset_Array& inputs, const domMesh* pDomMesh,
@@ -348,7 +348,7 @@ private:
         std::vector<std::vector<GLuint> >& vertexLists);
 
     //material/effect processing
-    void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode, osg::Geode *cachedGeode );
+    void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Group *geometryGroup, osg::Group *cachedGeometryGroup );
     void processMaterial(osg::StateSet *ss, domMaterial *mat );
     void processEffect(osg::StateSet *ss, domEffect *effect );
     void processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc );
@@ -406,8 +406,8 @@ private:
     daeElementDomChannelMap _daeElementDomChannelMap;
     /// Maps a domchannel to an animationupdatecallback
     domChannelOsgAnimationUpdateCallbackMap _domChannelOsgAnimationUpdateCallbackMap;
-    /// Maps geometry to a Geode
-    domGeometryGeodeMap _geometryMap;
+    /// Maps domGeometry to a osg::Group
+    domGeometryGroupMap _geometryGroupMap;
     /// All nodes in the document that are used as joints.
     std::set<const domNode*> _jointSet;
     /// Maps a node (of type joint) to a osgAnimation::Bone

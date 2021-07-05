@@ -280,7 +280,7 @@ bool daeReader::processDocument( const std::string& fileURI)
 
 void daeReader::clearCaches ()
 {
-    _geometryMap.clear();
+    _geometryGroupMap.clear();
     _materialMap.clear();
     _materialMap2.clear();
 }

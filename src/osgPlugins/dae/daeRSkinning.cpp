@@ -301,40 +301,36 @@ osgAnimation::VertexInfluence& getVertexInfluence(
 void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimation::Skeleton* pOsgSkeleton, domBind_material* pDomBindMaterial)
 {
     daeElement* pDaeSkinSource = getElementFromURI( pDomSkin->getSource());
-
     if (!pDaeSkinSource)
     {
         OSG_WARN << "Failed to locate geometry " << pDomSkin->getSource().getURI() << std::endl;
         return;
     }
-
     domGeometry* pDomGeometry = daeSafeCast< domGeometry >(pDaeSkinSource);
-
     if (!pDomGeometry)
     {
         OSG_WARN << "Skin source is of type " << pDaeSkinSource->getTypeName() << " which is not supported." << std::endl;
         return;
     }
-
     // Base mesh
-    const osg::Geode* pOriginalGeode = NULL;
-    osg::Geode* pOsgGeode = getOrCreateGeometry(pDomGeometry, pDomBindMaterial, &pOriginalGeode);
-    if (!pOsgGeode)
+    const osg::Group* pOriginalGeometryGroup = NULL;
+    osg::Group* pOsgGeometryGroup = getOrCreateGeometry(pDomGeometry, pDomBindMaterial, &pOriginalGeometryGroup);
+    if (!pOsgGeometryGroup)
         return;
 
     domMesh* pDomMesh = pDomGeometry->getMesh();
 
-    osg::Geode* pOsgRigGeode = new osg::Geode;
-    pOsgRigGeode->setDataVariance(osg::Object::DYNAMIC);
+    osg::Group* pOsgRigGeometryGroup = new osg::Group;
+    pOsgRigGeometryGroup->setDataVariance(osg::Object::DYNAMIC);
 
     typedef std::map<const osg::Geometry*, osgAnimation::RigGeometry*> GeometryRigGeometryMap;
     GeometryRigGeometryMap old2newGeometryMap;
 
-    for (unsigned i = 0; i < pOsgGeode->getNumDrawables(); ++i)
+    for (unsigned i = 0; i < pOsgGeometryGroup->getNumChildren(); ++i)
     {
-        if (osg::Geometry* pOsgGeometry = dynamic_cast<osg::Geometry*>(pOsgGeode->getDrawable(i)))
+        if (osg::Geometry* pOsgGeometry = dynamic_cast<osg::Geometry*>(pOsgGeometryGroup->getChild(i)))
         {
-            const osg::Geometry* pOriginalGeometry = dynamic_cast<const osg::Geometry*>(pOriginalGeode->getDrawable(i));
+            const osg::Geometry* pOriginalGeometry = dynamic_cast<const osg::Geometry*>(pOriginalGeometryGroup->getChild(i));
 
             osgAnimation::RigGeometry* pOsgRigGeometry = new osgAnimation::RigGeometry();
             pOsgRigGeometry->setSourceGeometry(pOsgGeometry);
@@ -342,15 +338,15 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             old2newGeometryMap.insert(GeometryRigGeometryMap::value_type(pOriginalGeometry, pOsgRigGeometry));
             pOsgRigGeometry->setDataVariance(osg::Object::DYNAMIC);
             pOsgRigGeometry->setUseDisplayList( false );
-            pOsgRigGeode->addDrawable(pOsgRigGeometry);
+            pOsgRigGeometryGroup->addChild(pOsgRigGeometry);
         }
         else
         {
-            pOsgRigGeode->addDrawable(pOsgGeode->getDrawable(i));
+            pOsgRigGeometryGroup->addChild(pOsgGeometryGroup->getChild(i));
         }
     }
 
-    pOsgSkeleton->addChild(pOsgRigGeode);
+    pOsgSkeleton->addChild(pOsgRigGeometryGroup);
 
     // <bind_shape_matrix>
     if (domSkin::domBind_shape_matrix* pDomBindShapeMatrix = pDomSkin->getBind_shape_matrix())
@@ -362,9 +358,9 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             matrix.get(2), matrix.get(6), matrix.get(10), matrix.get(14),
             matrix.get(3), matrix.get(7), matrix.get(11), matrix.get(15));
 
-        for (unsigned d = 0; d < pOsgRigGeode->getNumDrawables(); ++d)
+        for (unsigned d = 0; d < pOsgRigGeometryGroup->getNumChildren(); ++d)
         {
-            osgAnimation::RigGeometry* pOsgRigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(pOsgRigGeode->getDrawable(d));
+            osgAnimation::RigGeometry* pOsgRigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(pOsgRigGeometryGroup->getChild(d));
             if (!pOsgRigGeometry)
                 continue;
 

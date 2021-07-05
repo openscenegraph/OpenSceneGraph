@@ -18,7 +18,6 @@
 
 #include <osg/Switch>
 #include <osg/LightSource>
-#include <osg/Geode>
 #include <osg/ShapeDrawable>
 #include <osg/LOD>
 #include <osg/Billboard>

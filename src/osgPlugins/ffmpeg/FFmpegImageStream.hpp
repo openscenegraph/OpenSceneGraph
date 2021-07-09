@@ -46,6 +46,9 @@ namespace osgFFmpeg
 
         virtual bool isImageTranslucent() const;
 
+        void setLastFrameTime(double frametime);
+        virtual double getLastFrameTime() const;
+        
     private:
 
         enum Command
@@ -81,6 +84,7 @@ namespace osgFFmpeg
         Condition        m_frame_published_cond;
         bool             m_frame_published_flag;
         double           m_seek_time;
+        double           m_frameTime;
 
         osg::Timer_t _lastUpdateTS;     ///< Timestamp for last frame update
     };

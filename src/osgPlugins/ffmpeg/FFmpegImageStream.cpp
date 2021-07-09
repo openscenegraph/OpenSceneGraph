@@ -5,7 +5,7 @@
 
 #include <OpenThreads/ScopedLock>
 #include <osg/Notify>
-
+#include <iostream>
 #include <memory>
 
 #define STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD   10
@@ -222,10 +222,10 @@ void FFmpegImageStream::run()
                 }
                 else
                     done = ! handleCommand(cmd);
-
+                //std::cout << "TICK " << osg::Timer::instance()->delta_s(_lastUpdateTS, osg::Timer::instance()->tick()) << std::endl;
                 // Security check to detect (and stop) dead streams
                 if ( _lastUpdateTS > 0. &&
-                    osg::Timer::instance()->delta_s(_lastUpdateTS, osg::Timer::instance()->tick()) > STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD )
+                   osg::Timer::instance()->delta_s(_lastUpdateTS, osg::Timer::instance()->tick()) > STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD )
                 {
                     _status = INVALID;
                     done = true;
@@ -343,7 +343,7 @@ void FFmpegImageStream::cmdSeek(double time)
 void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_data)
 {
     FFmpegImageStream * const this_ = reinterpret_cast<FFmpegImageStream*>(user_data);
-
+    this_->setLastFrameTime(this_->getCurrentTime());
 #if 1
     this_->setImage(
         this_->m_decoder->video_decoder().width(), this_->m_decoder->video_decoder().height(), 1, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
@@ -366,6 +366,13 @@ void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_
     }
 }
 
-
+double FFmpegImageStream::getLastFrameTime() const
+{
+    return m_frameTime;
+}
+void FFmpegImageStream::setLastFrameTime(double t)
+{
+    m_frameTime = t;
+}
 
 } // namespace osgFFmpeg

@@ -108,6 +108,8 @@ class OSG_EXPORT ImageStream : public Image
          */
         virtual osg::Texture* createSuitableTexture() { return NULL; }
 
+        virtual double getLastFrameTime() const { return 0.0; }
+        
     protected:
         virtual void applyLoopingMode() {}
 

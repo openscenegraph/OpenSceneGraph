@@ -55,7 +55,6 @@ FFmpegDecoder::~FFmpegDecoder()
     close(true);
 }
 
-
 bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* parameters)
 {
     try
@@ -124,7 +123,7 @@ bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* paramet
         }
 
         m_format_context.reset(p_format_context);
-
+        
         // Retrieve stream info
         // Only buffer up to one and a half seconds by default
         float max_analyze_duration = 1.5;

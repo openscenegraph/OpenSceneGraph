@@ -160,7 +160,37 @@ void TextBase::compileGLObjects(osg::RenderInfo& renderInfo) const
         }
         else
         {
-            drawImplementation(renderInfo);
+            unsigned int contextID = state.getContextID();
+            GLExtensions* extensions = state.get<GLExtensions>();
+            if (!extensions) return;
+
+            typedef std::set<BufferObject*> BufferObjects;
+            BufferObjects bufferObjects;
+
+            if (_coords.valid() && _coords->getBufferObject()) bufferObjects.insert(_coords->getBufferObject());
+            if (_normals.valid() && _normals->getBufferObject()) bufferObjects.insert(_normals->getBufferObject());
+            if (_colorCoords.valid() && _colorCoords->getBufferObject()) bufferObjects.insert(_colorCoords->getBufferObject());
+            if (_texcoords.valid() && _texcoords->getBufferObject()) bufferObjects.insert(_texcoords->getBufferObject());
+
+            for(Primitives::const_iterator itr = _decorationPrimitives.begin();
+                itr != _decorationPrimitives.end();
+                ++itr)
+            {
+                if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
+            }
+
+            // now compile any buffer objects that require it.
+            for(BufferObjects::iterator itr = bufferObjects.begin();
+                itr != bufferObjects.end();
+                ++itr)
+            {
+                GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
+                if (glBufferObject && glBufferObject->isDirty())
+                {
+                    // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
+                    glBufferObject->compileBuffer();
+                }
+            }
         }
 
         // unbind the BufferObjects

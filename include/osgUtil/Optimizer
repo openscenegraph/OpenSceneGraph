@@ -17,6 +17,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Matrix>
 #include <osg/Geometry>
+#include <osg/Switch>
 #include <osg/Transform>
 #include <osg/Texture2D>
 
@@ -534,6 +535,10 @@ class OSGUTIL_EXPORT Optimizer
 
                 virtual void apply(osg::Group& group) { mergeGroup(group); traverse(group); }
                 virtual void apply(osg::Billboard&) { /* don't do anything*/ }
+                virtual void apply(osg::Switch& group) {
+                    /* don't merge immediate children */
+                    traverse(group);
+                }
 
                 bool mergeGroup(osg::Group& group);
 

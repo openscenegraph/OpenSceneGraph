@@ -830,12 +830,22 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         if (bufferObjects.empty())
             return; // no buffers, nothing to compile
 
+        if (state.useVertexArrayObject(_useVertexArrayObject))
+        {
+            VertexArrayState* vas = 0;
+
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+
+            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+            state.bindVertexArrayObject(vas);
+        }
+
         //osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
-        for(BufferObjects::iterator itr = bufferObjects.begin();
-            itr != bufferObjects.end();
-            ++itr)
+        // this must be done inside VAO (if used), EBOs require this!
+        for (BufferObjects::iterator itr = bufferObjects.begin(); itr != bufferObjects.end(); ++itr)
         {
             GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
             if (glBufferObject && glBufferObject->isDirty())
@@ -849,16 +859,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject))
         {
-            VertexArrayState* vas = 0;
-
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
-
-            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
-
-            state.bindVertexArrayObject(vas);
-
             drawVertexArraysImplementation(renderInfo);
-
             state.unbindVertexArrayObject();
         }
 

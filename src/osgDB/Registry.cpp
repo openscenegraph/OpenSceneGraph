@@ -460,6 +460,8 @@ Registry::Registry()
     addFileExtensionAlias("igs",  "opencascade");
     addFileExtensionAlias("iges", "opencascade");
 
+    // asc point could files.
+    addFileExtensionAlias("asc", "3dc");
 
     // add built-in mime-type extension mappings
     for( int i=0; ; i+=2 )

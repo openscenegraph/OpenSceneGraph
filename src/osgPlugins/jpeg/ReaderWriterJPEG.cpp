@@ -824,6 +824,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
         {
             supportsExtension("jpeg","JPEG image format");
             supportsExtension("jpg","JPEG image format");
+            supportsOption("JPEG_QUALITY %d", "output compression quality (default 100)");
         }
 
         virtual const char* className() const { return "JPEG Image Reader/Writer"; }

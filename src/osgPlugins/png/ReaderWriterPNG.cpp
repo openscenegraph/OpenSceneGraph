@@ -87,6 +87,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
         ReaderWriterPNG()
         {
             supportsExtension("png","PNG Image format");
+            supportsOption("PNG_COMPRESSION %d", "output compression quality (default -1)");
         }
 
         virtual const char* className() const { return "PNG Image Reader/Writer"; }

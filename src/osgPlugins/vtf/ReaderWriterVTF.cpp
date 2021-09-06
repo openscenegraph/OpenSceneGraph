@@ -712,6 +712,12 @@ bool WriteVTFFile(const osg::Image* /*img*/, std::ostream& /*fout*/)
 class ReaderWriterVTF : public osgDB::ReaderWriter
 {
 public:
+public:
+    ReaderWriterVTF()
+    {
+        supportsExtension("vtf", "Valve Texture Format");
+        supportsOption("vtf_flip", "flip image after read.");
+    }
     virtual const char* className() const
     {
         return "VTF Image Reader/Writer";

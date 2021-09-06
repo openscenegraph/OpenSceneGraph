@@ -736,14 +736,14 @@ void DatabasePager::DatabaseThread::run()
             {
                 //OSG_NOTICE<<"Checking main ObjectCache"<<std::endl;
                 // check the object cache to see if the file we want has already been loaded.
-                osg::ref_ptr<osg::Object> objectFromCache = osgDB::Registry::instance()->getRefFromObjectCache(fileName);
+                osg::ref_ptr<osg::Object> objectFromCache = osgDB::Registry::instance()->getRefFromObjectCache(fileName, dr_loadOptions.get());
 
                 // if no object with fileName in ObjectCache then try the filename appropriate for fileCache
                 if (!objectFromCache && (fileCache.valid() && fileCache->isFileAppropriateForFileCache(fileName)))
                 {
                     if (fileCache->existsInCache(fileName))
                     {
-                        objectFromCache = osgDB::Registry::instance()->getRefFromObjectCache(fileCache->createCacheFileName(fileName));
+                        objectFromCache = osgDB::Registry::instance()->getRefFromObjectCache(fileCache->createCacheFileName(fileName), dr_loadOptions.get());
                     }
                 }
 

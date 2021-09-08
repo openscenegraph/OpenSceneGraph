@@ -178,6 +178,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
             unsigned int                      _resolution;
 
             osg::ref_ptr<osg::Uniform>        _farDistanceSplit;
+			osg::ref_ptr<osg::Uniform>		  _shadowMatrix;	
 
             void resizeGLObjectBuffers(unsigned int maxSize);
             void releaseGLObjects(osg::State* = 0) const;

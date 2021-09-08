@@ -75,11 +75,12 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
         /// base texture
         sstr << "uniform sampler2D baseTexture; "      << std::endl;
         sstr << "uniform float enableBaseTexture; "     << std::endl;
-        sstr << "uniform vec2 ambientBias;"    << std::endl;
+		sstr << "uniform vec2 ambientBias;" << std::endl;
+        sstr << "varying vec4 ecPosition;"    << std::endl;
 
         for (unsigned int i=0;i<nbrSplits;i++)    {
             sstr << "uniform sampler2DShadow shadowTexture"    <<    i    <<"; "    << std::endl;
-            sstr << "uniform float zShadow"                    <<    i    <<"; "    << std::endl;
+			sstr << "uniform float zShadow" << i << "; " << std::endl;            
         }
 
 
@@ -101,110 +102,115 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
             sstr << "          float fZOffSet  = -0.001954;" << std::endl; // 2^-9 good value for ATI / NVidia
 
         }
-        for (unsigned int i=0;i<nbrSplits;i++)    {
-            if (!filtered) {
-                sstr << "    float shadow"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz).r;"   << std::endl;
-                sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
-            } else {
+
+		filtered = true;
+		sstr << "    float shadow = 0;" << std::endl;
+		for (unsigned int i = 0; i < nbrSplits; i++) {
+			if (!filtered) {
+				sstr << "    float shadow" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz).r;" << std::endl;
+				sstr << " shadow" << i << " = step(0.25,shadow" << i << ");" << std::endl; // reduce shadow artifacts
+			}
+			else {
 
 
-                // filter the shadow (look up) 3x3
-                //
-                // 1 0 1
-                // 0 2 0
-                // 1 0 1
-                //
-                // / 6
+				// filter the shadow (look up) 3x3
+				//
+				// 1 0 1
+				// 0 2 0
+				// 1 0 1
+				//
+				// / 6
 
-                sstr << "    float shadowOrg"    <<    i    <<" = shadow2D( shadowTexture"  <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(0.0,0.0,fZOffSet) ).r;"   << std::endl;
-                sstr << "    float shadow0"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(-fTexelSize,-fTexelSize,fZOffSet) ).r;"   << std::endl;
-                sstr << "    float shadow1"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3( fTexelSize,-fTexelSize,fZOffSet) ).r;"   << std::endl;
-                sstr << "    float shadow2"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3( fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
-                sstr << "    float shadow3"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(-fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
+				sstr << "    float shadowOrg" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz+vec3(0.0,0.0,fZOffSet) ).r;" << std::endl;
+				sstr << "    float shadow0" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz+vec3(-fTexelSize,-fTexelSize,fZOffSet) ).r;" << std::endl;
+				sstr << "    float shadow1" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz+vec3( fTexelSize,-fTexelSize,fZOffSet) ).r;" << std::endl;
+				sstr << "    float shadow2" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz+vec3( fTexelSize, fTexelSize,fZOffSet) ).r;" << std::endl;
+				sstr << "    float shadow3" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz+vec3(-fTexelSize, fTexelSize,fZOffSet) ).r;" << std::endl;
 
-                sstr << "    float shadow"    <<    i    <<" = ( 2.0*shadowOrg"    <<    i
-                    <<" + shadow0"    <<    i
-                    <<" + shadow1"    <<    i
-                    <<" + shadow2"    <<    i
-                    <<" + shadow3"    <<    i
-                    << ")/6.0;"<< std::endl;
+				sstr << "    float shadow" << i << " = ( 2.0*shadowOrg" << i
+					<< " + shadow0" << i
+					<< " + shadow1" << i
+					<< " + shadow2" << i
+					<< " + shadow3" << i
+					<< ")/6.0;" << std::endl;
 
-                //sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.025,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
+				//sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.025,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
 
-                //sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow2"    <<    i    <<")*0.5;"<< std::endl;
-                //sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
-                //sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
-                //sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
-                //sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
-            }
-        }
-
-
-        sstr << "    float term0 = (1.0-shadow0)*map0; "    << std::endl;
-        for (unsigned int i=1;i<nbrSplits;i++)    {
-            sstr << "    float term" << i << " = map"<< i << "*(1.0-shadow"<<i<<");"<< std::endl;
-        }
+				//sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow2"    <<    i    <<")*0.5;"<< std::endl;
+				//sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
+				//sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
+				//sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
+				//sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artifacts
+			}
+		}
 
 
-
-        /// build shadow factor value v
-        sstr << "    float v = clamp(";
-        for (unsigned int i=0;i<nbrSplits;i++)    {
-            sstr << "term"    <<    i;
-            if ( i+1 < nbrSplits ){
-                sstr << "+";
-            }
-        }
-        sstr << ",0.0,1.0);"    << std::endl;
+		sstr << "    float term0 = (1.0-shadow0)*map0; " << std::endl;
+		for (unsigned int i = 1; i < nbrSplits; i++) {
+			sstr << "    float term" << i << " = map" << i << "*(1.0-shadow" << i << ");" << std::endl;
+		}
 
 
 
-
-        if ( debug ) {
-
-
-            sstr << "    float c0=0.0;" << std::endl;
-            sstr << "    float c1=0.0;" << std::endl;
-            sstr << "    float c2=0.0;" << std::endl;
-
-            sstr << "    float sumTerm=0.0;" << std::endl;
-
-            for (unsigned int i=0;i<nbrSplits;i++)    {
-                if ( i < 3 ) sstr << "    c" << i << "=term" << i << ";" << std::endl;
-                sstr << "    sumTerm=sumTerm+term" << i << ";" << std::endl;
-            }
-
-            sstr << "    vec4 color    = gl_Color*( 1.0 - sumTerm ) + (sumTerm)* gl_Color*vec4(c0,(1.0-c0)*c1,(1.0-c0)*(1.0-c1)*c2,1.0); "    << std::endl;
-
-
-            switch(nbrSplits){
-            case 1: sstr << "    color    =  color*0.75 + vec4(map0,0,0,1.0)*0.25; "    << std::endl;break;
-            case 2: sstr << "    color    =  color*0.75 + vec4(map0,map1,0,1.0)*0.25; "    << std::endl;break;
-            case 3: sstr << "    color    =  color*0.75 + vec4(map0,map1,map2,1.0)*0.25; "    << std::endl; break;
-            case 4: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3,map2,1.0)*0.25; "    << std::endl; break;
-            case 5: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3+map4,map2+map4,1.0)*0.25; "    << std::endl;break;
-            case 6: sstr << "    color    =  color*0.75 + vec4(map0+map3+map5,map1+map3+map4,map2+map4+map5,1.0)*0.25; "    << std::endl;    break;
-            default: break;
-            }
-
-
-        } else {
-            sstr << "    vec4 color    = gl_Color; "<< std::endl;
-        }
+		/// build shadow factor value v
+		sstr << "    float v = clamp(";
+		for (unsigned int i = 0; i < nbrSplits; i++) {
+			sstr << "term" << i;
+			if (i + 1 < nbrSplits) {
+				sstr << "+";
+			}
+		}
+		sstr << ",0.0,1.0);" << std::endl;
 
 
 
 
+		if (debug) {
+
+
+			sstr << "    float c0=0.0;" << std::endl;
+			sstr << "    float c1=0.0;" << std::endl;
+			sstr << "    float c2=0.0;" << std::endl;
+
+			sstr << "    float sumTerm=0.0;" << std::endl;
+
+			for (unsigned int i = 0; i < nbrSplits; i++) {
+				if (i < 3) sstr << "    c" << i << "=term" << i << ";" << std::endl;
+				sstr << "    sumTerm=sumTerm+term" << i << ";" << std::endl;
+			}
+
+			sstr << "    vec4 color    = gl_Color*( 1.0 - sumTerm ) + (sumTerm)* gl_Color*vec4(c0,(1.0-c0)*c1,(1.0-c0)*(1.0-c1)*c2,1.0); " << std::endl;
+
+
+			switch (nbrSplits) {
+			case 1: sstr << "    color    =  color*0.75 + vec4(map0,0,0,1.0)*0.25; " << std::endl; break;
+			case 2: sstr << "    color    =  color*0.75 + vec4(map0,map1,0,1.0)*0.25; " << std::endl; break;
+			case 3: sstr << "    color    =  color*0.75 + vec4(map0,map1,map2,1.0)*0.25; " << std::endl; break;
+			case 4: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3,map2,1.0)*0.25; " << std::endl; break;
+			case 5: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3+map4,map2+map4,1.0)*0.25; " << std::endl; break;
+			case 6: sstr << "    color    =  color*0.75 + vec4(map0+map3+map5,map1+map3+map4,map2+map4+map5,1.0)*0.25; " << std::endl;    break;
+			default: break;
+			}
+
+
+		}
+		else {
+			sstr << "    vec4 color    = vec4(shadow0,shadow0,shadow0,1.0); " << std::endl;
+		}
 
 
 
-        sstr << "    vec4 texcolor = texture2D(baseTexture,gl_TexCoord[0].st); "    << std::endl;
 
 
-        sstr << "    float enableBaseTextureFilter = enableBaseTexture*(1.0 - step(texcolor.x+texcolor.y+texcolor.z+texcolor.a,0.0)); "    << std::endl;                                                //18
-        sstr << "    vec4 colorTex = color*texcolor;" << std::endl;
-        sstr << "    gl_FragColor.rgb = (((color*(ambientBias.x+1.0)*(1.0-enableBaseTextureFilter)) + colorTex*(1.0+ambientBias.x)*enableBaseTextureFilter)*(1.0-ambientBias.y*v)).rgb; "<< std::endl;
-        sstr << "    gl_FragColor.a = (color*(1.0-enableBaseTextureFilter) + colorTex*enableBaseTextureFilter).a; "<< std::endl;
+
+
+		sstr << "    vec4 texcolor = texture2D(baseTexture,gl_TexCoord[0].st); " << std::endl;
+
+
+		sstr << "    float enableBaseTextureFilter = enableBaseTexture*(1.0 - step(texcolor.x+texcolor.y+texcolor.z+texcolor.a,0.0)); " << std::endl;                                                //18
+		sstr << "    vec4 colorTex = color*texcolor;" << std::endl;
+		sstr << "    gl_FragColor.rgb = (((color*(ambientBias.x+1.0)*(1.0-enableBaseTextureFilter)) + colorTex*(1.0+ambientBias.x)*enableBaseTextureFilter)*(1.0-ambientBias.y*v)).rgb; " << std::endl;
+		sstr << "    gl_FragColor.a = (color*(1.0-enableBaseTextureFilter) + colorTex*enableBaseTextureFilter).a; " << std::endl;
 
 
 
@@ -241,7 +247,7 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
     _GLSL_shadow_filtered(true),
     _ambientBiasUniform(NULL),
     _ambientBias(0.1f,0.3f)
-{
+{    
     _displayTexturesGroupingNode = gr;
     _number_of_splits = icountplanes;
 
@@ -447,6 +453,12 @@ void ParallelSplitShadowMap::init()
             /// generate a TexGen object
             pssmShadowSplitTexture._texgen = new osg::TexGen;
 
+			std::ostringstream str;
+			str << "shadowMatrix" << iCameras;
+			pssmShadowSplitTexture._shadowMatrix = new osg::Uniform(osg::Uniform::FLOAT_MAT4, str.str());
+
+			pssmShadowSplitTexture._stateset->addUniform(pssmShadowSplitTexture._shadowMatrix);
+
         }
 
         //////////////////////////////////////////////////////////////////////////
@@ -469,6 +481,61 @@ void ParallelSplitShadowMap::init()
             ).c_str());
         program->addShader(fragment_shader);
 
+		const char* vertex_shader_src =
+			"varying vec4 ecPosition;\n"\
+			"uniform mat4 shadowMatrix0;"\
+			"uniform mat4 shadowMatrix1;"\
+			"uniform mat4 shadowMatrix2;"\
+			"uniform mat4 shadowMatrix3;"\
+			"uniform mat4 shadowMatrix4;"\
+			"uniform mat4 shadowMatrix5;"\
+			"void main()\n"\
+			"{\n"\
+			"	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"\
+			"	ecPosition = gl_ModelViewMatrix * gl_Vertex;\n"\
+			"	ecPosition.w = 1.0;\n"\
+			"\n"\
+			"	gl_TexCoord[1].s = dot(ecPosition, gl_EyePlaneS[1]);\n"\
+			"	gl_TexCoord[1].t = dot(ecPosition, gl_EyePlaneT[1]);\n"\
+			"	gl_TexCoord[1].p = dot(ecPosition, gl_EyePlaneR[1]);\n"\
+			"	gl_TexCoord[1].q = dot(ecPosition, gl_EyePlaneQ[1]);\n"\
+			"	gl_TexCoord[1] *= gl_TextureMatrix[1]; \n"\
+			"\n"\
+			"	gl_TexCoord[2].s = dot(ecPosition, gl_EyePlaneS[2]);\n"\
+			"	gl_TexCoord[2].t = dot(ecPosition, gl_EyePlaneT[2]);\n"\
+			"	gl_TexCoord[2].p = dot(ecPosition, gl_EyePlaneR[2]);\n"\
+			"	gl_TexCoord[2].q = dot(ecPosition, gl_EyePlaneQ[2]);\n"\
+			"	gl_TexCoord[2] *= gl_TextureMatrix[2]; \n"\
+			"\n"\
+			"	gl_TexCoord[3].s = dot(ecPosition, gl_EyePlaneS[3]);\n"\
+			"	gl_TexCoord[3].t = dot(ecPosition, gl_EyePlaneT[3]);\n"\
+			"	gl_TexCoord[3].p = dot(ecPosition, gl_EyePlaneR[3]);\n"\
+			"	gl_TexCoord[3].q = dot(ecPosition, gl_EyePlaneQ[3]);\n"\
+			"	gl_TexCoord[3] *= gl_TextureMatrix[3]; \n"\
+			"\n"\
+			"	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; \n"\
+			"	vec4 texCoord = shadowMatrix0 * ecPosition;\n"\
+			"	gl_TexCoord[1] = texCoord;\n"\
+			"\n"\
+			"	texCoord = shadowMatrix1 * ecPosition;\n"\
+			"	gl_TexCoord[2] = texCoord;\n"\
+			"\n"\
+			"	texCoord = shadowMatrix2 * ecPosition;\n"\
+			"	gl_TexCoord[3] = texCoord;\n"\
+			"\n"\
+			"	texCoord = shadowMatrix3 * ecPosition;\n"\
+			"	gl_TexCoord[4] = texCoord;\n"\
+			"\n"\
+			"	texCoord = shadowMatrix4 * ecPosition;\n"\
+			"	gl_TexCoord[5] = texCoord;\n"\
+			"\n"\
+			"	texCoord = shadowMatrix5 * ecPosition;\n"\
+			"	gl_TexCoord[6] = texCoord;\n"\
+			
+			"\n"\
+			"}";
+		osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertex_shader_src);
+		program->addShader(vertex_shader);
 
         //////////////////////////////////////////////////////////////////////////
         // UNIFORMS
@@ -609,7 +676,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     PSSMShadowSplitTextureMap::iterator tm_itr=_PSSMShadowSplitTextureMap.begin();
 #else
     // do traversal of shadow receiving scene which does need to be decorated by the shadow map
-    for (PSSMShadowSplitTextureMap::iterator tm_itr=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
+    for (PSSMShadowSplitTextureMap::iterator tm_itr=_PSSMShadowSplitTextureMap.begin(); tm_itr !=_PSSMShadowSplitTextureMap.end(); tm_itr++)
 #endif
     {
         PSSMShadowSplitTexture pssmShadowSplitTexture = tm_itr->second;
@@ -732,9 +799,30 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
                 osg::Matrix::translate(1.0,1.0,1.0) *
                 osg::Matrix::scale(0.5,0.5,0.5);
 
+			//MVPT = pssmShadowSplitTexture._camera->getInverseViewMatrix() * MVPT;
+
             pssmShadowSplitTexture._texgen->setMode(osg::TexGen::EYE_LINEAR);
             pssmShadowSplitTexture._texgen->setPlanesFromMatrix(MVPT);
             //////////////////////////////////////////////////////////////////////////
+			// https://stackoverflow.com/questions/33975576/shadow-mapping-transforming-a-view-space-position-to-the-shadow-map-space
+			// precomputed: lightspace_mat = light_projection * light_view * inverse_cam_view
+			//osg::Matrixd mx = pssmShadowSplitTexture._camera->getProjectionMatrix() * pssmShadowSplitTexture._camera->getViewMatrix() * cv.getCurrentCamera()->getInverseViewMatrix();
+
+			static osg::Matrix s_scaleBiasMat =
+				osg::Matrix::translate(1.0, 1.0, 1.0) *
+				osg::Matrix::scale(0.5, 0.5, 0.5);
+
+			// set the texture coordinate generation matrix that the shadow
+			// receiver will use to sample the shadow map. Doing this on the CPU
+			// prevents nasty precision issues!
+			osg::Matrix VPS = pssmShadowSplitTexture._camera->getViewMatrix() * 
+				pssmShadowSplitTexture._camera->getProjectionMatrix() * s_scaleBiasMat;
+
+			osg::Matrix MV = *cv.getModelViewMatrix();
+			osg::Matrix inverseMV;
+			inverseMV.invert(MV);
+			
+			pssmShadowSplitTexture._shadowMatrix->set(inverseMV * VPS);
 
 
             //////////////////////////////////////////////////////////////////////////

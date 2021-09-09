@@ -102,9 +102,7 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
             sstr << "          float fZOffSet  = -0.001954;" << std::endl; // 2^-9 good value for ATI / NVidia
 
         }
-
-		filtered = true;
-		sstr << "    float shadow = 0;" << std::endl;
+				
 		for (unsigned int i = 0; i < nbrSplits; i++) {
 			if (!filtered) {
 				sstr << "    float shadow" << i << " = shadow2D( shadowTexture" << i << ",gl_TexCoord[" << (i + textureOffset) << "].xyz).r;" << std::endl;
@@ -195,7 +193,7 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
 
 		}
 		else {
-			sstr << "    vec4 color    = vec4(shadow0,shadow0,shadow0,1.0); " << std::endl;
+			sstr << "    vec4 color    = gl_Color;" << std::endl;
 		}
 
 
@@ -208,8 +206,8 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
 
 
 		sstr << "    float enableBaseTextureFilter = enableBaseTexture*(1.0 - step(texcolor.x+texcolor.y+texcolor.z+texcolor.a,0.0)); " << std::endl;                                                //18
-		sstr << "    vec4 colorTex = color*texcolor;" << std::endl;
-		sstr << "    gl_FragColor.rgb = (((color*(ambientBias.x+1.0)*(1.0-enableBaseTextureFilter)) + colorTex*(1.0+ambientBias.x)*enableBaseTextureFilter)*(1.0-ambientBias.y*v)).rgb; " << std::endl;
+		sstr << "    vec4 colorTex = texcolor;" << std::endl;
+		sstr << "    gl_FragColor.rgb = (((color*(ambientBias.x + 1.0)*(1.0 - enableBaseTextureFilter)) + colorTex * (1.0 + ambientBias.x)*enableBaseTextureFilter)*(1.0 - ambientBias.y*v)).rgb; " << std::endl;
 		sstr << "    gl_FragColor.a = (color*(1.0-enableBaseTextureFilter) + colorTex*enableBaseTextureFilter).a; " << std::endl;
 
 
@@ -481,60 +479,29 @@ void ParallelSplitShadowMap::init()
             ).c_str());
         program->addShader(fragment_shader);
 
-		const char* vertex_shader_src =
-			"varying vec4 ecPosition;\n"\
-			"uniform mat4 shadowMatrix0;"\
-			"uniform mat4 shadowMatrix1;"\
-			"uniform mat4 shadowMatrix2;"\
-			"uniform mat4 shadowMatrix3;"\
-			"uniform mat4 shadowMatrix4;"\
-			"uniform mat4 shadowMatrix5;"\
-			"void main()\n"\
-			"{\n"\
-			"	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"\
-			"	ecPosition = gl_ModelViewMatrix * gl_Vertex;\n"\
-			"	ecPosition.w = 1.0;\n"\
-			"\n"\
-			"	gl_TexCoord[1].s = dot(ecPosition, gl_EyePlaneS[1]);\n"\
-			"	gl_TexCoord[1].t = dot(ecPosition, gl_EyePlaneT[1]);\n"\
-			"	gl_TexCoord[1].p = dot(ecPosition, gl_EyePlaneR[1]);\n"\
-			"	gl_TexCoord[1].q = dot(ecPosition, gl_EyePlaneQ[1]);\n"\
-			"	gl_TexCoord[1] *= gl_TextureMatrix[1]; \n"\
-			"\n"\
-			"	gl_TexCoord[2].s = dot(ecPosition, gl_EyePlaneS[2]);\n"\
-			"	gl_TexCoord[2].t = dot(ecPosition, gl_EyePlaneT[2]);\n"\
-			"	gl_TexCoord[2].p = dot(ecPosition, gl_EyePlaneR[2]);\n"\
-			"	gl_TexCoord[2].q = dot(ecPosition, gl_EyePlaneQ[2]);\n"\
-			"	gl_TexCoord[2] *= gl_TextureMatrix[2]; \n"\
-			"\n"\
-			"	gl_TexCoord[3].s = dot(ecPosition, gl_EyePlaneS[3]);\n"\
-			"	gl_TexCoord[3].t = dot(ecPosition, gl_EyePlaneT[3]);\n"\
-			"	gl_TexCoord[3].p = dot(ecPosition, gl_EyePlaneR[3]);\n"\
-			"	gl_TexCoord[3].q = dot(ecPosition, gl_EyePlaneQ[3]);\n"\
-			"	gl_TexCoord[3] *= gl_TextureMatrix[3]; \n"\
-			"\n"\
-			"	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; \n"\
-			"	vec4 texCoord = shadowMatrix0 * ecPosition;\n"\
-			"	gl_TexCoord[1] = texCoord;\n"\
-			"\n"\
-			"	texCoord = shadowMatrix1 * ecPosition;\n"\
-			"	gl_TexCoord[2] = texCoord;\n"\
-			"\n"\
-			"	texCoord = shadowMatrix2 * ecPosition;\n"\
-			"	gl_TexCoord[3] = texCoord;\n"\
-			"\n"\
-			"	texCoord = shadowMatrix3 * ecPosition;\n"\
-			"	gl_TexCoord[4] = texCoord;\n"\
-			"\n"\
-			"	texCoord = shadowMatrix4 * ecPosition;\n"\
-			"	gl_TexCoord[5] = texCoord;\n"\
-			"\n"\
-			"	texCoord = shadowMatrix5 * ecPosition;\n"\
-			"	gl_TexCoord[6] = texCoord;\n"\
-			
-			"\n"\
-			"}";
-		osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertex_shader_src);
+		std::ostringstream oss;
+		for (size_t i = 0; i < _number_of_splits; ++i)
+		{
+			oss << "uniform mat4 shadowMatrix" << i << ";" << std::endl;
+		}
+		oss << "void main()" << std::endl;
+		oss << "{" << std::endl;
+		oss << "	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;" << std::endl;
+		oss << "	vec4 ecPosition = gl_ModelViewMatrix * gl_Vertex; " << std::endl;
+		oss << "	ecPosition.w = 1.0;" << std::endl;
+		for (size_t i = 0; i < _textureUnitOffset; ++i)
+		{
+			oss << "	gl_TexCoord[" << i << "] = gl_TextureMatrix[" << i << "] * gl_MultiTexCoord" << i << ";" << std::endl;
+		}
+		oss << "	vec4 texCoord;" << std::endl;		
+		for (size_t i = 0; i < _number_of_splits; ++i)
+		{
+			oss << "	texCoord = shadowMatrix" << i << " * ecPosition;" << std::endl;
+			oss << "	gl_TexCoord[" << i + _textureUnitOffset << "] = texCoord;" << std::endl;
+		}			
+		oss << "}" << std::endl;
+		
+		osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, oss.str());
 		program->addShader(vertex_shader);
 
         //////////////////////////////////////////////////////////////////////////

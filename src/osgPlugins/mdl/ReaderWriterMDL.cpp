@@ -46,7 +46,7 @@ ReaderWriter::ReadResult ReaderWriterMDL::readNode(
     // allows us to also find the .vvd and .vtx files without the leading
     // path confusing things)
     mdlReader = new MDLReader();
-    if (mdlReader->readFile(file))
+    if (mdlReader->readFile(file, options))
     {
         // Get the results of our read
         result = mdlReader->getRootNode();

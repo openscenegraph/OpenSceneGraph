@@ -177,9 +177,9 @@ class Logos: public osg::Drawable
         #endif
         }
 
-        void addLogo( RelativePosition pos, std::string name )
+        void addLogo( RelativePosition pos, std::string name, const osgDB::ReaderWriter::Options* options)
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( name.c_str() );
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( name.c_str(), options );
             if( image.valid())
             {
                 _logos[pos].push_back( image );
@@ -319,7 +319,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                 else
                 {
                     if( str.length() )
-                    ld->addLogo( pos, str );
+                    ld->addLogo( pos, str ,options);
                 }
             }
 

@@ -167,7 +167,7 @@ struct GeometryCollection
 
 
 // read file and convert to OSG.
-osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
 {
     lwObject* lw = lw_object_read(fileName.c_str(),osg::notify(osg::INFO));
     if (!lw)
@@ -224,7 +224,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                 if (lw_material.ctex.flags && strlen(lw_material.ctex.name)!=0)
                 {
                     OSG_INFO << "ctex " << lw_material.ctex.name << std::endl;
-                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(lw_material.ctex.name);
+                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(lw_material.ctex.name, options);
                     if (image.valid())
                     {
                         // create state

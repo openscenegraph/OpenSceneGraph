@@ -77,7 +77,7 @@ class NormalsReader: public osgDB::ReaderWriter
             std::string nodeName = osgDB::getNameLessExtension( fileName );
             if( !nodeName.empty() )
             {
-                osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( nodeName );
+                osg::ref_ptr<osg::Node> node = osgDB::readRefNodeFile( nodeName, options );
                 if( node.valid() )
                 {
                     osg::ref_ptr<osg::Group> group = new osg::Group;

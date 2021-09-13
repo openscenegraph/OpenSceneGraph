@@ -229,7 +229,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
 
-        virtual WriteResult writeShader(const osg::Shader &shader,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        virtual WriteResult writeShader(const osg::Shader &shader,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
@@ -237,7 +237,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
-            return writeShader(shader, fout);
+            return writeShader(shader, fout, options);
         }
 };
 

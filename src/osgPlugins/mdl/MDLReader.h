@@ -170,8 +170,8 @@ protected:
    std::string    getToken(std::string str, const char * delim, size_t & index);
    std::string    findFileIgnoreCase(std::string filePath);
 
-   osg::ref_ptr<osg::Texture>     readTextureFile(std::string textureName);
-   osg::ref_ptr<osg::StateSet>    readMaterialFile(std::string mtlName);
+   osg::ref_ptr<osg::Texture>     readTextureFile(std::string textureName, const osgDB::ReaderWriter::Options* options);
+   osg::ref_ptr<osg::StateSet>    readMaterialFile(std::string mtlName, const osgDB::ReaderWriter::Options* options);
 
    BodyPart *    processBodyPart(std::istream * str, int offset);
    Model *       processModel(std::istream * str, int offset);
@@ -182,7 +182,7 @@ public:
    MDLReader();
    virtual ~MDLReader();
 
-   bool   readFile(const std::string & file);
+   bool   readFile(const std::string & file, const osgDB::ReaderWriter::Options* options);
 
    osg::ref_ptr<osg::Node>   getRootNode();
 };

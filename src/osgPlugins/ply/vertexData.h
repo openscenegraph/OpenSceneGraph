@@ -15,6 +15,7 @@
 
 #include <osg/Node>
 #include <osg/PrimitiveSet>
+#include <osgDB/ReaderWriter>
 
 #include <vector>
 
@@ -39,7 +40,7 @@ namespace ply
 
 
         // Reads ply file and convert in to osg::Node and returns the same
-        osg::Node* readPlyFile( const char* file, const bool ignoreColors = false );
+        osg::Node* readPlyFile( const char* file, const osgDB::ReaderWriter::Options* options, const bool ignoreColors = false );
 
         // to set the flag for using inverted face
         void useInvertedFaces() { _invertFaces = true; }

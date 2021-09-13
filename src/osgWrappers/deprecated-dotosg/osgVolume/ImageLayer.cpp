@@ -57,12 +57,12 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 osg::ref_ptr<osg::Image> image;
                 if (fileType == osgDB::DIRECTORY)
                 {
-                    image = osgDB::readRefImageFile(filename+".dicom");
+                    image = osgDB::readRefImageFile(filename+".dicom", fr.getOptions());
 
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
-                    image = osgDB::readRefImageFile( filename );
+                    image = osgDB::readRefImageFile( filename, fr.getOptions());
                 }
 
 

@@ -147,8 +147,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
             const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
             if (nextParticle)
             {
-                const osg::Vec3& nextPos = nextParticle->getPosition();
-                osg::Vec3 startDelta = nextPos-pos;
+                osg::Vec3 startDelta = nextParticle->getPosition()-pos;
                 startDelta.normalize();
                 float distance2 = 0.0;
 
@@ -158,8 +157,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
                     ++i)
                 {
                     nextParticle = &_particles[nextParticle->getNextParticle()];
-                    const osg::Vec3& nextPos = nextParticle->getPosition();
-                    osg::Vec3 delta = nextPos-pos;
+                    osg::Vec3 delta = nextParticle->getPosition()-pos;
                     distance2 = (delta^startDelta).length2();
                 }
             }
@@ -187,8 +185,8 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
 
             if (nextParticle)
             {
-                const osg::Vec3& nextPos = nextParticle->getPosition();
-                osg::Vec3 startDelta = nextPos-pos;
+                osg::Vec3 startDelta = nextParticle->getPosition()-pos;
+                delta = startDelta;
                 startDelta.normalize();
                 float distance2 = 0.0;
 
@@ -198,12 +196,10 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
                     ++i)
                 {
                     nextParticle = &_particles[nextParticle->getNextParticle()];
-                    const osg::Vec3& nextPos = nextParticle->getPosition();
-                    delta = nextPos-pos;
+                    delta = nextParticle->getPosition()-pos;
                     distance2 = (delta^startDelta).length2();
                 }
 
-                delta = nextPos-pos;
             }
 
             osg::Vec3 normal( delta ^ (pos-eyeLocal));

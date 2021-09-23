@@ -341,7 +341,6 @@ namespace MatrixDecomposition
 #define TOL 1.0e-6
         _HMatrix Mk, MadjTk, Ek;
         double det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
-        int i, j;
 
         mat_tpose(Mk,=,M,3);
         M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
@@ -374,8 +373,8 @@ namespace MatrixDecomposition
         mat_tpose(Q,=,Mk,3); mat_pad(Q);
         mat_mult(Mk, M, S);  mat_pad(S);
 
-        for (i=0; i<3; i++)
-            for (j=i; j<3; j++)
+        for (int i=0; i<3; i++)
+            for (int j=i; j<3; j++)
                 S[i][j] = S[j][i] = 0.5*(S[i][j]+S[j][i]);
         return (det);
     }
@@ -393,14 +392,14 @@ namespace MatrixDecomposition
         double Diag[3],OffD[3]; /* OffD is off-diag (by omitted index) */
         double g,h,fabsh,fabsOffDi,t,theta,c,s,tau,ta,OffDq,a,b;
         static char nxt[] = {Y,Z,X};
-        int sweep, i, j;
+        int sweep;
         mat_copy(U,=,mat_id,4);
         Diag[X] = S[X][X]; Diag[Y] = S[Y][Y]; Diag[Z] = S[Z][Z];
         OffD[X] = S[Y][Z]; OffD[Y] = S[Z][X]; OffD[Z] = S[X][Y];
         for (sweep=20; sweep>0; sweep--) {
             double sm = fabs(OffD[X])+fabs(OffD[Y])+fabs(OffD[Z]);
             if (sm==0.0) break;
-            for (i=Z; i>=X; i--) {
+            for (int i=Z; i>=X; i--) {
                 int p = nxt[i]; int q = nxt[p];
                 fabsOffDi = fabs(OffD[i]);
                 g = 100.0*fabsOffDi;
@@ -421,7 +420,7 @@ namespace MatrixDecomposition
                     OffDq = OffD[q];
                     OffD[q] -= s*(OffD[p] + tau*OffD[q]);
                     OffD[p] += s*(OffDq   - tau*OffD[p]);
-                    for (j=Z; j>=X; j--) {
+                    for (int j=Z; j>=X; j--) {
                         a = U[j][p]; b = U[j][q];
                         U[j][p] -= s*(b + tau*a);
                         U[j][q] += s*(a - tau*b);
@@ -452,7 +451,7 @@ namespace MatrixDecomposition
 
         Quat p = q0001;
         double ka[4];
-        int i, turn = -1;
+        int turn = -1;
         ka[X] = k->x; ka[Y] = k->y; ka[Z] = k->z;
 
         if (ka[X]==ka[Y]) {
@@ -482,7 +481,7 @@ namespace MatrixDecomposition
             mag[2] = (double)q.y*q.z+(double)q.x*q.w;
 
             bool neg[3];
-            for (i=0; i<3; i++)
+            for (int i=0; i<3; i++)
             {
                 neg[i] = (mag[i]<0.0);
                 if (neg[i]) mag[i] = -mag[i];
@@ -516,7 +515,7 @@ namespace MatrixDecomposition
             bool neg[4];
             double all, big, two;
             qa[0] = q.x; qa[1] = q.y; qa[2] = q.z; qa[3] = q.w;
-            for (i=0; i<4; i++) {
+            for (int i=0; i<4; i++) {
                 pa[i] = 0.0;
                 neg[i] = (qa[i]<0.0);
                 if (neg[i]) qa[i] = -qa[i];
@@ -547,7 +546,7 @@ namespace MatrixDecomposition
             big = qa[hi];
             if (all>two) {
                 if (all>big) {/*all*/
-                    {int i; for (i=0; i<4; i++) pa[i] = sgn(neg[i], 0.5);}
+                    {for (int i=0; i<4; i++) pa[i] = sgn(neg[i], 0.5);}
                     cycle(ka,par);
                 }
                 else {/*big*/ pa[hi] = sgn(neg[hi],1.0);}

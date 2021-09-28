@@ -8,6 +8,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/fstream>
 #include <osgDB/Registry>
+#include <osgDB/ConvertUTF>
 
 #include <iostream>
 #include <iomanip>
@@ -53,7 +54,11 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
             try
             {
-                pdal::Option las_opt("filename", fileName);
+                std::string inFile = fileName;
+#ifdef OSG_USE_UTF8_FILENAME
+                inFile = osgDB::convertStringFromUTF8toCurrentCodePage(inFile);
+#endif
+                pdal::Option las_opt("filename", inFile);
                 pdal::Options las_opts;
                 las_opts.add(las_opt);
                 pdal::PointTable table;

@@ -293,8 +293,9 @@ class ReaderWriterLAS : public osgDB::ReaderWriter
 
                 return mt;
             }
-            catch (...)
+            catch (pdal::pdal_error& err)
             {
+                std::cout << err.what() << std::endl;
             }
             return ReadResult::ERROR_IN_READING_FILE;
         }

@@ -583,9 +583,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             {
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
                 setDrawBuffer( GL_NONE, true );
-                setReadBuffer( GL_NONE, true );
                 state.glDrawBuffer( GL_NONE );
-                state.glReadBuffer( GL_NONE );
             #endif
             }
 

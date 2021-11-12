@@ -452,6 +452,8 @@ public:
     virtual void apply(unsigned short /*value*/) { type = osgDB::BaseSerializer::RW_USHORT; }
     virtual void apply(int /*value*/) { type = osgDB::BaseSerializer::RW_INT; }
     virtual void apply(unsigned int /*value*/) { type = osgDB::BaseSerializer::RW_UINT; }
+    virtual void apply(long /*value*/) { type = osgDB::BaseSerializer::RW_LONG; }
+    virtual void apply(unsigned long /*value*/) { type = osgDB::BaseSerializer::RW_ULONG; }
     virtual void apply(float /*value*/) { type = osgDB::BaseSerializer::RW_FLOAT; }
     virtual void apply(double /*value*/) { type = osgDB::BaseSerializer::RW_DOUBLE; }
     virtual void apply(const std::string& /*value*/) { type = osgDB::BaseSerializer::RW_STRING; }

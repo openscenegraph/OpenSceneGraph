@@ -2193,6 +2193,8 @@ public:
     virtual void apply(unsigned short value)            { lua_pushnumber(_lua, value); }
     virtual void apply(int value)                       { lua_pushnumber(_lua, value); }
     virtual void apply(unsigned int value)              { lua_pushnumber(_lua, value); }
+    virtual void apply(long value)                      { lua_pushnumber(_lua, value); }
+    virtual void apply(unsigned long value)             { lua_pushnumber(_lua, value); }
     virtual void apply(float value)                     { lua_pushnumber(_lua, value); }
     virtual void apply(double value)                    { lua_pushnumber(_lua, value); }
     virtual void apply(const std::string& value)        { lua_pushlstring(_lua, &value[0], value.size()); }
@@ -2259,6 +2261,8 @@ public:
     virtual void apply(unsigned short& value)   { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(int& value)              { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(unsigned int& value)     { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(long& value)             { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
+    virtual void apply(unsigned long& value)    { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(float& value)            { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(double& value)           { if (lua_isnumber(_lua, _index)) { value = lua_tonumber(_lua, _index)!=0; _success=true; _numberToPop = 1; } }
     virtual void apply(std::string& value)      { if (lua_isstring(_lua, _index)) { value = std::string(lua_tostring(_lua, _index), lua_rawlen(_lua, _index)); _numberToPop = 1; } }
@@ -2546,6 +2550,26 @@ int LuaScriptEngine::pushPropertyToStack(osg::Object* object, const std::string&
             pushContainer(object, propertyName);
             return 1;
         }
+        case(osgDB::BaseSerializer::RW_LONG):
+        {
+            long value;
+            if (_ci.getProperty(object, propertyName, value))
+            {
+                lua_pushinteger(_lua, value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ULONG):
+        {
+            unsigned long value;
+            if (_ci.getProperty(object, propertyName, value))
+            {
+                lua_pushinteger(_lua, value);
+                return 1;
+            }
+            break;
+        }
         default:
             break;
     }
@@ -2827,6 +2851,26 @@ int LuaScriptEngine::pushDataToStack(SerializerScratchPad* ssp) const
         {
             break;
         }
+        case(osgDB::BaseSerializer::RW_LONG):
+        {
+            long value;
+            if (ssp->get(value))
+            {
+                lua_pushinteger(_lua, value);
+                return 1;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ULONG):
+        {
+            unsigned long value;
+            if (ssp->get(value))
+            {
+                lua_pushinteger(_lua, value);
+                return 1;
+            }
+            break;
+        }
         default:
             break;
     }
@@ -3090,6 +3134,24 @@ int LuaScriptEngine::getDataFromStack(SerializerScratchPad* ssp, osgDB::BaseSeri
             else
             {
                 OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, pos))<<"' cannot be assigned."<<std::endl;
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_LONG):
+        {
+            if (lua_isnumber(_lua, pos))
+            {
+                ssp->set(static_cast<long>(lua_tonumber(_lua, pos)));
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ULONG):
+        {
+            if (lua_isnumber(_lua, pos))
+            {
+                ssp->set(static_cast<unsigned long>(lua_tonumber(_lua, pos)));
                 return 0;
             }
             break;
@@ -3379,6 +3441,24 @@ int LuaScriptEngine::setPropertyFromStack(osg::Object* object, const std::string
             else
             {
                 OSG_NOTICE<<"Error: lua type '"<<lua_typename(_lua,lua_type(_lua, -1))<<"' cannot be assigned to "<<object->className()<<"::"<<propertyName<<std::endl;
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_LONG):
+        {
+            if (lua_isnumber(_lua, -1))
+            {
+                _ci.setProperty(object, propertyName, static_cast<long>(lua_tonumber(_lua, -1)));
+                return 0;
+            }
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ULONG):
+        {
+            if (lua_isnumber(_lua, -1))
+            {
+                _ci.setProperty(object, propertyName, static_cast<unsigned long>(lua_tonumber(_lua, -1)));
                 return 0;
             }
             break;
@@ -3927,6 +4007,17 @@ osg::Object* LuaScriptEngine::popParameterObject() const
                 object = *const_cast<osg::Object**>(reinterpret_cast<const osg::Object**>(lua_touserdata(_lua,-1)));
             }
             lua_pop(_lua, 1);
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_LONG):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::IntValueObject("", static_cast<long>(lua_tonumber(_lua, -1)));
+            break;
+        }
+        case(osgDB::BaseSerializer::RW_ULONG):
+        {
+            if (lua_isnumber(_lua, -1)) object = new osg::UIntValueObject("", static_cast<unsigned long>(lua_tonumber(_lua, -1)));
+            break;
         }
         default:
             break;

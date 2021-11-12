@@ -25,6 +25,8 @@ WRAPVALUEOBJECT( ShortValueObject, "osg::Object osg::ShortValueObject", ADD_REF_
 WRAPVALUEOBJECT( UShortValueObject, "osg::Object osg::UShortValueObject", ADD_REF_USHORT_SERIALIZER, 0u)
 WRAPVALUEOBJECT( IntValueObject, "osg::Object osg::IntValueObject", ADD_REF_INT_SERIALIZER, 0)
 WRAPVALUEOBJECT( UIntValueObject, "osg::Object osg::UIntValueObject", ADD_REF_UINT_SERIALIZER, 0u)
+WRAPVALUEOBJECT( LongValueObject, "osg::Object osg::LongValueObject", ADD_REF_LONG_SERIALIZER, 0l)
+WRAPVALUEOBJECT( ULongValueObject, "osg::Object osg::ULongValueObject", ADD_REF_ULONG_SERIALIZER, 0ul)
 WRAPVALUEOBJECT( FloatValueObject, "osg::Object osg::FloatValueObject", ADD_REF_FLOAT_SERIALIZER, 0.0f)
 WRAPVALUEOBJECT( DoubleValueObject, "osg::Object osg::DoubleValueObject", ADD_REF_DOUBLE_SERIALIZER, 0.0)
 

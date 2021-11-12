@@ -152,7 +152,8 @@ public:
         RW_VEC4B, RW_VEC4UB, RW_VEC4S, RW_VEC4US, RW_VEC4I, RW_VEC4UI,
         RW_BOUNDINGBOXF, RW_BOUNDINGBOXD,
         RW_BOUNDINGSPHEREF, RW_BOUNDINGSPHERED,
-        RW_VECTOR, RW_MAP
+        RW_VECTOR, RW_MAP,
+        RW_LONG, RW_ULONG
     };
 
     enum Usage
@@ -1639,6 +1640,14 @@ protected:
 #define ADD_REF_UINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned int >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UINT )
+
+#define ADD_REF_LONG_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, long >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_LONG )
+
+#define ADD_REF_ULONG_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned long >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_ULONG )
 
 #define ADD_REF_GLINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, GLint >( \

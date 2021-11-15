@@ -52,7 +52,7 @@ trpgRange::trpgRange(const trpgRange &in):
 
 void trpgRange::Reset(void)
 {
-    errMess[0] = '\0';
+    errMess.clear();
     if (category)
         delete [] category;
     category = NULL;

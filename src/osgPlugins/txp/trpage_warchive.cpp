@@ -85,7 +85,7 @@ void trpgwArchive::Init(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint &n
     tileFile = NULL;
     tileFileCount = 0;
     isRegenerate = true;
-    errMess[0] = '\0';
+    errMess.clear();
 
     firstHeaderWrite = true;
 

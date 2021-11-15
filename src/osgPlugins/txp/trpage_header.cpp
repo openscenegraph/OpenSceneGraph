@@ -82,7 +82,7 @@ void trpgHeader::Reset()
     tileSize.resize(0);
     maxGroupID = -1;
     flags = 0;
-    errMess[0] = '\0';
+    errMess.clear();
     cols = -1;
     rows = -1;
 }

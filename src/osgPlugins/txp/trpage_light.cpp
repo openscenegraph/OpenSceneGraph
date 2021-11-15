@@ -702,7 +702,7 @@ bool trpgLightAttr::operator != (const trpgLightAttr& in)
 
 void trpgLightAttr::Reset(void)
 {
-    errMess[0] = '\0';
+    errMess.clear();
     data.type = trpg_Raster;
     data.directionality = trpg_Omnidirectional;
     data.frontColor = trpgColor(0,0,0);
@@ -929,7 +929,7 @@ trpgLightTable::trpgLightTable(const trpgLightTable &in):
 // Reset function
 void trpgLightTable::Reset()
 {
-    errMess[0] = '\0';
+    errMess.clear();
     //lightList.clear();
     lightMap.clear();
 }

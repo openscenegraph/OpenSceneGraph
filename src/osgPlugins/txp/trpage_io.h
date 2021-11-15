@@ -601,7 +601,7 @@ class trpgPrintBuffer;
 TX_EXDECL class TX_CLDECL trpgReadWriteable : public trpgCheckable {
 public:
 
-    trpgReadWriteable() { errMess[0] = '\0';}
+    trpgReadWriteable() { errMess.clear();}
 
     /* The Write method is a virtual that must be filled in by the subclass.
         It takes a trpgWriteBuffer and should return true on success. */

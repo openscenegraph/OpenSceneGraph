@@ -18,7 +18,7 @@ if(EXISTS ${CMAKE_ROOT}/Modules/FindFLTK.cmake)
   endif()
 endif()
 
-FIND_PATH(FLTK_INCLUDE_DIR Fl/Fl.H Fl/Fl.h
+FIND_PATH(FLTK_INCLUDE_DIR Fl/Fl.H Fl/Fl.h FL/Fl.H FL/Fl.h
     $ENV{FLTK_DIR}/include
     $ENV{FLTK_DIR}
     ~/Library/Frameworks

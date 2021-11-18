@@ -227,6 +227,7 @@ MACRO(SETUP_LIBRARY LIB_NAME)
         TARGET_INCLUDE_DIRECTORIES(${LIB_NAME}
             PUBLIC
                 $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                 $<INSTALL_INTERFACE:${INSTALL_INCDIR}>
         )
 

@@ -15,8 +15,20 @@ FIND_PATH(ASIO_INCLUDE_DIR
 
 SET(ASIO_FOUND "NO")
 IF(ASIO_INCLUDE_DIR)
-    FIND_PACKAGE( Boost 1.37 )
-    IF(Boost_FOUND)
-        SET(ASIO_FOUND "YES")
-    ENDIF()
+
+    set(ASIO_VERSION_H ${ASIO_INCLUDE_DIR}/asio/version.hpp)
+    file(STRINGS  ${ASIO_VERSION_H} AsioVersionLine REGEX "^#define ASIO_VERSION ")
+    string(REGEX MATCHALL "[0-9]+" AsioHeaderVersionMatches "${AsioVersionLine}")
+    list(GET AsioHeaderVersionMatches 0 AsioHeaderVersion)
+
+    # check version is less than 1.14.0 otherwise API changes break build
+    if (${AsioHeaderVersion} LESS "101400")
+        FIND_PACKAGE( Boost 1.37 )
+        IF(Boost_FOUND)
+            SET(ASIO_FOUND "YES")
+        ENDIF()
+    else()
+        message("ASIO not compatible")
+    endif()
+
 ENDIF()

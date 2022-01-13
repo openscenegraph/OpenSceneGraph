@@ -755,13 +755,15 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
             if (_stats->getAttribute( i, _beginName, beginValue) &&
                 _stats->getAttribute( i, _endName, endValue) )
             {
-                (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
-
-
                 if (endValue - beginValue < minWidth) endValue = beginValue + minWidth;
-                (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
+
+                float left  = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
+                float right = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
+
+                (*vertices)[vi++].x() = left;
+                (*vertices)[vi++].x() = left;
+                (*vertices)[vi++].x() = right;
+                (*vertices)[vi++].x() = right;
             }
         }
 

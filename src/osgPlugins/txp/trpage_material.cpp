@@ -243,19 +243,20 @@ bool trpgMatTable::Read(trpgReadBuffer &buf)
         buf.Get(nMat);
         if (nTable <= 0 || nMat < 0) throw 1;
         // Read the materials
-        for (i=0;i<nTable;i++)
+        for (i=0;i<nTable;i++) {
             for (j=0;j<nMat;j++) {
-                buf.GetToken(matTok,len);
+                buf.GetToken(matTok, len);
                 if (matTok != TRPGMATERIAL) throw 1;
                 buf.PushLimit(len);
                 mat.Reset();
                 status = mat.Read(buf);
                 buf.PopLimit();
                 if (!status) throw 1;
-                AddMaterial(mat,false);
+                AddMaterial(mat, false);
             }
-            numTable += nTable;
-            numMat = materialMap.size();
+        }
+        numTable += nTable;
+        numMat = materialMap.size();
     }
     catch (...) {
         return false;

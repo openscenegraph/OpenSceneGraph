@@ -372,10 +372,10 @@ void Texture2DArray::apply(State& state) const
             }
             else
             {
-            // Override compressed source format with safe GL_RGBA value which not generate error
-            // We can safely do this as source format is not important when source data is NULL
-            if( isCompressedInternalFormat( sourceFormat ) )
-                sourceFormat = GL_RGBA;
+                // Override compressed source format with safe GL_RGBA value which not generate error
+                // We can safely do this as source format is not important when source data is NULL
+                if( isCompressedInternalFormat( sourceFormat ) )
+                    sourceFormat = GL_RGBA;
 
                 extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
                          _textureWidth, _textureHeight, textureDepth, _borderWidth,

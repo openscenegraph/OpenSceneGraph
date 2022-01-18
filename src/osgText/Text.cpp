@@ -367,7 +367,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                 return lastValidChar;
 
             // Subtract off glyphs from the cursor position (to correctly center text)
-                if(*prevChar != '-')
+            if(*prevChar != '-')
             {
                 Glyph* glyph = activefont->getGlyph(_fontSize, *prevChar);
                 if (glyph)

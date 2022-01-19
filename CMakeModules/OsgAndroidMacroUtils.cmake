@@ -126,18 +126,18 @@ MACRO(ANDROID_3RD_PARTY)
     ################################################
     #ZLIB
     ################################################
-    #FIND_PATH(ZLIB_INCLUDE_DIR Android.mk
-    #    ${CMAKE_SOURCE_DIR}/3rdparty/zlib
-    #)
+    FIND_PATH(ZLIB_INCLUDE_DIR Android.mk
+       ${CMAKE_SOURCE_DIR}/3rdparty/zlib NO_CMAKE_FIND_ROOT_PATH
+    )
     #set(ENV{AND_OSG_LIB_NAMES} "$ENV{AND_OSG_LIB_NAMES} zlib")
     #set(ENV{AND_OSG_LIB_PATHS} "$ENV{AND_OSG_LIB_PATHS}include ${ZLIB_INCLUDE_DIR}/Android.mk \n")
-    #if(ZLIB_INCLUDE_DIR)
-    #    message(STATUS "ZLIB found ${ZLIB_INCLUDE_DIR}" )
-    #    set(ZLIB_FOUND "Yes")
-    #    install(DIRECTORY 3rdparty/build/libjpeg/ DESTINATION ./ )
-    #else(ZLIB_INCLUDE_DIR)
-    #    message(STATUS "ZLIB missing" )
-    #endif()
+    if(ZLIB_INCLUDE_DIR)
+       message(STATUS "ZLIB found ${ZLIB_INCLUDE_DIR}" )
+       set(ZLIB_FOUND "Yes")
+       install(DIRECTORY 3rdparty/build/zlib/ DESTINATION ./ )
+    else(ZLIB_INCLUDE_DIR)
+       message(STATUS "ZLIB missing" )
+    endif()
     ################################################
     #CURL
     ################################################

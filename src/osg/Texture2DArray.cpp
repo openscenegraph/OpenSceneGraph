@@ -355,6 +355,14 @@ void Texture2DArray::apply(State& state) const
         // First we need to allocate the texture memory
         if(texStorageSizedInternalFormat!=0 && !textureObject->_allocated)
         {
+            // Specification says glTexStorage3D invalid operation if levels
+            // is greater than log2(size) + 1. We need to make sure number of mips
+            // are within bounds.
+            int size = std::max(_textureWidth, _textureHeight);
+            int mips = (int)log2(size) + 1;
+
+            _numMipmapLevels = std::min(_numMipmapLevels, mips);
+
             extensions->glTexStorage3D(GL_TEXTURE_2D_ARRAY, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, textureDepth);
         }
         else

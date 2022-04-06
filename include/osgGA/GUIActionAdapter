@@ -58,10 +58,10 @@ then you then respond the flag being set in your own leisure.
 
 class GUIEventAdapter;
 
-class GUIActionAdapter
+class OSGGA_EXPORT GUIActionAdapter
 {
 public:
-        virtual ~GUIActionAdapter() {}
+        virtual ~GUIActionAdapter();
 
         /** Provide a mechanism for getting the osg::View associated with this GUIActionAdapter.
           * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
@@ -101,4 +101,3 @@ public:
 }
 
 #endif
-

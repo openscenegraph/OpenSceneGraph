@@ -47,6 +47,7 @@ SET(TARGET_SRC
     EventVisitor.cpp
     FirstPersonManipulator.cpp
     FlightManipulator.cpp
+    GUIActionAdapter.cpp
     GUIEventAdapter.cpp
     GUIEventHandler.cpp
     KeySwitchMatrixManipulator.cpp
@@ -76,4 +77,3 @@ SET(TARGET_LIBRARIES
 SET(COMPONENT_PKGCONFIG_DESCRIPTION "GUI event library for Openscenegraph")
 
 SETUP_LIBRARY(${LIB_NAME})
-

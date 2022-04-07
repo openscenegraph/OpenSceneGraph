@@ -120,7 +120,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 
     _vertexBufferHint = vs._vertexBufferHint;
 
-    setShaderHint(_shaderHint);
+    setShaderHint(vs._shaderHint);
 
     _keystoneHint = vs._keystoneHint;
     _keystoneFileNames = vs._keystoneFileNames;

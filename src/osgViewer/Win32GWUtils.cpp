@@ -136,6 +136,8 @@ bool ContextInfo::isEmpty() {
 
 EGLDisplay createAndInitializeEGLDisplay(HDC hdc = 0L)
 {
+	EGLDisplay eglDisplay;
+	#ifdef EGL_ANGLE_platform_angle
 	/* possible types:
 	EGL_PLATFORM_ANGLE_TYPE_DEFAULT_ANGLE
 	EGL_PLATFORM_ANGLE_TYPE_D3D9_ANGLE
@@ -158,9 +160,6 @@ EGLDisplay createAndInitializeEGLDisplay(HDC hdc = 0L)
 	displayAttributes.push_back(EGL_PLATFORM_ANGLE_DEVICE_TYPE_HARDWARE_ANGLE);
 	displayAttributes.push_back(EGL_NONE);
 
-	EGLint major, minor;
-	EGLDisplay eglDisplay;
-	
 	if (hdc) {
 		eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE,
 			reinterpret_cast<void *>(hdc),
@@ -169,7 +168,16 @@ EGLDisplay createAndInitializeEGLDisplay(HDC hdc = 0L)
 	else {
 		eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE, reinterpret_cast<void *>(EGL_DEFAULT_DISPLAY), displayAttributes.data());
 	}
+	#else
+	if (hdc) {
+		eglDisplay = eglGetDisplay(hdc);
+	}
+	else {
+		eglDisplay = eglGetDisplay((EGLNativeDisplayType)EGL_DEFAULT_DISPLAY);
+	}
+	#endif
 
+	EGLint major, minor;
 	eglInitialize(eglDisplay, &major, &minor);
 
 	OSG_NOTIFY(osg::INFO) << "EGL Version: \"" << eglQueryString(eglDisplay, EGL_VERSION) << "\"" << std::endl;
@@ -235,13 +243,13 @@ EGLContext createContext(EGLDisplay eglDisplay, const EGLConfig& config)
 
 void destroyContext(ContextInfo& c)
 {
-	if (!::eglMakeCurrent(c.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)) {
+	if (c.eglDisplay != EGL_NO_DISPLAY && !::eglMakeCurrent(c.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)) {
 		reportError("Win32GWUtils.destroyContext() - Unable to set current EGL rendering context", ::eglGetError());
 	}
-	if (!::eglDestroySurface(c.eglDisplay, c.eglSurface)) {
+	if (c.eglSurface != EGL_NO_SURFACE && !::eglDestroySurface(c.eglDisplay, c.eglSurface)) {
 		reportError("Win32GWUtils.destroyContext() - Unable to destroy current EGL Surface context", ::eglGetError());
 	}
-	if (!::eglDestroyContext(c.eglDisplay, c.eglContext)) {
+	if (c.eglContext != EGL_NO_CONTEXT && !::eglDestroyContext(c.eglDisplay, c.eglContext)) {
 		reportError("Win32GWUtils.destroyContext() - Unable to destroy current EGL rendering context", ::eglGetError());
 	}
 	c.clear();

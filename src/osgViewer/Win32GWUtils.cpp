@@ -16,8 +16,8 @@ namespace EGL {
 	EGLint eglOpenglBit = EGL_OPENGL_ES3_BIT, eglContextClientVersion = 3;
 	EGLenum eglApi = EGL_OPENGL_ES_API;
 #endif
-#if defined(OSG_GLES2_AVAILABLE)
-	EGLint eglOpenglBit = 0, eglContextClientVersion = 2;
+#if defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GLES3_AVAILABLE)
+	EGLint eglOpenglBit = EGL_OPENGL_ES2_BIT, eglContextClientVersion = 2;
 	EGLenum eglApi = EGL_OPENGL_ES_API;
 #endif
 

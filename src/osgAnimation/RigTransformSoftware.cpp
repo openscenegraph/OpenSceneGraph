@@ -248,10 +248,12 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
     osg::Vec3Array* normalDst = static_cast<osg::Vec3Array*>(destination.getNormalArray());
 
 
+    osg::BoundingBox bbox;
     compute<osg::Vec3>(geom.getMatrixFromSkeletonToGeometry(),
                        geom.getInvMatrixFromSkeletonToGeometry(),
                        &positionSrc->front(),
-                       &positionDst->front());    
+                       &positionDst->front(), &bbox);
+    geom.setInitialBound(bbox);
     positionDst->dirty();
 
     if (normalSrc )

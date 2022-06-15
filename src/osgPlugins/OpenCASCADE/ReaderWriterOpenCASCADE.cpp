@@ -30,6 +30,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Macro.hxx>
+#include <Standard_Version.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -211,7 +212,11 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
                 {
                     // populate vertex list
                     // Ref: http://www.opencascade.org/org/forum/thread_16694/?forum=3
+#if OCC_VERSION_HEX < 0x070600
                     gp_Pnt pt = (triangulation->Nodes())(j).Transformed(transformation * location.Transformation());
+#else
+                    gp_Pnt pt = triangulation->Node(j).Transformed(transformation * location.Transformation());
+#endif
                     vertexList->push_back(osg::Vec3(pt.X(), pt.Y(), pt.Z()));
 
                     // populate color list

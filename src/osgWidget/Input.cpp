@@ -120,7 +120,7 @@ void Input::_calculateCursorOffsets() {
     std::vector<osgText::Glyph*>    glyphs;
     for ( ; tgqmi != tgqm.end(); tgqmi++ )
     {
-        const osgText::Text::GlyphQuads& gq = tgqmi->second;
+        const osgText::Text::GlyphQuads& gq = *(tgqmi->second);
 
         //coords.insert(coords.end(),gq.getTransformedCoords(0).begin(),gq.getTransformedCoords(0).end());
         for (unsigned int i=0; i<gq.getGlyphs().size(); ++i)

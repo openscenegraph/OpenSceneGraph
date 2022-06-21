@@ -14,9 +14,9 @@ In general , we use three compiled methods to compile the source code for obtain
 
 ## 1.2  Visual Studio---MSVC---VC++ for Windows
 
-## ### 2.1 nmake
+### 1.2.1 nmake
 
-## ### 2.2 CMake->configure->generate->open project->ALLBUILD->INSTALL
+### 1.2.2 CMake->configure->generate->open project->ALLBUILD->INSTALL
 
 
 

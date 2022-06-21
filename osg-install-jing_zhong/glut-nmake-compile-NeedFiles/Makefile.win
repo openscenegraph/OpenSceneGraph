@@ -1,0 +1,87 @@
+# Makefile for Win32
+
+!include <win32.mak>
+
+TOP = ../..
+
+# NOTE: glut_menu.c and glut_glxext.c are NOT compiled into Win32 GLUT
+
+SRCS = glut_8x13.c glut_9x15.c glut_bitmap.c glut_bwidth.c glut_cindex.c glut_cmap.c glut_cursor.c glut_dials.c glut_dstr.c glut_event.c glut_ext.c glut_fullscrn.c glut_gamemode.c glut_get.c glut_hel10.c glut_hel12.c glut_hel18.c glut_init.c glut_input.c glut_joy.c glut_key.c glut_keyctrl.c glut_keyup.c glut_mesa.c glut_modifier.c glut_mroman.c glut_overlay.c glut_roman.c glut_shapes.c glut_space.c glut_stroke.c glut_swap.c glut_swidth.c glut_tablet.c glut_teapot.c glut_tr10.c glut_tr24.c glut_util.c glut_vidresize.c glut_warp.c glut_win.c glut_winmisc.c win32_glx.c win32_menu.c win32_util.c win32_winproc.c win32_x11.c
+
+all	: glutdll install
+
+!include "$(TOP)/glutwin32.mak"
+
+glutdll	: $(GLUTDLL)
+
+CFLAGS = $(cvarsdll) $(CFLAGS)
+LFLAGS = $(dlllflags) $(LFLAGS)
+
+OBJS   = $(SRCS:.c=.obj)
+LIBS   = $(OPENGL) $(GLU) winmm.lib $(guilibsdll)
+
+$(GLUTDLL)	: $(OBJS) glut.def
+	$(link) $(LFLAGS) -out:$(GLUTDLL) -def:glut.def $(OBJS) $(LIBS) -NODEFAULTLIB:$(GLUTLIB)
+
+install	: $(GLUTDLL)
+	@echo "copying GLUT dynamic link library to system directory..."
+	-copy $(GLUTDLL) $(DLLINSTALL)
+	@echo "copying GLUT header file to include directory..."
+	-copy ..\..\include\GL\glut.h $(INCLUDEINSTALL)
+	@echo "copying GLUT import library to library directory..."
+	-copy $(GLUTLIB) $(LIBINSTALL)
+
+.c.obj	:
+	$(cc)   $(CFLAGS) -I . $*.c
+
+# explicit object dependencies for all source files
+
+win32_glx.obj: win32_glx.c win32_glx.h
+win32_x11.obj: win32_x11.c win32_x11.h
+win32_menu.obj: win32_menu.c glutint.h ..\..\include\GL\glut.h
+win32_util.obj: win32_util.c glutint.h
+win32_winproc.obj: win32_winproc.c glutint.h
+
+glut_mroman.obj: glut_mroman.c glutstroke.h glutint.h
+glut_roman.obj: glut_roman.c glutstroke.h glutint.h
+glut_hel12.obj: glut_hel12.c glutbitmap.h glutint.h
+glut_8x13.obj: glut_8x13.c glutbitmap.h glutint.h
+glut_hel18.obj: glut_hel18.c glutbitmap.h glutint.h
+glut_9x15.obj: glut_9x15.c glutbitmap.h glutint.h
+glut_tr10.obj: glut_tr10.c glutbitmap.h glutint.h
+glut_hel10.obj: glut_hel10.c glutbitmap.h glutint.h
+glut_tr24.obj: glut_tr24.c glutbitmap.h glutint.h
+
+glut_bitmap.obj: glut_bitmap.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_bwidth.obj: glut_bwidth.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_cindex.obj: glut_cindex.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_cmap.obj: glut_cmap.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_cursor.obj: glut_cursor.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_dials.obj: glut_dials.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_dstr.obj: glut_dstr.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_event.obj: glut_event.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_ext.obj: glut_ext.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_fullscrn.obj: glut_fullscrn.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_gamemode.obj: glut_gamemode.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_get.obj: glut_get.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_init.obj: glut_init.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_input.obj: glut_input.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_joy.obj: glut_joy.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_key.obj: glut_key.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_keyctrl.obj: glut_keyctrl.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_keyup.obj: glut_keyup.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_mesa.obj: glut_mesa.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_modifier.obj: glut_modifier.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_overlay.obj: glut_overlay.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_shapes.obj: glut_shapes.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_space.obj: glut_space.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_swap.obj: glut_swap.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_swidth.obj: glut_swidth.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_tablet.obj: glut_tablet.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_teapot.obj: glut_teapot.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_util.obj: glut_util.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_vidresize.obj: glut_vidresize.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_warp.obj: glut_warp.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+glut_win.obj: glut_win.c glutint.h ..\..\include\GL\glut.h glutwin32.h
+glut_winmisc.obj: glut_winmisc.c glutint.h ..\..\include\GL\glut.h glutwin32.h win32_glx.h win32_x11.h
+

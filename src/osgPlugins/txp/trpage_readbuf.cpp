@@ -416,7 +416,7 @@ bool trpgMemReadBuffer::GetData(char *ret,int rlen)
 }
 
 // Get Reference to Data
-// Protected method that retrieves a reference to the given amoutn of data
+// Protected method that retrieves a reference to the given amount of data
 bool trpgMemReadBuffer::GetDataRef(char **ret,int rlen)
 {
     if (rlen < 0)  return false;

@@ -477,7 +477,7 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
     }
     else
     {
-        // no texture object already exsits for this context so need to
+        // no texture object already exists for this context so need to
         // create it upfront - simply call copyTexImage1D.
         copyTexImage1D(state,x,y,width);
     }

@@ -235,7 +235,7 @@ void Dragger::setHandleEvents(bool flag)
 
 void Dragger::addConstraint(Constraint* constraint)
 {
-    // check to make sure constaint hasn't already been attached.
+    // check to make sure constraint hasn't already been attached.
     for(Constraints::iterator itr = _constraints.begin();
         itr != _constraints.end();
         ++itr)

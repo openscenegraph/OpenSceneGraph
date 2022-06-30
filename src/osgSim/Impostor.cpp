@@ -18,7 +18,7 @@ using namespace osg;
 using namespace osgSim;
 
 // use this cull callback to allow the camera to traverse the Impostor's children without
-// actuall having them assigned as children to the camea itself.  This make the camera a
+// actually having them assigned as children to the camea itself.  This make the camera a
 // decorator without ever directly being assigned to it.
 class ImpostorTraverseNodeCallback : public osg::NodeCallback
 {
@@ -216,7 +216,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
      }
 
 
-    // default to true right now, will dertermine if perspective from the
+    // default to true right now, will determine if perspective from the
     // projection matrix...
     bool isPerspectiveProjection = true;
 

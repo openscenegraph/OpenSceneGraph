@@ -2446,7 +2446,7 @@ void SphereSegment::updatePositions()
 
     unsigned int pos = 0;
 
-    // assigne center vertex
+    // assign center vertex
     (*_vertices)[pos] = _centre;
     (*_normals)[pos].set(0.0f,0.0f,1.0f);
     pos++;

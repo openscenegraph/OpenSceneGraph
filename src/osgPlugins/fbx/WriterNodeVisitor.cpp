@@ -361,7 +361,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
             _fbxMaterial = FbxSurfacePhong::Create(pSdkManager, relativePath.c_str());
         }
         // Connect texture to material's diffuse
-        // Note there should be no reason FbxSurfacePhong::Create() would return NULL, but as previous code made this secirity test, here we keep the same way.
+        // Note there should be no reason FbxSurfacePhong::Create() would return NULL, but as previous code made this security test, here we keep the same way.
         if (_fbxMaterial)
         {
             _fbxMaterial->Diffuse.ConnectSrcObject(_fbxTexture);

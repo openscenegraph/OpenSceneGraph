@@ -470,7 +470,7 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
     }
     else
     {
-        // no texture object already exsits for this context so need to
+        // no texture object already exists for this context so need to
         // create it upfront - simply call copyTexImage2D.
         copyTexImage2D(state,x,y,width,height);
     }

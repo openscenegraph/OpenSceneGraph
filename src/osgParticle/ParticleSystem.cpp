@@ -140,7 +140,7 @@ void osgParticle::ParticleSystem::update(double dt, osg::NodeVisitor& nv)
         // Update shader uniforms
         // This slightly reduces the consumption of traversing the particle vector, because we
         // don't compute tile and angle attributes that are useleff for shaders.
-        // At present, our lcoal shader implementation will ignore these particle props:
+        // At present, our local shader implementation will ignore these particle props:
         //     _cur_tile, _s_coord, _t_coord, _prev_pos, _prev_angle and _angle
         osg::StateSet* stateset = getOrCreateStateSet();
 

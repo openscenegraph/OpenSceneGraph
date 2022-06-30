@@ -85,7 +85,7 @@ void QuicktimeLiveImageStream::quit(bool wiatForThreadToExit)
 
 // Use the Sequence Grabber or the raw Video Digitizer
 // If using SG then use it in Preview or Record option
-// Thre options - VD Play Through, SG Preview or SG Record
+// Three options - VD Play Through, SG Preview, or SG Record
 static bool g_s_use_sg        = true ; // 1a
 static bool g_s_use_sg_record = false; // 1b
 

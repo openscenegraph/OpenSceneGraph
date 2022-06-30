@@ -117,7 +117,7 @@ ReaderWriterIV::readNodeFromSoInput(SoInput &input,
     // Create the inventor scenegraph by reading from SoInput
     SoSeparator* rootIVNode = SoDB::readAll(&input);
 
-    // Remove recently appened search paths
+    // Remove recently appended search paths
     if (options)
         removeSearchPaths(searchPaths);
 

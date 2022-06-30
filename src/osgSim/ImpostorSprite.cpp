@@ -95,7 +95,7 @@ void ImpostorSprite::dirty()
 
 float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 {
-    // find the maximum screen space pixel error between the control coords and the quad coners.
+    // find the maximum screen space pixel error between the control coords and the quad corners.
     float max_error_sqrd = 0.0f;
 
     for(int i=0;i<4;++i)

@@ -1827,7 +1827,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
         }
     }
 
-    // TBD insert GL ES 2 suppurt, if required for Win32.
+    // TBD insert GL ES 2 support, if required for Win32.
 
     // If platform context creation fails for any reason,
     // we'll create a standard context. This means you could

@@ -129,7 +129,7 @@ protected:
         // aci index format is
         // last digit odd = 50% sat, even=100%
         // last digit 0,1 = 100% value, 2,3=80%, 4,5=60% 6,7=50%, 8,9=30%
-        //  first two sigits are hue angle /1.5 but count starts at 10, first 9 values are dummy named colours
+        //  first two digits are hue angle /1.5 but count starts at 10, first 9 values are dummy named colours
         int aci=10 + (int)(h/1.5);
         aci -= (aci%10); // ensure last digit is zero
 

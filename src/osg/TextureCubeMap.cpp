@@ -411,7 +411,7 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
         if (!textureObject)
         {
             // failed to create texture object
-            OSG_NOTICE<<"Warning : failed to create TextureCubeMap texture obeject, copyTexSubImageCubeMap abandoned."<<std::endl;
+            OSG_NOTICE<<"Warning : failed to create TextureCubeMap texture object, copyTexSubImageCubeMap abandoned."<<std::endl;
             return;
         }
 

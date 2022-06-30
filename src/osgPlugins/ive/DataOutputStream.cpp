@@ -1828,7 +1828,7 @@ void DataOutputStream::writeVolumeProperty(const osgVolume::Property* property)
         // write the id.
         writeInt(id);
 
-        // write the propery
+        // write the property
          if (dynamic_cast<const osgVolume::SwitchProperty*>(property))
         {
             ((ive::VolumeSwitchProperty*)(property))->write(this);

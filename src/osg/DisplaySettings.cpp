@@ -324,7 +324,7 @@ static ApplicationUsageProxy DisplaySetting_e9(ApplicationUsage::ENVIRONMENTAL_V
         "LEFT_EYE_TOP_VIEWPORT | LEFT_EYE_BOTTOM_VIEWPORT");
 static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO <mode>",
-        "OFF | ON  Default to OFF to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicityly OFF should be used.");
+        "OFF | ON  Default to OFF to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicitly OFF should be used.");
 static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>",
         "Number of pixels between viewports.");

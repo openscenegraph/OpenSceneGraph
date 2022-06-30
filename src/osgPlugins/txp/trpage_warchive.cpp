@@ -1543,7 +1543,7 @@ bool trpgwImageHelper::Flush()
 }
 
 /* Designate Texture File
-   Close the curren texture file (if any) and open one with the given
+   Close the current texture file (if any) and open one with the given
    base name.
 */
 bool trpgwImageHelper::DesignateTextureFile(int id)

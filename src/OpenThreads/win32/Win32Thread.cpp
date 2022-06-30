@@ -424,7 +424,7 @@ int Thread::cancel()
         SetEvent(pd->cancelEvent.get());
 
         // cancelMode == 1 (asynch)-> kill em
-        // cancelMode == 0 (deffered) -> wait a little then kill em
+        // cancelMode == 0 (deferred) -> wait a little then kill em
 
     //    if( (pd->cancelMode == 1) || (WaitForSingleObject(pd->tid,INFINITE)!=WAIT_OBJECT_0) )
         if( pd->cancelMode == 1 )

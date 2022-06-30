@@ -321,7 +321,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             {
                 if (texture3D->getTextureWidth()==0 || texture3D->getTextureHeight()==0 || texture3D->getTextureDepth()==0 )
                 {
-                    // note we dont' have the depth here, so we'll heave to assume that height and depth are the same..
+                    // note we don't have the depth here, so we'll have to assume that height and depth are the same..
                     texture3D->setTextureSize(width,height,height);
                 }
             }

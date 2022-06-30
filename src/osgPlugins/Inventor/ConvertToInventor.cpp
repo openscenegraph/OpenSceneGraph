@@ -832,7 +832,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
 
           if (ccw)
             // Warn if culling the lit faces while rendering unlit faces.
-            // Inventor does not support this setup and it lits the unculled faces only.
+            // Inventor does not support this setup and it lights the unculled faces only.
             OSG_WARN << "IvWriter: Culling was set in a way that one-sided lighting will lit the culled sides of faces. "
                                       "Using lighting on correct faces." << std::endl;
 

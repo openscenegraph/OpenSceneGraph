@@ -186,7 +186,7 @@ void GLBufferObject::compileBuffer()
 
     if (i<_bufferEntries.size())
     {
-        // triming end of bufferEntries as the source data is has less entries than the originally held.
+        // trimming end of bufferEntries as the source data is has less entries than the originally held.
         _bufferEntries.erase(_bufferEntries.begin()+i, _bufferEntries.end());
     }
 
@@ -864,7 +864,7 @@ void GLBufferObjectSet::orphan(GLBufferObject* to)
     // handled in the handlePendingOrphandedGLBufferObjects() where the TO's
     // will be removed from the active list, and then placed in the orhpanGLBufferObject
     // list.  This double buffered approach to handling orphaned TO's is used
-    // to avoid having to mutex the process of appling active TO's.
+    // to avoid having to mutex the process of applying active TO's.
     _pendingOrphanedGLBufferObjects.push_back(to);
 }
 

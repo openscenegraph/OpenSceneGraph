@@ -659,7 +659,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     if ( _plane.intersect( drawable->getBoundingBox() )!=0 ) return;
     if ( !_polytope.contains( drawable->getBoundingBox() ) ) return;
 
-    // OSG_NOTICE<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
+    // OSG_NOTICE<<"Succeed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     osg::TriangleFunctor<PlaneIntersectorUtils::TriangleIntersector> ti;
     ti.set(_plane, _polytope, iv.getModelMatrix(), _recordHeightsAsAttributes, _em.get());

@@ -235,7 +235,7 @@ void print_video_component_capability(VideoDigitizerComponent aComponent)
         long pref_width, pref_height;
         vid_err = VDGetPreferredImageDimensions(aComponent, &pref_width, &pref_height);
         if (vid_err) { OSG_NOTICE << "VDGetPreferredImageDimensions(aComponent, &pref_width, &pref_height) - ERROR" << std::endl; }
-        else         { OSG_NOTICE << "Preferrred width,height :  " << pref_width << "  " << pref_height << std::endl; }
+        else         { OSG_NOTICE << "Preferred width,height :  " << pref_width << "  " << pref_height << std::endl; }
 
         // Inputs
         short inputs;

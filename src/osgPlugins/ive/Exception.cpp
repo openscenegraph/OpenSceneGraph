@@ -2,7 +2,7 @@
  *
  *    FILE:            Exception.cpp
  *
- *    DESCRIPTION:    Exception throwed when error occur.
+ *    DESCRIPTION:    Exception thrown when error occur.
  *
  *    CREATED BY:        Rune Schmidt Jensen
  *

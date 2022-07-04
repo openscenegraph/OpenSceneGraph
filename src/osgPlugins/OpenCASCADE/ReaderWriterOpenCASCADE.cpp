@@ -168,7 +168,6 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
 
     // create one osg primitive set
     osg::ref_ptr<osg::DrawElementsUInt> triangleStrip = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
-    unsigned int noOfTriangles = 0;
 
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
 
@@ -204,14 +203,14 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
             Handle (Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
             if (!triangulation.IsNull())
             {
-                int noOfNodes = triangulation->NbNodes();
+                Standard_Integer noOfNodes = triangulation->NbNodes();
 
                 // Store vertices. Build vertex array here
-                for(int j = 1; j <= triangulation->NbNodes(); j++)
+                for (Standard_Integer j = 1; j <= triangulation->NbNodes(); j++)
                 {
                     // populate vertex list
                     // Ref: http://www.opencascade.org/org/forum/thread_16694/?forum=3
-                    gp_Pnt pt = (triangulation->Nodes())(j).Transformed(transformation * location.Transformation());
+                    gp_Pnt pt = triangulation->Node(j).Transformed(transformation * location.Transformation());
                     vertexList->push_back(osg::Vec3(pt.X(), pt.Y(), pt.Z()));
 
                     // populate color list
@@ -221,25 +220,21 @@ osg::ref_ptr<osg::Geometry> ReaderWritterOpenCASCADE::OCCTKReader::_createGeomet
                     }
                 }
 
-                /// now we need to get face indices for triangles
-                // get list of triangle first
-                const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-
                 //No of triangles in this triangulation
-                noOfTriangles = triangulation->NbTriangles();
+                Standard_Integer noOfTriangles = triangulation->NbTriangles();
 
                 Standard_Integer v1, v2, v3;
-                for (unsigned int j = 1; j <= noOfTriangles; j++)
+                for (Standard_Integer j = 1; j <= noOfTriangles; j++)
                 {
                     /// If face direction is reversed then we add verticews in reverse order
                     /// order of vertices is important for normal calculation later
                     if (face.Orientation() == TopAbs_REVERSED)
                     {
-                        triangles(j).Get(v1, v3, v2);
+                        triangulation->Triangle(j).Get(v1, v3, v2);
                     }
                     else
                     {
-                        triangles(j).Get(v1, v2, v3);
+                        triangulation->Triangle(j).Get(v1, v2, v3);
                     }
                     triangleStrip->push_back(index + v1 - 1);
                     triangleStrip->push_back(index + v2 - 1);

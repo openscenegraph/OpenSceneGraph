@@ -30,7 +30,7 @@ RigTransformSoftware::RigTransformSoftware()
 
 RigTransformSoftware::RigTransformSoftware(const RigTransformSoftware& rts,const osg::CopyOp& copyop):
     RigTransform(rts, copyop),
-    _needInit(rts._needInit),
+    _needInit(true),
     _invalidInfluence(rts._invalidInfluence)
 {
 

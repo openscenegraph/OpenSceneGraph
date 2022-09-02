@@ -26,6 +26,14 @@ ELSE()
        SET(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC 1)
 
     ELSE()
+       set( _OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE
+           "PLEASE_FILL_OUT-FAILED_TO_RUN"
+           CACHE STRING "Result from try_run" FORCE)
+
+       set( _OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED_EXITCODE__TRYRUN_OUTPUT
+           "PLEASE_FILL_OUT-NOTFOUND"
+           CACHE STRING "Output from try_run" FORCE)
+
        INCLUDE(CheckCXXSourceRuns)
 
        # Do step by step checking,

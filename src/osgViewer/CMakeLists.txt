@@ -248,6 +248,16 @@ ELSE()
 
           SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
         ENDIF(APPLE)
+
+        # Add Wayland here if available..
+        IF(WAYLAND_FOUND)
+          ADD_DEFINITIONS(-DOSGVIEWER_USE_WAYLAND)
+          SET(LIB_COMMON_FILES ${LIB_COMMON_FILES}
+            GraphicsWindowWayland.cpp
+            xdg-shell.c
+            xdg-decoration-unstable-v1.c)
+          SET(LIB_EXTRA_LIBS ${WAYLAND_LIBRARIES} ${LIB_EXTRA_LIBS})
+        ENDIF()
     ELSE()
         MESSAGE(STATUS "Windowing system not supported")
     ENDIF()

@@ -864,6 +864,11 @@ IF(NOT (ANDROID AND OSG_FIND_3RD_PARTY_DEPS))
     ENDIF()
 ENDIF()
 
+IF(OSG_WINDOWING_SYSTEM STREQUAL "X11")
+  # optional Wayland graphics also supported..
+  FIND_PACKAGE(Wayland)
+ENDIF()
+
 ################################################################################
 # Create bin and lib directories if required
 

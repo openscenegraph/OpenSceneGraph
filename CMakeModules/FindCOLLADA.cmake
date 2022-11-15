@@ -64,6 +64,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     ${COLLADA_DOM_ROOT}/include
     $ENV{COLLADA_DIR}/include
     $ENV{COLLADA_DIR}
+    $ENV{COLLADA_DIR}/include/collada-dom2.5
     ~/Library/Frameworks
     /Library/Frameworks
     /opt/local/Library/Frameworks #macports
@@ -185,8 +186,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     ${ACTUAL_3DPARTY_DIR}/lib
 )
 
-    # find extra libraries that the static linking requires
-
+IF (COLLADA_STATIC_LIBRARY)
     FIND_PACKAGE(LibXml2)
     IF (LIBXML2_FOUND)
         SET(COLLADA_LIBXML_LIBRARY "${LIBXML2_LIBRARIES}" CACHE FILEPATH "" FORCE)
@@ -309,7 +309,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
         ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
         ${ACTUAL_3DPARTY_DIR}/lib
     )
-
+ENDIF()
 
 SET(COLLADA_FOUND "NO")
 IF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)

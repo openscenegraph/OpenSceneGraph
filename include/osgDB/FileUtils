@@ -43,6 +43,9 @@ extern OSGDB_EXPORT bool setCurrentWorkingDirectory( const std::string &newCurre
 /** return true if a file exists. */
 extern OSGDB_EXPORT bool fileExists(const std::string& filename);
 
+/** returns the path/filename of the currently executed program. */
+extern OSGDB_EXPORT std::string executableFilePath();
+
 enum FileType
 {
     FILE_NOT_FOUND,

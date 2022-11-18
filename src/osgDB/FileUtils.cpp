@@ -43,6 +43,11 @@ typedef char TCHAR;
 #ifndef F_OK
     #define F_OK 4
 #endif
+#ifdef _MSC_VER
+#ifndef PATH_MAX
+    #define PATH_MAX MAX_PATH
+#endif
+#endif
 
 #else // unix
 
@@ -50,6 +55,8 @@ typedef char TCHAR;
     // I'm not sure how we would handle this in raw Darwin
     // without the AvailablilityMacros.
     #include <AvailabilityMacros.h>
+    #include <libgen.h>
+    #include <mach-o/dyld.h>
 
     //>OSG_IOS
     //IOS includes
@@ -116,6 +123,7 @@ typedef char TCHAR;
 #include <osgDB/Registry>
 
 #include <errno.h>
+#include <limits.h>
 #include <string.h>
 
 #include <stack>
@@ -524,6 +532,59 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         }
     }
     return "";
+}
+
+/* This function has be taken from the VSG project */
+std::string osgDB::executableFilePath()
+{
+    std::string path;
+
+#if defined(WIN32)
+    TCHAR buf[PATH_MAX + 1];
+    DWORD result = GetModuleFileName(NULL, buf, static_cast<DWORD>(std::size(buf) - 1));
+    if (result && result < std::size(buf))
+        path = buf;
+#elif defined(__linux__)
+
+    std::vector<char> buffer(1024);
+    ssize_t len = 0;
+    while ((len = ::readlink("/proc/self/exe", buffer.data(), buffer.size())) == static_cast<ssize_t>(buffer.size()))
+    {
+        buffer.resize(buffer.size() * 2);
+    }
+
+    // add terminator to string.
+    buffer[len] = '\0';
+
+    return buffer.data();
+
+#elif defined(__APPLE__)
+#    if TARGET_OS_MAC
+    char realPathName[PATH_MAX + 1];
+    char buf[PATH_MAX + 1];
+    uint32_t size = (uint32_t)sizeof(buf);
+
+    if (!_NSGetExecutablePath(buf, &size))
+    {
+        realpath(buf, realPathName);
+        path = realPathName;
+    }
+#    elif TARGET_IPHONE_SIMULATOR
+    // iOS, tvOS, or watchOS Simulator
+    // Not currently implemented
+#    elif TARGET_OS_MACCATALYST
+    // Mac's Catalyst (ports iOS API into Mac, like UIKit).
+    // Not currently implemented
+#    elif TARGET_OS_IPHONE
+    // iOS, tvOS, or watchOS device
+    // Not currently implemented
+#    else
+#        error "Unknown Apple platform"
+#    endif
+#elif defined(__ANDROID__)
+    // Not currently implemented
+#endif
+    return path;
 }
 
 static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)

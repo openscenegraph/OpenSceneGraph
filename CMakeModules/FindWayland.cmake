@@ -1,6 +1,6 @@
-# Find Wayland development libraries & headers for wayland-egl & wayland-cursor & EGL
+# Find Wayland development libraries & headers for wayland-egl & wayland-cursor & EGL & XKBcommon
 #
-# WAYLAND_FOUND - system has a libwayland-[egl|client|cursor] + libEGL
+# WAYLAND_FOUND - system has a libwayland-[egl|client|cursor] + libEGL + libxkbcommon
 # WAYLAND_INCLUDE_DIR - where to find header files
 # WAYLAND_LIBRARIES - the libraries to link against Wayland
 #
@@ -11,5 +11,5 @@
 # Use PkgConfig to find includes and libs
 find_package(PkgConfig QUIET)
 if (PKG_CONFIG_FOUND)
-	PKG_CHECK_MODULES(WAYLAND QUIET wayland-egl wayland-cursor egl)
+	PKG_CHECK_MODULES(WAYLAND QUIET wayland-egl wayland-cursor egl xkbcommon)
 endif ()

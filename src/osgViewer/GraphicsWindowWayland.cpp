@@ -10,6 +10,8 @@
 #include <wayland-cursor.h>
 #include <EGL/egl.h>
 #include <linux/input-event-codes.h>
+#include <xkbcommon/xkbcommon.h>
+#include <sys/mman.h>
 #include "xdg-shell.h"
 #include "xdg-decoration-unstable-v1.h"
 
@@ -36,14 +38,17 @@ struct gc_client_state {
     size_t n_outputs;
     int32_t output_width[MAX_OUTPUTS];
     int32_t output_height[MAX_OUTPUTS];
-    // shared cursor
-    wl_cursor* cursor;
+    // shared cursor theme & lookup map of loaded cursors
+    wl_cursor_theme* cursor_theme;
+    std::map<osgViewer::GraphicsWindow::MouseCursor, wl_cursor*> cursors;
     // lookup map of windows
     std::map<struct wl_surface*, WLGraphicsWindow*> windows;
     // current seat caps
     uint32_t seat_caps;
-    // current key modifiers
-    uint32_t keyboard_mods;
+    // XKB context, state & current mapping
+    struct xkb_context* xkb_content;
+    struct xkb_state* xkb_state;
+    struct xkb_keymap* xkb_keymap;
     // last pointer position
     float pointer_x;
     float pointer_y;
@@ -51,6 +56,8 @@ struct gc_client_state {
     struct wl_surface* keyboard_surface;
     struct wl_surface* pointer_surface;
     uint32_t keyboard_serial;
+    // custom Ctrl modifier
+    bool keyboard_ctrl;
 };
 // graphics window state (instanced)
 struct gw_client_state {
@@ -67,13 +74,14 @@ struct gw_client_state {
     EGLContext egl_context;
     EGLSurface egl_surface;
     wl_surface* cursor_surface;
+    wl_pointer* cursor_pointer;
+    uint32_t cursor_serial;
+    osgViewer::GraphicsWindow::MouseCursor cursor_last;
     bool floating;
     int width;
     int height;
     bool pending_config;
 };
-// keyboard mapping from linux event scan codes to osgGA codes
-static std::map<uint32_t, int> s_keymap;
 
 // logging depth and support macro
 static thread_local int t_depth;
@@ -208,7 +216,9 @@ public:
         // bool swapGroupEnabled,
         // GLuint swapGroup, swapBarrier - ignored?
         // bool useMultiThreadGL (MacOS only?)
-        // bool useCursor - TODO, cursor support HOW?
+        // bool useCursor - as requested
+        _gw.cursor_surface = wl_compositor_create_surface(_gw.gc->compositor);
+        setCursor(traits->useCursor ? MouseCursor::LeftArrowCursor : MouseCursor::NoCursor);
         // std::string glContextVersion,
         // uint glContextFlags, glProfileMask - ignored, should check >=
         // bool setInheritedPixelFormat - ignored?
@@ -259,10 +269,6 @@ public:
             WLGWlog(-1) << _logname << ":cannot create EGL surface" << std::endl;
             return;
         }
-        // create cursor surface
-        _gw.cursor_surface = wl_compositor_create_surface(_gw.gc->compositor);
-        wl_surface_attach(_gw.cursor_surface, wl_cursor_image_get_buffer(_gw.gc->cursor->images[0]), 0, 0);
-        wl_surface_commit(_gw.cursor_surface);
         _valid = true;
         // add ourselves to window map
         gc->windows[_gw.surface] = this;
@@ -270,7 +276,7 @@ public:
         _gw.width = _traits->width;
         _gw.height = _traits->height;
         _gw.pending_config = true;
-        WLGWlog(-1) << _logname << "]=valid" << std::endl;
+        WLGWlog(-1) << "]=valid" << std::endl;
     }
     virtual ~WLGraphicsWindow() {
         WLGWlog(1) << _logname << "WLGraphicsWindow<term>[" << std::endl;
@@ -281,10 +287,14 @@ public:
     }
     // accessor for input event system to notify a specific window of the pointer arriving..
     void pointerEnter(wl_pointer* wl_pointer, uint32_t serial) {
-        // set our cursor
-        wl_pointer_set_cursor(wl_pointer, serial, _gw.cursor_surface, 0, 0);
+        // save state, set our cursor
+        _gw.cursor_pointer = wl_pointer;
+        _gw.cursor_serial = serial;
+        applyCursor(_gw.cursor_last);
         WLGWlog(0) << _logname << "::pointerEnter" << std::endl;
     }
+
+    // GraphicsWindow overrides
     virtual const char* className() const { return "WLGraphicsWindow"; }
     virtual bool setWindowRectangleImplementation(int x, int y, int w, int h) {
         // not without difficulty on Wayland..
@@ -318,6 +328,15 @@ public:
         WLGWlog(0) << _logname << "::setSyncToVBlank(" << on << ")" << std::endl;
         // wait for frame callback..
         _traits->vsync = on;
+    }
+    virtual void setCursor(MouseCursor mouseCursor) {
+        WLGWlog(0) << _logname << "::setCursor(" << mouseCursor << " [" << _gw.cursor_last << "])" << std::endl;
+        // InheritCursor => put back previous cursor
+        if (MouseCursor::InheritCursor == mouseCursor)
+            mouseCursor = _gw.cursor_last;
+        applyCursor(mouseCursor);
+       // remember what was last set
+        _gw.cursor_last = mouseCursor;
     }
     virtual bool valid() const {
         if (!_valid) WLGWlog(0) << _logname << "::valid()=" << _valid << std::endl;
@@ -359,6 +378,24 @@ public:
     virtual void swapBuffersImplementation() {
         eglSwapBuffers(_gw.gc->egl_display, _gw.egl_surface);
         wl_display_dispatch_pending(_gw.gc->display);
+    }
+
+private:
+    void applyCursor(MouseCursor mouseCursor) {
+        // provided we have a pointer reference and a serial number.. do it!
+        if (_gw.cursor_pointer && _gw.cursor_serial) {
+            // map requested cursor to a buffer/surface
+            auto it = _gw.gc->cursors.find(mouseCursor);
+            if (it != _gw.gc->cursors.end() && it->second) {
+                wl_surface_destroy(_gw.cursor_surface);
+                _gw.cursor_surface = wl_compositor_create_surface(_gw.gc->compositor);
+                wl_surface_attach(_gw.cursor_surface, wl_cursor_image_get_buffer(it->second->images[0]), 0, 0);
+                wl_surface_commit(_gw.cursor_surface);
+                wl_pointer_set_cursor(_gw.cursor_pointer, _gw.cursor_serial, _gw.cursor_surface, 0, 0);
+            } else {
+                wl_pointer_set_cursor(_gw.cursor_pointer, _gw.cursor_serial, nullptr, 0, 0);
+            }
+        }
     }
 };
 
@@ -449,49 +486,77 @@ private:
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.keyboard_surface = surface;
         obj->_gc.keyboard_serial = serial;
-        WLGWlog(0) << "<keyboard enter: " << surface << ">" << std::endl;
+        WLGWlog(1) << "<keyboard enter: " << surface << ">" << std::endl;
+        // dump pressed keys
+        uint32_t* pkey = (uint32_t*)keys->data;
+        while ((char*)pkey < ((char*)keys->data+keys->size)) {
+            keyboard_key(data, wl_keyboard, serial, 0, *pkey, 1);
+            pkey++;
+        }
+        WLGWlog(-1) << "<keyboard enter: done>" << std::endl;
     }
     static void keyboard_leave(void* data, wl_keyboard* wl_keyboard, uint32_t serial, wl_surface* surface) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.keyboard_surface = nullptr;
         WLGWlog(0) << "<keyboard leave: " << surface << ">" << std::endl;
     }
-    static void keyboard_map(void* data, wl_keyboard* wl_keyboard, uint32_t format, int32_t fd, uint32_t size) {}
-    static void keyboard_repeat(void* data, wl_keyboard* wl_keyboard, int32_t rate, int32_t delay) {}
+    static void keyboard_map(void* data, wl_keyboard* wl_keyboard, uint32_t format, int32_t fd, uint32_t size) {
+        WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
+        // we only support XKBv1
+        if (format!=WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1)
+            return;
+        // create a context if not already done
+        if (!obj->_gc.xkb_content)
+            obj->_gc.xkb_content = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+        // map to our memory space
+        void *xkbtext = mmap(nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0);
+        // [re-]parse as a keymap
+        xkb_keymap_unref(obj->_gc.xkb_keymap);
+        obj->_gc.xkb_keymap = xkb_keymap_new_from_string(obj->_gc.xkb_content, (const char *)xkbtext, XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS);
+        munmap(xkbtext, size);
+        close(fd);
+        // [re-]initialise state
+        xkb_state_unref(obj->_gc.xkb_state);
+        obj->_gc.xkb_state = xkb_state_new(obj->_gc.xkb_keymap);
+        WLGWlog(0) << "<keyboard map: format=" << format << ", fd=" << fd << ", size=" << size << ", map=" << obj->_gc.xkb_keymap << ", state=" << obj->_gc.xkb_state << ">" << std::endl;
+    }
+    static void keyboard_repeat(void* data, wl_keyboard* wl_keyboard, int32_t rate, int32_t delay) {
+        WLGWlog(0) << "<keyboard repeat: rate=" << rate << ", delay=" << delay << ">" << std::endl;
+    }
     static void keyboard_modifiers(void* data, wl_keyboard* wl_keyboard, uint32_t serial, uint32_t mods_depressed, uint32_t mods_latched, uint32_t mods_locked, uint32_t group) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
-        obj->_gc.keyboard_mods = mods_depressed;
-        WLGWlog(0) << "<keymods: " << mods_depressed << ',' << mods_latched << ',' << mods_locked << ">" << std::endl;
+        // update XKB with modifier state: https://wayland-book.com/seat/keyboard.html
+        xkb_state_update_mask(obj->_gc.xkb_state, mods_depressed, mods_latched, mods_locked, 0, 0, group);
+        WLGWlog(0) << "<keymods: " << mods_depressed << ',' << mods_latched << ',' << mods_locked << ',' << group << ">" << std::endl;
     }
     static void keyboard_key(void* data, wl_keyboard* wl_keyboard, uint32_t serial, uint32_t time, uint32_t key, uint32_t state) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
-        int mapped = (int)key;
-        auto kit = s_keymap.find(key);
-        if (kit != s_keymap.end())
-            mapped = kit->second;
-        int shifted = mapped;
-        // translate 'a-z[]'=>'A-Z{}' if shift is held
-        if ((obj->_gc.keyboard_mods & 1) && mapped>='a' && mapped<='z')
-            shifted = mapped-'a'+'A';
-        if ((obj->_gc.keyboard_mods & 1) && (mapped=='[' || mapped==']'))
-            shifted = mapped=='['?'{':'}';
+        // NB: from: https://wayland-book.com/seat/keyboard.html
+        // "Important: the scancode from this event is the Linux evdev scancode. To translate this to an XKB scancode, you must add 8 to the evdev scancode."
+        // We also rely on the fact that OSG have used the /same UTF32 symbol codes/ as XKB (or so it appears)
+        xkb_keysym_t sym = xkb_state_key_get_one_sym(obj->_gc.xkb_state, key+8);
+        // independantly of XKB, we maintain a flag for Ctrl modifier, since the above function ignores it..
+        if (XKB_KEY_Control_L==sym || XKB_KEY_Control_R==sym)
+            obj->_gc.keyboard_ctrl = state ? true : false;
+        // if Ctrl is in play and we have A-Z, synthesize old ASCII values
+        if (obj->_gc.keyboard_ctrl && sym>=XKB_KEY_a && sym<=XKB_KEY_z) {
+            sym = 1 + (sym - XKB_KEY_a);
+        }
         if (auto win = obj->get_window(obj->_gc.keyboard_surface)) {
-            osgGA::GUIEventAdapter* event;
             if (state)
-                event = win->getEventQueue()->keyPress(shifted, mapped);
+                win->getEventQueue()->keyPress((int)sym);
             else
-                event = win->getEventQueue()->keyRelease(shifted, mapped);
-            WLGWlog(0) << (state?"<keypress: ":"<keyrelease: ") << key << "=>" << shifted << '/' << mapped << ',' << state
-                << ",mods=" << event->getModKeyMask() << ">" << std::endl;
+                win->getEventQueue()->keyRelease((int)sym);
+            WLGWlog(0) << (state?"<keypress: ":"<keyrelease: ") << key << "=>" << sym << ">" << std::endl;
         }
     }
     static void pointer_enter(void *data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface, wl_fixed_t surface_x, wl_fixed_t surface_y) {
+        WLGWlog(0) << "<pointer enter: " << surface << ">" << std::endl;
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.pointer_surface = surface;
         if (auto win = obj->get_window(surface)) {
             win->pointerEnter(wl_pointer, serial);
         }
-        WLGWlog(0) << "<pointer enter: " << surface << ">" << std::endl;
     }
     static void pointer_leave(void* data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
@@ -632,11 +697,36 @@ private:
                 WLGWlog(0) << "WLwsi::checkInit: missing one of compositor/shm/output/xdg_wm_base/zxdg_decoration_manager_v1" << std::endl;
                 break;
             }
-            // load cursor & monitor seat capabilities if we have one..
+            // load default cursor theme & cursor images for each OSG cursor
+            // eventually deduced by looking at:
+            // https://www.opengl.org/resources/libraries/glut/spec3/node28.html - for OSG names and descriptions
+            // https://github.com/drizt/xcursor-viewer - to view actual cursors and match against descriptions above
+            _gc.cursor_theme = wl_cursor_theme_load(nullptr, 24, _gc.shm);
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::NoCursor] = nullptr;
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::RightArrowCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "right_ptr");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::LeftArrowCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "left_ptr");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::InfoCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "hand2");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::DestroyCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "X_cursor");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::HelpCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "question_arrow");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::CycleCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "left_ptr");    // recycle icon: no equivalent
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::SprayCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "pencil");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::WaitCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "watch");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::TextCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "xterm");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::CrosshairCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "cross");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::HandCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "grabbing");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::UpDownCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "sb_v_double_arrow");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::LeftRightCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "sb_h_double_arrow");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::TopSideCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "top_side");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::BottomSideCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "bottom_side");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::LeftSideCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "left_side");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::RightSideCursor] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "right_side");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::TopLeftCorner] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "top_left_corner");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::TopRightCorner] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "top_right_corner");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::BottomRightCorner] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "bottom_right_corner");
+            _gc.cursors[osgViewer::GraphicsWindow::MouseCursor::BottomLeftCorner] = wl_cursor_theme_get_cursor(_gc.cursor_theme, "bottom_left_corner");
+            WLGWlog(0) << "WLwsi: loaded cursor_theme: " << _gc.cursor_theme << std::endl;
+            // monitor seat capabilities if we have one..
             if (_gc.seat) {
-                wl_cursor_theme* theme = wl_cursor_theme_load(nullptr, 24, _gc.shm);
-                _gc.cursor = wl_cursor_theme_get_cursor(theme, "left_ptr");
-                WLGWlog(0) << "WLwsi: loaded cursor: " << _gc.cursor << std::endl;
                 _wl_seat_listener.capabilities = seat_capabilities;
                 _wl_seat_listener.name = seat_name;
                 wl_seat_add_listener(_gc.seat, &_wl_seat_listener, this);
@@ -675,113 +765,8 @@ private:
     }
 
 public:
-    WLWindowingSystemInterface() {
+    WLWindowingSystemInterface() : _wl_init(false) {
         WLGWlog(0) << "WLWindowingSystemInterface<init>" << std::endl;
-        _wl_init = false;   // lazy init as we may never get called..
-        // fill out keymap
-        s_keymap[KEY_ESC]  = osgGA::GUIEventAdapter::KEY_Escape;
-        // Some of these should be osgGA::GUIEventAdapter::KEY_<n> but that collides
-        // with the macros used in input-event-codes.h and really fouls up :(
-        s_keymap[KEY_1] = '1';
-        s_keymap[KEY_2] = '2';
-        s_keymap[KEY_3] = '3';
-        s_keymap[KEY_4] = '4';
-        s_keymap[KEY_5] = '5';
-        s_keymap[KEY_6] = '6';
-        s_keymap[KEY_7] = '7';
-        s_keymap[KEY_8] = '8';
-        s_keymap[KEY_9] = '9';
-        s_keymap[KEY_0] = '0';
-        s_keymap[KEY_MINUS] = osgGA::GUIEventAdapter::KEY_Minus;
-        s_keymap[KEY_EQUAL] = osgGA::GUIEventAdapter::KEY_Equals;
-        s_keymap[KEY_BACKSPACE] = osgGA::GUIEventAdapter::KEY_BackSpace;
-        s_keymap[KEY_TAB] = osgGA::GUIEventAdapter::KEY_Tab;
-        s_keymap[KEY_Q] = 'q';
-        s_keymap[KEY_W] = 'w';
-        s_keymap[KEY_E] = 'e';
-        s_keymap[KEY_R] = 'r';
-        s_keymap[KEY_T] = 't';
-        s_keymap[KEY_Y] = 'y';
-        s_keymap[KEY_U] = 'u';
-        s_keymap[KEY_I] = 'i';
-        s_keymap[KEY_O] = 'o';
-        s_keymap[KEY_P] = 'p';
-        s_keymap[KEY_LEFTBRACE] = osgGA::GUIEventAdapter::KEY_Leftbracket;
-        s_keymap[KEY_RIGHTBRACE] = osgGA::GUIEventAdapter::KEY_Rightbracket;
-        s_keymap[KEY_ENTER] = osgGA::GUIEventAdapter::KEY_Return;
-        s_keymap[KEY_LEFTCTRL] = osgGA::GUIEventAdapter::KEY_Control_L;
-        s_keymap[KEY_A] = 'a';
-        s_keymap[KEY_S] = 's';
-        s_keymap[KEY_D] = 'd';
-        s_keymap[KEY_F] = 'f';
-        s_keymap[KEY_G] = 'g';
-        s_keymap[KEY_H] = 'h';
-        s_keymap[KEY_J] = 'j';
-        s_keymap[KEY_K] = 'k';
-        s_keymap[KEY_L] = 'l';
-        s_keymap[KEY_SEMICOLON] = osgGA::GUIEventAdapter::KEY_Semicolon;
-        s_keymap[KEY_APOSTROPHE] = osgGA::GUIEventAdapter::KEY_At;
-        s_keymap[KEY_GRAVE] = osgGA::GUIEventAdapter::KEY_Backquote;
-        s_keymap[KEY_LEFTSHIFT] = osgGA::GUIEventAdapter::KEY_Shift_L;
-        s_keymap[KEY_BACKSLASH] = osgGA::GUIEventAdapter::KEY_Backslash;
-        s_keymap[KEY_Z] = 'z';
-        s_keymap[KEY_X] = 'x';
-        s_keymap[KEY_C] = 'c';
-        s_keymap[KEY_V] = 'v';
-        s_keymap[KEY_B] = 'b';
-        s_keymap[KEY_N] = 'n';
-        s_keymap[KEY_M] = 'm';
-        s_keymap[KEY_COMMA] = osgGA::GUIEventAdapter::KEY_Comma;
-        s_keymap[KEY_DOT] = osgGA::GUIEventAdapter::KEY_Period;
-        s_keymap[KEY_SLASH] = osgGA::GUIEventAdapter::KEY_Slash;
-        s_keymap[KEY_RIGHTSHIFT] = osgGA::GUIEventAdapter::KEY_Shift_R;
-        s_keymap[KEY_KPASTERISK] = osgGA::GUIEventAdapter::KEY_KP_Multiply;
-        s_keymap[KEY_LEFTALT] = osgGA::GUIEventAdapter::KEY_Alt_L;
-        s_keymap[KEY_SPACE] = osgGA::GUIEventAdapter::KEY_Space;
-        s_keymap[KEY_CAPSLOCK] = osgGA::GUIEventAdapter::KEY_Caps_Lock;
-        s_keymap[KEY_F1] = 0xffbe;
-        s_keymap[KEY_F2] = 0xffbf;
-        s_keymap[KEY_F3] = 0xffc0;
-        s_keymap[KEY_F4] = 0xffc1;
-        s_keymap[KEY_F5] = 0xffc2;
-        s_keymap[KEY_F6] = 0xffc3;
-        s_keymap[KEY_F7] = 0xffc4;
-        s_keymap[KEY_F8] = 0xffc5;
-        s_keymap[KEY_F9] = 0xffc6;
-        s_keymap[KEY_F10] = 0xffc7;
-        s_keymap[KEY_NUMLOCK] = osgGA::GUIEventAdapter::KEY_Num_Lock;
-        s_keymap[KEY_SCROLLLOCK] = osgGA::GUIEventAdapter::KEY_Scroll_Lock;
-        s_keymap[KEY_KP7] = osgGA::GUIEventAdapter::KEY_KP_7;
-        s_keymap[KEY_KP8] = osgGA::GUIEventAdapter::KEY_KP_8;
-        s_keymap[KEY_KP9] = osgGA::GUIEventAdapter::KEY_KP_9;
-        s_keymap[KEY_KPMINUS] = osgGA::GUIEventAdapter::KEY_KP_Subtract;
-        s_keymap[KEY_KP4] = osgGA::GUIEventAdapter::KEY_KP_4;
-        s_keymap[KEY_KP5] = osgGA::GUIEventAdapter::KEY_KP_5;
-        s_keymap[KEY_KP6] = osgGA::GUIEventAdapter::KEY_KP_6;
-        s_keymap[KEY_KPPLUS] = osgGA::GUIEventAdapter::KEY_KP_Add;
-        s_keymap[KEY_KP1] = osgGA::GUIEventAdapter::KEY_KP_1;
-        s_keymap[KEY_KP2] = osgGA::GUIEventAdapter::KEY_KP_2;
-        s_keymap[KEY_KP3] = osgGA::GUIEventAdapter::KEY_KP_3;
-        s_keymap[KEY_KP0] = osgGA::GUIEventAdapter::KEY_KP_0;
-        s_keymap[KEY_KPDOT] = osgGA::GUIEventAdapter::KEY_KP_Decimal;
-        s_keymap[KEY_F11] = 0xffc8;
-        s_keymap[KEY_F12] = 0xffc9;
-        s_keymap[KEY_KPENTER] = osgGA::GUIEventAdapter::KEY_KP_Enter;
-        s_keymap[KEY_RIGHTCTRL] = osgGA::GUIEventAdapter::KEY_KP_Enter;
-        s_keymap[KEY_KPSLASH] = osgGA::GUIEventAdapter::KEY_KP_Divide;
-        s_keymap[KEY_RIGHTALT] = osgGA::GUIEventAdapter::KEY_Alt_R;
-        s_keymap[KEY_HOME] = osgGA::GUIEventAdapter::KEY_Home;
-        s_keymap[KEY_UP] = osgGA::GUIEventAdapter::KEY_Up;
-        s_keymap[KEY_PAGEUP] = osgGA::GUIEventAdapter::KEY_Page_Up;
-        s_keymap[KEY_LEFT] = osgGA::GUIEventAdapter::KEY_Left;
-        s_keymap[KEY_RIGHT] = osgGA::GUIEventAdapter::KEY_Right;
-        s_keymap[KEY_END] = osgGA::GUIEventAdapter::KEY_End;
-        s_keymap[KEY_DOWN] = osgGA::GUIEventAdapter::KEY_Down;
-        s_keymap[KEY_PAGEDOWN] = osgGA::GUIEventAdapter::KEY_Page_Down;
-        s_keymap[KEY_INSERT] = osgGA::GUIEventAdapter::KEY_Insert;
-        s_keymap[KEY_DELETE] = osgGA::GUIEventAdapter::KEY_Delete;
-        s_keymap[KEY_LEFTMETA] = osgGA::GUIEventAdapter::KEY_Meta_L;
-        s_keymap[KEY_RIGHTMETA] = osgGA::GUIEventAdapter::KEY_Meta_R;
     }
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) {
         WLGWlog(1) << "WLwsi:getNumScreens(...)[" << std::endl;

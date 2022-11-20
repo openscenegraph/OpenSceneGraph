@@ -58,6 +58,15 @@ struct gc_client_state {
     uint32_t keyboard_serial;
     // custom Ctrl modifier
     bool keyboard_ctrl;
+    // repeat state
+    int32_t keyboard_repeat;
+    int32_t keyboard_delay;
+    uint64_t keyboard_tick;
+    int keyboard_state;
+    int keyboard_last;
+    #define KEYBOARD_IDLE   0
+    #define KEYBOARD_DELAY  1
+    #define KEYBOARD_REPEAT 2
 };
 // graphics window state (instanced)
 struct gw_client_state {
@@ -377,6 +386,9 @@ public:
     }
     virtual void swapBuffersImplementation() {
         eglSwapBuffers(_gw.gc->egl_display, _gw.egl_surface);
+        // pump any async logic
+        checkAsyncWork();
+        // pump any Wayland messages
         wl_display_dispatch_pending(_gw.gc->display);
     }
 
@@ -486,6 +498,7 @@ private:
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.keyboard_surface = surface;
         obj->_gc.keyboard_serial = serial;
+        obj->_gc.keyboard_ctrl = false;
         WLGWlog(1) << "<keyboard enter: " << surface << ">" << std::endl;
         // dump pressed keys
         uint32_t* pkey = (uint32_t*)keys->data;
@@ -498,6 +511,7 @@ private:
     static void keyboard_leave(void* data, wl_keyboard* wl_keyboard, uint32_t serial, wl_surface* surface) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.keyboard_surface = nullptr;
+        obj->_gc.keyboard_state = KEYBOARD_IDLE;
         WLGWlog(0) << "<keyboard leave: " << surface << ">" << std::endl;
     }
     static void keyboard_map(void* data, wl_keyboard* wl_keyboard, uint32_t format, int32_t fd, uint32_t size) {
@@ -521,7 +535,10 @@ private:
         WLGWlog(0) << "<keyboard map: format=" << format << ", fd=" << fd << ", size=" << size << ", map=" << obj->_gc.xkb_keymap << ", state=" << obj->_gc.xkb_state << ">" << std::endl;
     }
     static void keyboard_repeat(void* data, wl_keyboard* wl_keyboard, int32_t rate, int32_t delay) {
+        WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         WLGWlog(0) << "<keyboard repeat: rate=" << rate << ", delay=" << delay << ">" << std::endl;
+        obj->_gc.keyboard_repeat = 1000/rate;
+        obj->_gc.keyboard_delay = delay;
     }
     static void keyboard_modifiers(void* data, wl_keyboard* wl_keyboard, uint32_t serial, uint32_t mods_depressed, uint32_t mods_latched, uint32_t mods_locked, uint32_t group) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
@@ -549,6 +566,9 @@ private:
                 win->getEventQueue()->keyRelease((int)sym);
             WLGWlog(0) << (state?"<keypress: ":"<keyrelease: ") << key << "=>" << sym << ">" << std::endl;
         }
+        // any new keypress always puts us in DELAY state for repeats, releasing any key stops repeats
+        obj->_gc.keyboard_state = state ? KEYBOARD_DELAY : KEYBOARD_IDLE;
+        obj->_gc.keyboard_last = (int)sym;
     }
     static void pointer_enter(void *data, wl_pointer* wl_pointer, uint32_t serial, wl_surface* surface, wl_fixed_t surface_x, wl_fixed_t surface_y) {
         WLGWlog(0) << "<pointer enter: " << surface << ">" << std::endl;
@@ -864,6 +884,41 @@ public:
     uint32_t getLastKeySerial() {
         return _gc.keyboard_serial;
     }
+
+    // async work pump
+    void checkAsyncWork(void) {
+        // keyboard repeat?
+        if (KEYBOARD_IDLE==_gc.keyboard_state) {
+            // while idle, record current tick..
+            _gc.keyboard_tick = tickMs();
+        } else if (KEYBOARD_DELAY==_gc.keyboard_state) {
+            // while in delay, wait for specified time
+            uint64_t now = tickMs();
+            if (now>_gc.keyboard_tick+(uint64_t)_gc.keyboard_delay) {
+                // start repeating from now
+                _gc.keyboard_state = KEYBOARD_REPEAT;
+                _gc.keyboard_tick = now;
+            }
+        } else {
+            // while in repeat, time to issue another repeat?
+            uint64_t now = tickMs();
+            if (now>_gc.keyboard_tick+(uint64_t)_gc.keyboard_repeat) {
+                // yep - send release then press events
+                auto win = get_window(_gc.keyboard_surface);
+                win->getEventQueue()->keyRelease(_gc.keyboard_last);
+                win->getEventQueue()->keyPress(_gc.keyboard_last);
+                _gc.keyboard_tick = now;
+                WLGWlog(0) << "<keyboard repeat: " << _gc.keyboard_last << ">" << std::endl;
+            }
+        }
+    }
+
+private:
+    uint64_t tickMs(void) {
+        struct timespec ts;
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        return (ts.tv_sec * 1000)+(ts.tv_nsec/1000000);
+    }
 };
 
 // statically register our new windowing system at run-time
@@ -885,6 +940,10 @@ struct wl_data_source* getWaylandDataSource() {
 uint32_t getWaylandLastKeySerial() {
     com::ashbysoft::WLWindowingSystemInterface* wsi = com::ashbysoft::s_proxy_WLWindowingSystemInterface._wsi.get();
     return wsi ? wsi->getLastKeySerial() : 0;
+}
+void checkAsyncWork() {
+    com::ashbysoft::WLWindowingSystemInterface* wsi = com::ashbysoft::s_proxy_WLWindowingSystemInterface._wsi.get();
+    if (wsi) wsi->checkAsyncWork();
 }
 struct wl_display* getWaylandDisplay() {
     com::ashbysoft::WLWindowingSystemInterface* wsi = com::ashbysoft::s_proxy_WLWindowingSystemInterface._wsi.get();

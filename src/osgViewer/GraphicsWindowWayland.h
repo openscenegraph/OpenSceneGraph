@@ -8,6 +8,7 @@ extern "C" {
     struct wl_data_device* getWaylandDataDevice();
     struct wl_data_source* getWaylandDataSource();
     uint32_t getWaylandLastKeySerial();
+    void checkAsyncWork();
     struct wl_display* getWaylandDisplay();
 #ifdef __cplusplus
 }

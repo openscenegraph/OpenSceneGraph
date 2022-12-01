@@ -7,13 +7,13 @@
 
 Welcome to the OpenSceneGraph (OSG).
 
-For up-to-date information on the project, in-depth details on how to compile and run libraries and examples, see the documentation on the OpenSceneGraph website:
+For information on the project, in-depth details on how to compile and run libraries and examples, see the documentation on the OpenSceneGraph website:
 
     http://www.openscenegraph.org/index.php/documentation
 
-For support subscribe to our public mailing list or forum, details at:
+For support please use the github OpenSceneGraph Discussions forum:
 
-    http://www.openscenegraph.org/index.php/support
+    https://github.com/openscenegraph/OpenSceneGraph/discussions
 
 For the impatient, we've included quick build instructions below, these are are broken down is three parts:
 

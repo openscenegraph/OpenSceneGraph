@@ -73,5 +73,7 @@ SET(TARGET_LIBRARIES
     OpenThreads
 )
 
+SET(COMPONENT_PKGCONFIG_DESCRIPTION "GUI event library for Openscenegraph")
+
 SETUP_LIBRARY(${LIB_NAME})
 

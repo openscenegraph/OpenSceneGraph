@@ -36,12 +36,13 @@ if(COMMAND cmake_policy)
 endif()
 
 IF(APPLE)
-  # Get OSX version in MAJOR.MINOR format
-  EXECUTE_PROCESS(COMMAND sw_vers -productVersion
-    OUTPUT_VARIABLE OSG_OSX_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+).*$" "\\1"
-    OSG_OSX_VERSION "${OSG_OSX_VERSION}")
+    # Get OSX version in MAJOR.MINOR format
+    EXECUTE_PROCESS(COMMAND sw_vers -productVersion
+        OUTPUT_VARIABLE OSG_OSX_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+).*$" "\\1"
+        OSG_OSX_VERSION "${OSG_OSX_VERSION}")
+    MESSAGE(STATUS "OSG_OSX_VERSION=${OSG_OSX_VERSION}")
 ENDIF()
 
 PROJECT(OpenSceneGraph)
@@ -93,16 +94,20 @@ ELSEIF(APPLE)
             SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Windowing system type for graphics window creation; options: Carbon, Cocoa, X11 or None.")
         ENDIF()
 
-        # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
-        # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
-        # These are set the first time CMake is run, and can be changed by
-        # the user at any time.
-        IF(OSG_OSX_VERSION VERSION_GREATER 10.7)
-            # 64 Bit Works, i386,ppc is not supported any more
+        # Set macOS architectures for Universal Binaries.
+        IF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.14)
+            # x86_64 only
+            SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
+            SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Target OSX version")
+            # libstdc++ is no longer supported
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+            SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+        ELSEIF(OSG_OSX_VERSION VERSION_GREATER_EQUAL 10.8)
+            # i386 is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX")
             SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Target OSX version")
         ELSEIF(OSG_OSX_VERSION VERSION_EQUAL 10.7)
-            # 64 Bit Works, PPC is not supported any more
+            # ppc is no longer supported
             SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX")
         ELSEIF(OSG_OSX_VERSION VERSION_GREATER 10.4)
             # 64-bit compiles are not supported with Carbon.
@@ -229,7 +234,7 @@ IF (OSG_MAINTAINER)
         COMMAND ${GENERATELOGS} > ChangeLog
     )
 
-ENDIF(OSG_MAINTAINER)
+ENDIF()
 
 IF(NOT ANDROID)
 IF(APPLE)
@@ -243,7 +248,6 @@ IF(APPLE)
         SET(OPENGL_gl_LIBRARY "${IPHONE_SDKROOT}/System/Library/Frameworks/OpenGLES.framework")
 
     ELSE ()
-        FIND_LIBRARY(CARBON_LIBRARY Carbon)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 
         # Apple OS X: Find OpenGL and AGL based on OSG_WINDOWING_SYSTEM
@@ -267,6 +271,7 @@ IF(APPLE)
 
         ELSEIF(OSG_WINDOWING_SYSTEM STREQUAL "Carbon")
           # AGL needed for Carbon windowing systems
+          FIND_LIBRARY(CARBON_LIBRARY Carbon)
           FIND_LIBRARY(AGL_LIBRARY AGL)
         ENDIF()
 
@@ -278,8 +283,25 @@ IF(APPLE)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ELSE()
     # Non-Apple: Find OpenGL
-    FIND_PACKAGE(OpenGL)
-    FIND_PACKAGE(EGL)
+    
+    # Support EGL on Windows
+    IF(OSG_WINDOWING_SYSTEM STREQUAL "Win32" AND (OSG_GLES2_AVAILABLE OR OSG_GLES3_AVAILABLE ) )
+        FIND_PACKAGE(EGL)
+    
+        set(OSG_USE_EGL ON)
+
+        IF(OSG_GLES3_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES3/gl3.h)
+        ENDIF()
+        IF(OSG_GLES2_AVAILABLE)
+            FIND_PATH(OPENGL_INCLUDE_DIR GLES2/gl2.h)
+        ENDIF()
+        FIND_LIBRARY(OPENGL_gl_LIBRARY "libGLESv2.dll")
+    ELSE()
+        # Non-Apple: Find OpenGL
+        FIND_PACKAGE(OpenGL)
+    ENDIF()
+
 ENDIF()
 ENDIF()
 
@@ -797,14 +819,13 @@ INCLUDE(OsgMacroUtils)
 
 
 #optional example related dependencies
-IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
-
+IF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
     FIND_PACKAGE(FLTK)
     FIND_PACKAGE(FOX)
     FIND_PACKAGE(wxWidgets COMPONENTS base core gl net)
 
-ENDIF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
+ENDIF()
 
 
 # Platform specific:
@@ -915,9 +936,6 @@ ELSE()
     SET(OSG_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR})
   ENDIF()
 ENDIF()
-IF(NOT DEFINED LIB_POSTFIX)
-    SET(LIB_POSTFIX "")
-ENDIF()
 
 # Set installation variables
 SET(INSTALL_INCDIR include)
@@ -926,8 +944,8 @@ IF(WIN32)
     SET(INSTALL_LIBDIR bin)
     SET(INSTALL_ARCHIVEDIR lib)
 ELSE()
-    SET(INSTALL_LIBDIR lib${LIB_POSTFIX})
-    SET(INSTALL_ARCHIVEDIR lib${LIB_POSTFIX})
+    SET(INSTALL_LIBDIR ${OSG_INSTALL_LIBDIR})
+    SET(INSTALL_ARCHIVEDIR ${OSG_INSTALL_LIBDIR})
 ENDIF()
 
 # If the version is equal to or greater than 2.8.8, then we can use the
@@ -946,7 +964,7 @@ IF(CMAKE_VERSION VERSION_EQUAL   "2.8.8" OR
     IF(WIN32)
         SET(INSTALL_CONFIGDIR cmake)
     ELSE()
-        SET(INSTALL_CONFIGDIR lib${LIB_POSTFIX}/cmake/OpenSceneGraph)
+        SET(INSTALL_CONFIGDIR ${OSG_INSTALL_LIBDIR}/cmake/OpenSceneGraph)
     ENDIF()
 
     INCLUDE(CMakePackageConfigHelpers)
@@ -978,7 +996,7 @@ ELSE()
 
 ENDIF()
 
-SET(INSTALL_PKGCONFIGDIR lib${LIB_POSTFIX}/pkgconfig)
+SET(INSTALL_PKGCONFIGDIR ${OSG_INSTALL_LIBDIR}/pkgconfig)
 
 # Here we apparently do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
@@ -1085,50 +1103,44 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
 
-
 ELSEIF(MSVC)
-        #disable specific warning level 4 warnings:
-        #C4100 'identifier' : unreferenced formal parameter
-        #C4127 Error Message conditional expression is constant
-        #C4706 assignment within conditional expression
-        #C4589: Constructor of abstract class 'osgGA::CameraManipulator' ignores initializer for virtual base class 'osg::Object'
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4589 /wd4706 /wd4127 /wd4100)
+    #disable specific warning level 4 warnings:
+    #C4100 'identifier' : unreferenced formal parameter
+    #C4127 Error Message conditional expression is constant
+    #C4706 assignment within conditional expression
+    #C4589: Constructor of abstract class 'osgGA::CameraManipulator' ignores initializer for virtual base class 'osg::Object'
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4589 /wd4706 /wd4127 /wd4100)
 ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS  -Wall -Wparentheses -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -Wno-overloaded-virtual)
 
-        # CMake lacks an elseif, so other non-gcc, non-VS compilers need
-        # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
-        # remain unset.
+    IF (APPLE)
+        SET(OSG_CXX_LANGUAGE_STANDARD "C++11" CACHE STRING "set the c++ language standard (C++98 / GNU++98 / C++11) for OSG" )
+        MARK_AS_ADVANCED(OSG_CXX_LANGUAGE_STANDARD)
 
-        IF (APPLE)
-            SET(OSG_CXX_LANGUAGE_STANDARD "C++11" CACHE STRING "set the c++ language standard (C++98 / GNU++98 / C++11) for OSG" )
-            MARK_AS_ADVANCED(OSG_CXX_LANGUAGE_STANDARD)
-            # remove existing flags
-            REMOVE_CXX_FLAG(-std=c++98)
-            REMOVE_CXX_FLAG(-std=gnu++98)
-            REMOVE_CXX_FLAG(-std=c++11)
-            REMOVE_CXX_FLAG(-stdlib=libstdc++)
-            REMOVE_CXX_FLAG(-stdlib=libc++)
+        # remove existing flags
+        REMOVE_CXX_FLAG(-std=c++98)
+        REMOVE_CXX_FLAG(-std=gnu++98)
+        REMOVE_CXX_FLAG(-std=c++11)
+        REMOVE_CXX_FLAG(-stdlib=libstdc++)
+        REMOVE_CXX_FLAG(-stdlib=libc++)
 
-            IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "c++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "C++98")
-                set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++98")
-                set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++")
-            ELSE()
-                IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "gnu++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "GNU++98")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
-                    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++98 -stdlib=libstdc++")
-                ELSE()
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
-                    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-                    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-                ENDIF()
-            ENDIF()
-
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual -Wno-conversion")
-            set(WARNING_CFLAGS "")
+        IF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "c++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "C++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++")
+        ELSEIF(${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "gnu++98" OR ${OSG_CXX_LANGUAGE_STANDARD} STREQUAL "GNU++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "gnu++98")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libstdc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++98 -stdlib=libstdc++")
+        ELSE()
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+            set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
         ENDIF()
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overloaded-virtual -Wno-conversion")
+        set(WARNING_CFLAGS "")
+    ENDIF()
 ENDIF()
 
 # This part is for the CMake menu option to toggle the warnings on/off.
@@ -1347,7 +1359,7 @@ IF(REQUIRES_LIBPATH_MESSAGE)
     IF (NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
         SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
 
-        MESSAGE("\nThe build system is configured to install libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
+        MESSAGE("\nThe build system is configured to install libraries to ${CMAKE_INSTALL_PREFIX}/${OSG_INSTALL_LIBDIR}\n"
             "Your applications may not be able to find your installed libraries unless you:\n"
             "    set your LD_LIBRARY_PATH (user specific) or\n"
             "    update your ld.so configuration (system wide)")
@@ -1369,12 +1381,12 @@ IF(REQUIRES_LIBPATH_MESSAGE)
             IF(EXISTS /etc/ld.so.conf)
                 MESSAGE("You have an ld.so.conf file in /etc, if you wish to ensure \n"
                 "that applications find the installed osg libraries, system wide, you\n"
-                "could add ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX} to it.")
+                "could add ${CMAKE_INSTALL_PREFIX}/${OSG_INSTALL_LIBDIR} to it.")
             ENDIF()
         ENDIF()
 
         # emit a message during installation.
-        INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
+        INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}${OSG_INSTALL_LIBDIR}.\\nYou may need to update your ld.so configuration. \")")
 
     ENDIF(NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
 

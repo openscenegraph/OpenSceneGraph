@@ -64,7 +64,8 @@ install_manifest*.txt
 *.app
 
 # Automatically generated Package files
-packaging/cmake/*
+packaging/cmake/openscenegraph-osg*
+packaging/cmake/openscenegraph-OpenThreads*
 configure/*
 
 # Platform Specifics - auto generated files

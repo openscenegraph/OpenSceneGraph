@@ -531,7 +531,7 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
             wmHints.inputMode = 0;
             wmHints.status = 0;
 
-            // if traits says not resize we want to set the functions to exlude MWM_FUNC_RESIZE,
+            // if traits says not resize we want to set the functions to exclude MWM_FUNC_RESIZE,
             // but this bitmask needs to be set if the MWM_FUNC_ALL bit is already set in order to toggle it off.
             if (_traits.valid() && !_traits->supportsResize) wmHints.functions = wmHints.functions | MWM_FUNC_RESIZE;
 

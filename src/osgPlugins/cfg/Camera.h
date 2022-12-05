@@ -34,7 +34,7 @@ class RenderSurface;
 
     The Camera contains a Lens class and has a RenderSurface.  Methods
     are provided to give the programmer control over the OpenGL PROJECTION
-    matrix throught the Lens and over the initial MODELVIEW matrix through
+    matrix through the Lens and over the initial MODELVIEW matrix through
     the camera's position and attitude.
 
     The programmer must provide a class derived from Camera::SceneHandler

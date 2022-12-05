@@ -910,7 +910,7 @@ struct ListDeviceAvailable
                 }
             }
 
-            // covert to std::string
+            // convert to std::string
             _bstr_t bstr_t(varName.bstrVal);
             std::string deviceName(bstr_t);
             std::string deviceGUID;

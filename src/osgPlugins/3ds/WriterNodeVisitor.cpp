@@ -907,7 +907,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
                               bool                texcoords)
 {
     unsigned int nbTrianglesRemaining = listTriangles.size();
-    unsigned int nbVerticesRemaining  = calcVertices(geo);        // May set _succeded to false
+    unsigned int nbVerticesRemaining  = calcVertices(geo);        // May set _succeeded to false
     if (!succeeded()) return;
 
     std::string name( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), true, "geo") );
@@ -942,7 +942,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
             // Finnish mesh
             lib3ds_mesh_resize_faces   (mesh, numFace);
             //lib3ds_mesh_resize_vertices() will be called in buildMesh()
-            buildMesh(geo, mat, index_vert, texcoords, mesh);        // May set _succeded to false
+            buildMesh(geo, mat, index_vert, texcoords, mesh);        // May set _succeeded to false
             if (!succeeded())
             {
                 lib3ds_mesh_free(mesh);
@@ -973,7 +973,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
         face.material = it->first.material;
     }
 
-    buildMesh(geo, mat, index_vert, texcoords, mesh);        // May set _succeded to false
+    buildMesh(geo, mat, index_vert, texcoords, mesh);        // May set _succeeded to false
     if (!succeeded())
     {
         lib3ds_mesh_free(mesh);
@@ -1027,7 +1027,7 @@ void WriterNodeVisitor::apply( osg::Geode &node )
         if ( g != NULL )
         {
             pushStateSet(g->getStateSet());
-            createListTriangle(g, listTriangles, texcoords, i);        // May set _succeded to false
+            createListTriangle(g, listTriangles, texcoords, i);        // May set _succeeded to false
             popStateSet(g->getStateSet());
             if (!succeeded()) break;
         }
@@ -1036,9 +1036,9 @@ void WriterNodeVisitor::apply( osg::Geode &node )
     {
 #if DISABLE_3DS_ANIMATION
         osg::Matrix mat( osg::computeLocalToWorld(getNodePath()) );
-        buildFaces(node, mat, listTriangles, texcoords);        // May set _succeded to false
+        buildFaces(node, mat, listTriangles, texcoords);        // May set _succeeded to false
 #else
-        buildFaces(node, osg::Matrix(), listTriangles, texcoords);        // May set _succeded to false
+        buildFaces(node, osg::Matrix(), listTriangles, texcoords);        // May set _succeeded to false
 #endif
     }
     popStateSet(node.getStateSet());
@@ -1071,17 +1071,17 @@ void WriterNodeVisitor::apply( osg::Billboard &node )
 
             pushStateSet(g->getStateSet());
             createListTriangle(g, listTriangles, texcoords, i);
-            popStateSet(g->getStateSet());        // May set _succeded to false
+            popStateSet(g->getStateSet());        // May set _succeeded to false
             if (!succeeded()) break;
 
             osg::Matrix pointLocalMat(osg::Matrix::translate(node.getPosition(i)));        // TODO handle rotation
 #if DISABLE_3DS_ANIMATION
             osg::Matrix currentBillboardWorldMat(pointLocalMat * m);
             apply3DSMatrixNode(node, &pointLocalMat, "bil");                            // Add a 3DS matrix node (with local matrix)
-            buildFaces(node, currentBillboardWorldMat, listTriangles, texcoords);        // May set _succeded to false
+            buildFaces(node, currentBillboardWorldMat, listTriangles, texcoords);        // May set _succeeded to false
 #else
             apply3DSMatrixNode(node, &pointLocalMat, "bil");                            // Add a 3DS matrix node (with local matrix)
-            buildFaces(node, osg::Matrix(), listTriangles, texcoords);                    // May set _succeded to false
+            buildFaces(node, osg::Matrix(), listTriangles, texcoords);                    // May set _succeeded to false
 #endif
             if (!succeeded()) break;
         }

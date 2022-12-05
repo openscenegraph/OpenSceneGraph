@@ -44,7 +44,7 @@ private:
 
     Block threadStartedBlock;
 
-    int  cancelMode; // 0 - deffered (default) 1-asynch 2-disabled
+    int  cancelMode; // 0 - deferred (default) 1-asynch 2-disabled
 
     bool detached;
 

@@ -500,7 +500,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
 #if IMPROVE_TEXGEN_PRECISION
         // compute the matrix which takes a vertex from local coords into tex coords
         // We actually use two matrices one used to define texgen
-        // and second that will be used as modelview when appling to OpenGL
+        // and second that will be used as modelview when applying to OpenGL
         _texgen->setPlanesFromMatrix( _camera->getProjectionMatrix() *
                                       osg::Matrix::translate(1.0,1.0,1.0) *
                                       osg::Matrix::scale(0.5f,0.5f,0.5f) );

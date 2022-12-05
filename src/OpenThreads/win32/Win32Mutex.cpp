@@ -15,7 +15,7 @@
 //
 // Win32Mutex.c++ - C++ Mutex class .
 // The idea for it is borrowed from SGI STL
-// It looks like it's hard to use win32 CRITICALL_SECTIONS withour introducing race 
+// It looks like it's hard to use win32 CRITICALL_SECTIONS without introducing race 
 // conditions on InitializeCriticalSection() . So we use spin mutex here.
 // ~~~~~~~~~~~~~~~~
 //

@@ -22,7 +22,7 @@ class QuicktimeImportExport {
         /** readFromString tries to read a chunk of bytes and interpret it as an image.
          *  @param istream the input stream
          *  @param fileTypeHint you can speed up the conversion by providing a filename with extension, so quicktime has not to guess the image's type
-         *  @param sizeHint useful, if you are streaming data, if you provide a sizeHint ony sizeHint bytes are read from the stream
+         *  @param sizeHint useful, if you are streaming data, if you provide a sizeHint only sizeHint bytes are read from the stream
          */
         osg::Image* readFromStream(std::istream & inStream, const std::string& fileTypeHint, long sizeHint = 0);
 

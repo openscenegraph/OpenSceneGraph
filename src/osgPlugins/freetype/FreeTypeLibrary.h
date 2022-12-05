@@ -28,7 +28,7 @@ class FreeTypeLibrary : public osg::Referenced
 {
 public:
 
-    /** protected destrcutor to prevent inappropriate deletion.*/
+    /** protected destructor to prevent inappropriate deletion.*/
     virtual ~FreeTypeLibrary();
 
     /** get the singleton instance.*/

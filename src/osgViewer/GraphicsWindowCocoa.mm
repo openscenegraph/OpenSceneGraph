@@ -457,7 +457,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     DEBUG_OUT("Mouse down");
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
-    // I will use the Ctrl modifer to represent right-clicking
+    // I will use the Ctrl modifier to represent right-clicking
     // and Option modifier to represent middle clicking.
     if([theEvent modifierFlags] & NSControlKeyMask)
     {
@@ -505,7 +505,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
-    // I will use the Ctrl modifer to represent right-clicking
+    // I will use the Ctrl modifier to represent right-clicking
     // and Option modifier to represent middle clicking.
     if([self isUsingCtrlClick] == YES)
     {

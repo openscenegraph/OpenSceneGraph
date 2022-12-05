@@ -1760,7 +1760,7 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
         case SoDrawStyle::FILLED:
         {
 #if 0
-// OSG defaults to filled draw style, so no need to set redundent state.
+// OSG defaults to filled draw style, so no need to set redundant state.
             osg::PolygonMode *polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK,
                                  osg::PolygonMode::FILL);

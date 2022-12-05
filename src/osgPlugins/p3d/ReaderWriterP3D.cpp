@@ -3160,7 +3160,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         {
             std::string newpath = expandEnvVarsInFileName(cur->contents);
 
-            // now check if an absolue or http path
+            // now check if an absolute or http path
             std::string::size_type colonPos = newpath.find_first_of(':');
             std::string::size_type backslashPos = newpath.find_first_of('/');
             std::string::size_type forwardslashPos = newpath.find_first_of('\\');

@@ -164,7 +164,7 @@ Window::Sizes Box::_getWidthImplementation() const {
         );
     }
 
-    // If we're a vertical Box, our width is the width of the larget Widget in the group.
+    // If we're a vertical Box, our width is the width of the largest Widget in the group.
     // Our minWidth is the largest minWidth of the Widgets in the group.
     else return Sizes(
         _getMaxWidgetWidthTotal(),

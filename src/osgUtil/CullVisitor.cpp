@@ -128,7 +128,7 @@ void CullVisitor::reset()
         (*itr)->reset();
     }
 
-    // reset the resuse lists.
+    // reset the reuse lists.
     _currentReuseRenderLeafIndex = 0;
 
     _nearPlaneCandidateMap.clear();
@@ -169,7 +169,7 @@ void CullVisitor::computeNearPlane()
 #if 0
         osg::Timer_t start_t = osg::Timer::instance()->tick();
 #endif
-        // update near from defferred list of drawables
+        // update near from deferred list of drawables
         unsigned int numTests = 0;
         for(DistanceMatrixDrawableMap::iterator itr=_nearPlaneCandidateMap.begin();
             itr!=_nearPlaneCandidateMap.end() && itr->first<_computed_znear;
@@ -199,7 +199,7 @@ void CullVisitor::computeNearPlane()
 
         //osg::Timer_t start_t = osg::Timer::instance()->tick();
 
-        // update near from defferred list of drawables
+        // update near from deferred list of drawables
         unsigned int numTests = 0;
         for(DistanceMatrixDrawableMap::reverse_iterator itr=_farPlaneCandidateMap.rbegin();
             itr!=_farPlaneCandidateMap.rend() && itr->first>_computed_zfar;
@@ -765,7 +765,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
                 MatrixPlanesDrawables mpd;
                 if (isBillboard)
                 {
-                    // OSG_WARN<<"Adding billboard into deffered list"<<std::endl;
+                    // OSG_WARN<<"Adding billboard into deferred list"<<std::endl;
                     osg::Polytope transformed_frustum;
                     transformed_frustum.setAndTransformProvidingInverse(getProjectionCullingStack().back().getFrustum(),matrix);
                     mpd.set(matrix,&drawable,transformed_frustum);

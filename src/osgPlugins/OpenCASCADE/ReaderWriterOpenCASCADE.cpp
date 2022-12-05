@@ -373,7 +373,7 @@ osg::ref_ptr<osg::Geode> ReaderWritterOpenCASCADE::OCCTKReader::igesToOSGGeode(c
 void ReaderWritterOpenCASCADE::OCCTKReader::_traverse(const TDF_Label &shapeTree, gp_Trsf& transformation)
 {
     TDF_Label referredShape;
-    /// find if current shape referes some shape. if it does then traverse that
+    /// find if current shape referred some shape. if it does then traverse that
     /// else it is a simple shape and do visualize that simple shape
     if(_assembly->GetReferredShape(shapeTree, referredShape))
     {

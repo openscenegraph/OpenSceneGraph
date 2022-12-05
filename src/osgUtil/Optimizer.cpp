@@ -1083,7 +1083,7 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
                     else
                     {
                         OSG_WARN<<"Warning:: during Optimize::CollectLowestTransformsVisitor::removeTransforms(Node*)"<<std::endl;
-                        OSG_WARN<<"          unhandled of setting of indentity matrix on "<< titr->first->className()<<std::endl;
+                        OSG_WARN<<"          unhandled of setting of identity matrix on "<< titr->first->className()<<std::endl;
                         OSG_WARN<<"          model will appear in the incorrect position."<<std::endl;
                     }
                 }
@@ -1816,7 +1816,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGroup(osg::Group& group)
         // first try to group geometries with the same properties
         // (i.e. array types) to avoid loss of data during merging
         MergeList mergeListChecked;        // List of drawables just before merging, grouped by "compatibility" and vertex limit
-        MergeList mergeList;            // Intermediate list of drawables, grouped ony by "compatibility"
+        MergeList mergeList;            // Intermediate list of drawables, grouped only by "compatibility"
         for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
             itr!=geometryDuplicateMap.end();
             ++itr)

@@ -174,7 +174,7 @@ bool IOSWindowingSystemInterface::setScreenSettings(const osg::GraphicsContext::
 
 
 /** implementation of setScreenResolution */
-//IPad can have extenal screens which we can request a res for
+//IPad can have external screens which we can request a res for
 //the main screen screenNum 0 can not currently have its res changed
 //as it only has one mode (might change though and this should still handle it)
 //

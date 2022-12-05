@@ -211,7 +211,7 @@ protected:
 
     struct sort_influences {
         //We sort influences by number of influenced vertex first and then by normalized weight (number_of_vertex_influence / accumulated_weight)
-        //i.e we choose to keep geometries with many vertex insted of geometries with high normalized weight, it makes more sense for geometry
+        //i.e we choose to keep geometries with many vertex instead of geometries with high normalized weight, it makes more sense for geometry
         //selection via bone influence box @see AABBonBoneVisitor class
         bool operator()(const BoneInfluence &a, const BoneInfluence &b) {
             return (a.second.getNumInfluencedVertex() > b.second.getNumInfluencedVertex()) ||

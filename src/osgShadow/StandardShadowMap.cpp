@@ -46,7 +46,7 @@ StandardShadowMap::StandardShadowMap():
 #if FRAGMENT_SHADERS_ONLY
     _mainFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:       \n"
-        " // gl_TexCoord[0]  0 - can be subsituted with other index              \n"
+        " // gl_TexCoord[0]  0 - can be substituted with other index              \n"
         "                                                                        \n"
         "float DynamicShadow( );                                                 \n"
         "                                                                        \n"
@@ -73,7 +73,7 @@ StandardShadowMap::StandardShadowMap():
 
     _shadowFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:      \n"
-        " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
+        " // gl_TexCoord[1]  1 - can be substituted with other index             \n"
         "                                                                       \n"
         "uniform sampler2DShadow shadowTexture;                                 \n"
         "                                                                       \n"
@@ -89,7 +89,7 @@ StandardShadowMap::StandardShadowMap():
 #else
     _mainFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:       \n"
-        " // gl_TexCoord[0]  0 - can be subsituted with other index              \n"
+        " // gl_TexCoord[0]  0 - can be substituted with other index              \n"
         "                                                                        \n"
         "float DynamicShadow( );                                                 \n"
         "                                                                        \n"
@@ -116,7 +116,7 @@ StandardShadowMap::StandardShadowMap():
 
     _shadowFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:      \n"
-        " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
+        " // gl_TexCoord[1]  1 - can be substituted with other index             \n"
         "                                                                       \n"
         "uniform sampler2DShadow shadowTexture;                                 \n"
         "                                                                       \n"
@@ -129,11 +129,11 @@ StandardShadowMap::StandardShadowMap():
 
     _shadowVertexShader = new osg::Shader( osg::Shader::VERTEX,
         " // following expressions are auto modified - do not change them:      \n"
-        " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
-        " // gl_EyePlaneS[1] 1 - can be subsituted with other index             \n"
-        " // gl_EyePlaneT[1] 1 - can be subsituted with other index             \n"
-        " // gl_EyePlaneR[1] 1 - can be subsituted with other index             \n"
-        " // gl_EyePlaneQ[1] 1 - can be subsituted with other index             \n"
+        " // gl_TexCoord[1]  1 - can be substituted with other index             \n"
+        " // gl_EyePlaneS[1] 1 - can be substituted with other index             \n"
+        " // gl_EyePlaneT[1] 1 - can be substituted with other index             \n"
+        " // gl_EyePlaneR[1] 1 - can be substituted with other index             \n"
+        " // gl_EyePlaneQ[1] 1 - can be substituted with other index             \n"
         "                                                                       \n"
         "void DynamicShadow( in vec4 ecPosition )                               \n"
         "{                                                                      \n"
@@ -146,9 +146,9 @@ StandardShadowMap::StandardShadowMap():
 
     _mainVertexShader = new osg::Shader( osg::Shader::VERTEX,
         " // following expressions are auto modified - do not change them:      \n"
-        " // gl_TexCoord[0]      0 - can be subsituted with other index         \n"
-        " // gl_TextureMatrix[0] 0 - can be subsituted with other index         \n"
-        " // gl_MultiTexCoord0   0 - can be subsituted with other index         \n"
+        " // gl_TexCoord[0]      0 - can be substituted with other index         \n"
+        " // gl_TextureMatrix[0] 0 - can be substituted with other index         \n"
+        " // gl_MultiTexCoord0   0 - can be substituted with other index         \n"
         "                                                                       \n"
         "const int NumEnabledLights = 1;                                        \n"
         "                                                                       \n"
@@ -476,7 +476,7 @@ void StandardShadowMap::ViewData::cull()
     // find the light casting our shadows
     osg::Vec4 lightPos;
     osg::Vec3 lightDir;
-    osg::Vec3 lightUp( 0,0,0 ); // force computing most approprate dir
+    osg::Vec3 lightUp( 0,0,0 ); // force computing most appropriate dir
     const osg::Light *light = selectLight( lightPos, lightDir );
 
     if ( !light )

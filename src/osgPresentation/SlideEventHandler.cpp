@@ -1328,7 +1328,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 
     _tickAtLastSlideOrLayerChange = tick;
 
-    // dectivate movies etc on current active slide.
+    // deactivate movies etc on current active slide.
     bool newSlide = _activeSlide!=slideNum;
     if (newSlide)
     {
@@ -1682,7 +1682,7 @@ void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
         return;
     }
 
-    // reset the time of the last key press to ensure that the event is disgarded as a key repeat.
+    // reset the time of the last key press to ensure that the event is discarded as a key repeat.
     _timeLastKeyPresses = -1.0;
 
     if (keyPosition._x!=FLT_MAX)

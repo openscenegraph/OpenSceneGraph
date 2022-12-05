@@ -1686,7 +1686,7 @@ void Geometry::fixDeprecatedData()
             default:            primLength=0; break; // compute later when =0.
         }
 
-        // copy the vertex data across to the new arays
+        // copy the vertex data across to the new arrays
         switch(primitiveset->getType())
         {
             case(PrimitiveSet::DrawArraysPrimitiveType):

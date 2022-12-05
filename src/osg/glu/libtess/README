@@ -208,7 +208,7 @@ The interface
 	  GLU_TESS_WINDING_NEGATIVE
 	  GLU_TESS_WINDING_ABS_GEQ_TWO
 
-      The input contours parition the plane into regions.  A winding
+      The input contours partition the plane into regions.  A winding
       rule determines which of these regions are inside the polygon.
       
       For a single contour C, the winding number of a point x is simply

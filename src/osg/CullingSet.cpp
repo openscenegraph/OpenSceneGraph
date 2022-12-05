@@ -36,7 +36,7 @@ void CullingSet::disableAndPushOccludersCurrentMask(NodePath& nodePath)
         {
             //std::cout<<"  ++ disabling occluder "<<itr<<std::endl;
             // we have trapped for the case an occlude potentially occluding itself,
-            // to prevent this we disable the results mask so that no subsequnt
+            // to prevent this we disable the results mask so that no subsequent
             // when the next pushCurrentMask calls happens this occluder is switched off.
             itr->disableResultMasks();
             itr->pushCurrentMask();

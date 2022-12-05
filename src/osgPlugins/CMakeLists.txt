@@ -54,7 +54,7 @@ endmacro()
 
 ############################################################
 #
-#  NodeKit/Psudo loader plugins
+#  NodeKit/Pseudo loader plugins
 #
 ADD_PLUGIN_DIRECTORY(osga)
 ADD_PLUGIN_DIRECTORY(rot)

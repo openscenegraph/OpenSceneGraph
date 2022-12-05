@@ -649,13 +649,13 @@ void Camera::run( void )
 
         if (_done) break;
 
-        // printf("   Camera::run before sycn block\n");
+        // printf("   Camera::run before sync block\n");
 
         _syncBarrier->block();
 
         if (_done) break;
 
-        // printf("   Camera::run after sycn block\n");
+        // printf("   Camera::run after sync block\n");
 
         advance();
     }

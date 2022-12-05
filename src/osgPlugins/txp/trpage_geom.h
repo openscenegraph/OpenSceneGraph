@@ -1288,7 +1288,7 @@ public:
 
     /* This tells you the number of tiles this texture is used in.  You can
        use this to do texture paging (if you can support it).  It's a pretty
-       general meachanism and will work for large scale geospecific terrain textures
+       general mechanism and will work for large scale geospecific terrain textures
        as well as things like specific building pictures.
        When GetImageMode returns Global, expect this value to always be 1.  For
        Template texture, it will be set to the total number of uses of the template
@@ -1620,7 +1620,7 @@ public:
     ~trpgModelTable(void);
 
     /* Set the total number of models in the table.  Use this in conjunction
-       with SetModel.  If you can, use AddModel isntead of either of these.
+       with SetModel.  If you can, use AddModel instead of either of these.
     */
     void    SetNumModels(int);
     /* Add the given model to the table.  Makes a copy of the model you pass in
@@ -1693,7 +1693,7 @@ public:
     // Set the total number of LODs
     // For version 2.1 only lod 0 is stored in the table
     void    SetNumLod(int numLod);
-    // Set the number of tiles in each dimenion for each terrain LOD
+    // Set the number of tiles in each dimension for each terrain LOD
     // This must agree with trpgHeader
     void    SetNumTiles(int numX,int numY,int lod);
     // Set the external address of a given tile as well as its Z value
@@ -2156,7 +2156,7 @@ public:
     void    SetNormals(int num,BindType bind,const float64 *);
     /* This method is used to add normals one by one of the given type.
        You would use this if you were adding geometry one vertex at a time
-       in conjuntion with AddVertex().
+       in conjunction with AddVertex().
     */
     void    AddNormal(DataType type,trpg3dPoint &);
     /* This constant is used to select the type of a color array

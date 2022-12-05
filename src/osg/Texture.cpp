@@ -982,7 +982,7 @@ void TextureObjectSet::orphan(Texture::TextureObject* to)
     // handled in the handlePendingOrphandedTextureObjects() where the TO's
     // will be removed from the active list, and then placed in the orhpanTextureObject
     // list.  This double buffered approach to handling orphaned TO's is used
-    // to avoid having to mutex the process of appling active TO's.
+    // to avoid having to mutex the process of applying active TO's.
     _pendingOrphanedTextureObjects.push_back(to);
 
 #if 0

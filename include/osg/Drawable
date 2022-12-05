@@ -72,9 +72,6 @@ class ArrayDispatchers;
  *  be rendered is implemented as a class derived from \c Drawable. The
  *  \c Drawable class contains no drawing primitives, since these are provided
  *  by subclasses such as \c osg::Geometry.
- *  <p>Notice that a \c Drawable is not a \c Node, and therefore it cannot be
- *  directly added to a scene graph. Instead, <tt>Drawable</tt>s are attached to
- *  <tt>Geode</tt>s, which are scene graph nodes.
  *  <p>The OpenGL state that must be used when rendering a \c Drawable is
  *  represented by a \c StateSet. Since a \c Drawable has a reference
  *  (\c osg::ref_ptr) to a \c StateSet, <tt>StateSet</tt>s can be shared between
@@ -82,8 +79,7 @@ class ArrayDispatchers;
  *  way to improve performance, since this allows OSG to reduce the number of
  *  expensive changes in the OpenGL state.
  *  <p>Finally, <tt>Drawable</tt>s can also be shared between different
- *  <tt>Geode</tt>s, so that the same geometry (loaded to memory just once) can
- *  be used in different parts of the scene graph.
+ *  parts of the scene graph.
 */
 class OSG_EXPORT Drawable : public Node
 {

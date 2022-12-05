@@ -140,7 +140,7 @@ void Translate1DDragger::setupDefaultGeometry()
     {
         osg::Cone* cone = new osg::Cone (_projector->getLineStart(), 0.025f * lineLength, 0.10f * lineLength);
         osg::Quat rotation;
-        rotation.makeRotate(lineDir, osg::Vec3(0.0f, 0.0f, 1.0f));
+        rotation.makeRotate(osg::Vec3(0.0f, 0.0f, 1.0f),-lineDir);
         cone->setRotation(rotation);
 
         geode->addDrawable(new osg::ShapeDrawable(cone));

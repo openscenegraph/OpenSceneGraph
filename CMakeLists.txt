@@ -239,6 +239,9 @@ ENDIF()
 IF(NOT ANDROID)
 IF(APPLE)
 
+    # Silence OpenGL deprecation warnings on macOS; we know. 
+    ADD_COMPILE_DEFINITIONS(GL_SILENCE_DEPRECATION=1)
+
     IF(OSG_BUILD_PLATFORM_IPHONE)
 
         # set the sdk path as our sysroot, if we set this before the project is defined cmake fails to build its test program

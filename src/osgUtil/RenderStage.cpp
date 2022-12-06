@@ -174,40 +174,38 @@ void RenderStage::sort()
     }
 }
 
+namespace
+{
+    void addRenderStageToList(RenderStage::RenderStageList& rslist, RenderStage* rs, int order)
+    {
+        if (!rs)
+            return;
+
+        RenderStage::RenderStageList::iterator itr = rslist.end();
+        for (RenderStage::RenderStageList::iterator i = rslist.begin(); i != rslist.end(); ++i)
+        {
+            if (rs == i->second.get())
+                return;    // Already presented in the list, must be skipped (prevent duplicates)
+
+            if (itr == rslist.end() && order < i->first)
+                itr = i;
+        }
+
+        if (itr == rslist.end())
+            rslist.push_back(RenderStage::RenderStageOrderPair(order, rs));
+        else
+            rslist.insert(itr, RenderStage::RenderStageOrderPair(order, rs));
+    }
+}// anonymous namespace
+
 void RenderStage::addPreRenderStage(RenderStage* rs, int order)
 {
-    if (rs)
-    {
-        RenderStageList::iterator itr;
-        for(itr = _preRenderList.begin(); itr != _preRenderList.end(); ++itr) {
-            if(order < itr->first) {
-                break;
-            }
-        }
-        if(itr == _preRenderList.end()) {
-            _preRenderList.push_back(RenderStageOrderPair(order,rs));
-        } else {
-            _preRenderList.insert(itr,RenderStageOrderPair(order,rs));
-        }
-    }
+	addRenderStageToList(_preRenderList, rs, order);
 }
 
 void RenderStage::addPostRenderStage(RenderStage* rs, int order)
 {
-    if (rs)
-    {
-        RenderStageList::iterator itr;
-        for(itr = _postRenderList.begin(); itr != _postRenderList.end(); ++itr) {
-            if(order < itr->first) {
-                break;
-            }
-        }
-        if(itr == _postRenderList.end()) {
-            _postRenderList.push_back(RenderStageOrderPair(order,rs));
-        } else {
-            _postRenderList.insert(itr,RenderStageOrderPair(order,rs));
-        }
-    }
+	addRenderStageToList(_postRenderList, rs, order);
 }
 
 void RenderStage::drawPreRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous)

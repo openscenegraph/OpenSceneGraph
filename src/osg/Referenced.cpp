@@ -98,16 +98,19 @@ struct InitGlobalMutexes
 static InitGlobalMutexes s_initGlobalMutexes;
 
 // static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
-static DeleteHandlerPointer s_deleteHandler(0);
+static DeleteHandlerPointer& getDeleteHandlerInstance() {
+    static DeleteHandlerPointer s_deleteHandler(0);
+    return s_deleteHandler;
+}
 
 void Referenced::setDeleteHandler(DeleteHandler* handler)
 {
-    s_deleteHandler.reset(handler);
+    getDeleteHandlerInstance().reset(handler);
 }
 
 DeleteHandler* Referenced::getDeleteHandler()
 {
-    return s_deleteHandler.get();
+    return getDeleteHandlerInstance().get();
 }
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
@@ -129,6 +132,7 @@ Referenced::Referenced():
     _observerSet(0)
 #endif
 {
+    getDeleteHandler();
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     _refMutex = new OpenThreads::Mutex;
 #endif
@@ -153,6 +157,7 @@ Referenced::Referenced(bool /*threadSafeRefUnref*/):
     _observerSet(0)
 #endif
 {
+    getDeleteHandler();
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     _refMutex = new OpenThreads::Mutex;
 #endif
@@ -176,6 +181,7 @@ Referenced::Referenced(const Referenced&):
     _observerSet(0)
 #endif
 {
+    getDeleteHandler();
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     _refMutex = new OpenThreads::Mutex;
 #endif

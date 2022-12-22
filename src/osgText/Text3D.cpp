@@ -605,6 +605,54 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 }
 
+void Text3D::compileGLObjects(osg::RenderInfo& renderInfo) const
+{
+    TextBase::compileGLObjects(renderInfo);
+
+    osg::State& state = *renderInfo.getState();
+    if (state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) &&
+        !state.useVertexArrayObject(_useVertexArrayObject))
+    {
+        unsigned int contextID = state.getContextID();
+        osg::GLExtensions* extensions = state.get<osg::GLExtensions>();
+
+        typedef std::set<osg::BufferObject*> BufferObjects;
+        BufferObjects bufferObjects;
+
+        for (osg::Geometry::PrimitiveSetList::const_iterator itr = _frontPrimitiveSetList.begin(), end = _frontPrimitiveSetList.end(); itr != end; ++itr)
+        {
+            if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
+        }
+
+        for (osg::Geometry::PrimitiveSetList::const_iterator itr = _wallPrimitiveSetList.begin(), end = _wallPrimitiveSetList.end(); itr != end; ++itr)
+        {
+            if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
+        }
+
+        for (osg::Geometry::PrimitiveSetList::const_iterator itr = _backPrimitiveSetList.begin(), end = _backPrimitiveSetList.end(); itr != end; ++itr)
+        {
+            if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
+        }
+
+        // now compile any buffer objects that require it.
+        for(BufferObjects::iterator itr = bufferObjects.begin();
+            itr != bufferObjects.end();
+            ++itr)
+        {
+            osg::GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
+            if (glBufferObject && glBufferObject->isDirty())
+            {
+                // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
+                glBufferObject->compileBuffer();
+            }
+        }
+
+        // unbind the BufferObjects
+        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    }
+}
+
 void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);

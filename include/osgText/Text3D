@@ -91,6 +91,10 @@ class OSGTEXT_EXPORT Text3D : public osgText::TextBase
         /** accept a PrimtiveFunctor and call its methods to tell it about the internal primtives that this Drawable has.*/
         virtual void accept(osg::PrimitiveFunctor& pf) const;
 
+        /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+          * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used. */
+        virtual void compileGLObjects(osg::RenderInfo& renderInfo) const;
+
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 

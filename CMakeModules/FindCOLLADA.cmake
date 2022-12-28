@@ -65,6 +65,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     ${COLLADA_DOM_ROOT}/include
     $ENV{COLLADA_DIR}/include
     $ENV{COLLADA_DIR}
+    $ENV{COLLADA_DIR}/include/collada-dom2.5
     ~/Library/Frameworks
     /Library/Frameworks
     /opt/local/Library/Frameworks #macports

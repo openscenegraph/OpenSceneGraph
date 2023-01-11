@@ -464,6 +464,7 @@ void Text::computeGlyphRepresentation()
     {
         _textBB.set(0,0,0,0,0,0);//no size text
         computePositions(); //to reset the origin
+        _decorationPrimitives.clear();// clear out decorations if they had been previously set
         return;
     }
 

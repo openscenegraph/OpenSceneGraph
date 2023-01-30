@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-
+#include <climits>
 #include <osgText/Text>
 
 #include <osg/Math>
@@ -393,18 +393,38 @@ void Text::addGlyphQuad(Glyph* glyph, const osg::Vec2& minc, const osg::Vec2& ma
     // set up the coords of the quad
     const Glyph::TextureInfo* info = glyph->getOrCreateTextureInfo(_shaderTechnique);
     GlyphTexture* glyphTexture = info ? info->texture : 0;
-    GlyphQuads& glyphquad = _textureGlyphQuadMap[glyphTexture];
 
-    glyphquad._glyphs.push_back(glyph);
+    osg::ref_ptr<osg::DrawElements> primitives;
 
-    osg::DrawElements* primitives = glyphquad._primitives.get();
-    if (!primitives)
+    TextureGlyphQuadMap::iterator gqIter = _textureGlyphQuadMap.find(glyphTexture);
+    if (gqIter != _textureGlyphQuadMap.end())   // Found in the map
     {
-        unsigned int maxIndices = _text.size()*4;
-        if (maxIndices>=16384) primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
-        else primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+        osg::ref_ptr<GlyphQuads> gq = gqIter->second;
+        gq->_glyphs.push_back(glyph);
+
+        if (gq->_primitives->getType() != osg::PrimitiveSet::DrawElementsUIntPrimitiveType && _text.size()*4 >= USHRT_MAX)
+        {
+            primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
+            primitives->setBufferObject(_ebo.get());
+            gq->_primitives = primitives;       // The same buffer object will be used, so we should not worry about releaseGLObjects()
+        }
+        else
+            primitives = gq->_primitives.get();
+    }
+    else
+    {
+        osg::ref_ptr<GlyphQuads> gq = new GlyphQuads;
+        gq->_glyphs.push_back(glyph);
+
+        if (_text.size()*4 >= USHRT_MAX)
+            primitives = new osg::DrawElementsUInt(GL_TRIANGLES);
+        else
+            primitives = new osg::DrawElementsUShort(GL_TRIANGLES);
+
         primitives->setBufferObject(_ebo.get());
-        glyphquad._primitives = primitives;
+        gq->_primitives = primitives;
+
+        _textureGlyphQuadMap[glyphTexture] = gq;    // Insert new GlyphQuads with valid _primitives
     }
 
 
@@ -448,12 +468,12 @@ void Text::computeGlyphRepresentation()
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
-        GlyphQuads& glyphquads = itr->second;
-        glyphquads._glyphs.clear();
-        if (glyphquads._primitives.valid())
+        osg::ref_ptr<GlyphQuads> gq = itr->second;
+        gq->_glyphs.clear();
+        if (gq->_primitives.valid())
         {
-            glyphquads._primitives->resizeElements(0);
-            glyphquads._primitives->dirty();
+            gq->_primitives->resizeElements(0);
+            gq->_primitives->dirty();
         }
     }
 
@@ -1133,7 +1153,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
             // need to set the texture here...
             state.applyTextureAttribute(0,titr->first.get());
 
-            const GlyphQuads& glyphquad = titr->second;
+            const GlyphQuads& glyphquad = *(titr->second);
 
             if(_colorGradientMode == SOLID)
             {
@@ -1148,7 +1168,8 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
                 }
             }
 
-            glyphquad._primitives->draw(state, usingVertexBufferObjects);
+            osg::ref_ptr<osg::DrawElements> primitives = glyphquad._primitives;
+            primitives->draw(state, usingVertexBufferObjects);
         }
     }
 }
@@ -1269,22 +1290,14 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
         titr!=_textureGlyphQuadMap.end();
         ++titr)
     {
-        const GlyphQuads& glyphquad = titr->second;
-        if (glyphquad._primitives.valid())
+        const GlyphQuads& glyphquad = *(titr->second);
+        osg::ref_ptr<osg::DrawElements> drawElements = glyphquad._primitives;
+        if (drawElements.valid() && drawElements->getNumIndices() > 0)
         {
-            const osg::DrawElementsUShort* drawElementsUShort = dynamic_cast<const osg::DrawElementsUShort*>(glyphquad._primitives.get());
-            if (drawElementsUShort && drawElementsUShort->size() > 0)
-            {
-                pf.drawElements(GL_TRIANGLES, drawElementsUShort->size(), &(drawElementsUShort->front()));
-            }
-            else
-            {
-                const osg::DrawElementsUInt* drawElementsUInt = dynamic_cast<const osg::DrawElementsUInt*>(glyphquad._primitives.get());
-                if (drawElementsUInt && drawElementsUInt->size() > 0)
-                {
-                    pf.drawElements(GL_TRIANGLES, drawElementsUInt->size(), &(drawElementsUInt->front()));
-                }
-            }
+            if (drawElements->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType)
+                pf.drawElements(GL_TRIANGLES, drawElements->getNumIndices(), (const GLushort*)(drawElements->getDataPointer()));
+            else if (drawElements->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType)
+                pf.drawElements(GL_TRIANGLES, drawElements->getNumIndices(), (const GLuint*)(drawElements->getDataPointer()));
         }
     }
 }
@@ -1312,7 +1325,7 @@ void Text::resizeGLObjectBuffers(unsigned int maxSize)
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
-        itr->second.resizeGLObjectBuffers(maxSize);
+        itr->second->resizeGLObjectBuffers(maxSize);
     }
 }
 
@@ -1324,7 +1337,7 @@ void Text::releaseGLObjects(osg::State* state) const
         itr != _textureGlyphQuadMap.end();
         ++itr)
     {
-        itr->second.releaseGLObjects(state);
+        itr->second->releaseGLObjects(state);
     }
 }
 
@@ -1405,7 +1418,7 @@ Text::GlyphQuads::GlyphQuads()
 {
 }
 
-Text::GlyphQuads::GlyphQuads(const GlyphQuads&)
+Text::GlyphQuads::GlyphQuads(const GlyphQuads& glyphQuads)
 {
 }
 

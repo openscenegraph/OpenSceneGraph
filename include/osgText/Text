@@ -212,7 +212,7 @@ public:
     BackdropImplementation getBackdropImplementation() const { return DELAYED_DEPTH_WRITES; }
 
     // internal structures, variable and methods used for rendering of characters.
-    struct OSGTEXT_EXPORT GlyphQuads
+    struct OSGTEXT_EXPORT GlyphQuads : public osg::Referenced
     {
         typedef std::vector<Glyph*> Glyphs;
 
@@ -222,8 +222,6 @@ public:
         GlyphQuads();
         GlyphQuads(const GlyphQuads& gq);
 
-        void setupPrimitives(Text::BackdropType backdropType);
-
         Glyphs& getGlyphs() { return _glyphs; }
         const Glyphs& getGlyphs() const { return _glyphs; }
 
@@ -231,7 +229,7 @@ public:
         void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** If State is non-zero, this function releases OpenGL objects for
-        * the specified graphics context. Otherwise, releases OpenGL objexts
+        * the specified graphics context. Otherwise, releases OpenGL objects
         * for all graphics contexts. */
         void releaseGLObjects(osg::State* state=0) const;
 
@@ -240,7 +238,7 @@ public:
         GlyphQuads& operator = (const GlyphQuads&) { return *this; }
     };
 
-    typedef std::map<osg::ref_ptr<GlyphTexture>,GlyphQuads> TextureGlyphQuadMap;
+    typedef std::map< osg::ref_ptr<GlyphTexture>, osg::ref_ptr<GlyphQuads> > TextureGlyphQuadMap;
 
     /** Direct Access to GlyphQuads */
     const GlyphQuads* getGlyphQuads(GlyphTexture* texture) const
@@ -248,7 +246,7 @@ public:
         TextureGlyphQuadMap::const_iterator itGlyphQuad = _textureGlyphQuadMap.find(texture);
         if (itGlyphQuad == _textureGlyphQuadMap.end()) return NULL;
 
-        return &itGlyphQuad->second;
+        return itGlyphQuad->second.get();
     }
 
     const TextureGlyphQuadMap& getTextureGlyphQuadMap() const

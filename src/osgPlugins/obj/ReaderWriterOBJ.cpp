@@ -243,6 +243,9 @@ static void load_material_texture(    obj::Model &model,
         {
             // first try with database path of parent.
             image = osgDB::readRefImageFile(model.getDatabasePath()+'/'+filename, options);
+
+            // Preserve relative path in case filename is written out later
+            image->setFileName(filename);
         }
 
         if ( !image.valid() )

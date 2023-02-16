@@ -19,7 +19,9 @@
 //#define _WIN32_WINNT    0x0501 // Windows Server 2003, Windows XP
 #define _WIN32_WINNT    0x0500 // Windows NT
 #endif
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 
 #include <osg/GraphicsContext>

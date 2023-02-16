@@ -1474,30 +1474,24 @@ const ContextInfo GraphicsWindowWin32::createContextImplementation()
 {
 	ContextInfo context;
 
-	if(OSG_GLES3_FEATURES) {
-		OSG_NOTIFY(osg::INFO) << "GLES3: Attempting to create GLES3 context." << std::endl;
-		OSG_NOTIFY(osg::INFO) << "GLES3: version: " << _traits->glContextVersion << std::endl;
-		OSG_NOTIFY(osg::INFO) << "GLES3: context flags: " << _traits->glContextFlags << std::endl;
-		OpenGLContext openGLContext;
-		if(!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY))
-		{
-			reportErrorForScreen("GLES3: Can't create context.",
-				_traits->screenNum, ::GetLastError());
-		}
-		else
-		{
-			context.eglDisplay = openGLContext.contextInfo().eglDisplay;
-			context.eglContext = createContext(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig());
-
-			EGLint surfaceAttributes[] = { EGL_NONE, EGL_NONE };
-			context.eglSurface = eglCreateWindowSurface(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig(), _hwnd, surfaceAttributes);
-
-			OSG_NOTIFY(osg::INFO) << "GLES3: context created successfully." << std::endl;
-		}
-	}
-	else {
-		reportErrorForScreen("Can't create context.",
+	OSG_NOTIFY(osg::INFO) << "GLES: Attempting to create GLES context." << std::endl;
+	OSG_NOTIFY(osg::INFO) << "GLES: version: " << _traits->glContextVersion << std::endl;
+	OSG_NOTIFY(osg::INFO) << "GLES: context flags: " << _traits->glContextFlags << std::endl;
+	OpenGLContext openGLContext;
+	if(!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY))
+	{
+		reportErrorForScreen("GLES: Can't create context.",
 			_traits->screenNum, ::GetLastError());
+	}
+	else
+	{
+		context.eglDisplay = openGLContext.contextInfo().eglDisplay;
+		context.eglContext = createContext(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig());
+
+		EGLint surfaceAttributes[] = { EGL_NONE, EGL_NONE };
+		context.eglSurface = eglCreateWindowSurface(openGLContext.contextInfo().eglDisplay, openGLContext.getConfig(), _hwnd, surfaceAttributes);
+
+		OSG_NOTIFY(osg::INFO) << "GLES: context created successfully." << std::endl;
 	}
 	return context;
 }
@@ -1843,7 +1837,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
 
     return( context );
 }
-#endif !OSG_USE_EGL 
+#endif
 
 bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
 {

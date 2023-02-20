@@ -56,8 +56,6 @@ struct gc_client_state {
     struct wl_surface* keyboard_surface;
     struct wl_surface* pointer_surface;
     uint32_t keyboard_serial;
-    // custom Ctrl modifier
-    bool keyboard_ctrl;
     // repeat state
     int32_t keyboard_repeat;
     int32_t keyboard_delay;
@@ -212,7 +210,7 @@ public:
         if (_traits->windowDecoration)
             xdg_toplevel_unset_fullscreen(_gw.xdg_toplevel);
         else
-            xdg_toplevel_set_fullscreen(_gw.xdg_toplevel, _gw.gc->output[_traits->screenNum]);
+            xdg_toplevel_set_fullscreen(_gw.xdg_toplevel, NULL);    // allow compositor to select screen
         WLGWlog(0) << _logname << "full=" << !_traits->windowDecoration << "/screen=" << _traits->screenNum << std::endl;
         // bool supportsResize yes, we do, no action.
         // bool pbuffer (see above)
@@ -316,7 +314,7 @@ public:
         if (windowDecoration)
             xdg_toplevel_unset_fullscreen(_gw.xdg_toplevel);
         else
-            xdg_toplevel_set_fullscreen(_gw.xdg_toplevel, _gw.gc->output[_traits->screenNum]);
+            xdg_toplevel_set_fullscreen(_gw.xdg_toplevel, NULL);    // allow compositor to select screen
         return true;
     }
     virtual void grabFocus() {
@@ -498,7 +496,6 @@ private:
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         obj->_gc.keyboard_surface = surface;
         obj->_gc.keyboard_serial = serial;
-        obj->_gc.keyboard_ctrl = false;
         WLGWlog(1) << "<keyboard enter: " << surface << ">" << std::endl;
         // dump pressed keys
         uint32_t* pkey = (uint32_t*)keys->data;
@@ -544,21 +541,44 @@ private:
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         // update XKB with modifier state: https://wayland-book.com/seat/keyboard.html
         xkb_state_update_mask(obj->_gc.xkb_state, mods_depressed, mods_latched, mods_locked, 0, 0, group);
+        if (auto win = obj->get_window(obj->_gc.keyboard_surface)) {
+            // adjust currently effective modifiers
+            auto es = win->getEventQueue()->getCurrentEventState();
+            int emods = es->getModKeyMask();
+            if (xkb_state_mod_name_is_active(obj->_gc.xkb_state, XKB_MOD_NAME_SHIFT, XKB_STATE_MODS_EFFECTIVE))
+                emods |= osgGA::GUIEventAdapter::ModKeyMask::MODKEY_SHIFT;
+            else
+                emods &= ~osgGA::GUIEventAdapter::ModKeyMask::MODKEY_SHIFT;
+            if (xkb_state_mod_name_is_active(obj->_gc.xkb_state, XKB_MOD_NAME_CTRL, XKB_STATE_MODS_EFFECTIVE))
+                emods |= osgGA::GUIEventAdapter::ModKeyMask::MODKEY_CTRL;
+            else
+                emods &= ~osgGA::GUIEventAdapter::ModKeyMask::MODKEY_CTRL;
+            if (xkb_state_mod_name_is_active(obj->_gc.xkb_state, XKB_MOD_NAME_ALT, XKB_STATE_MODS_EFFECTIVE))
+                emods |= osgGA::GUIEventAdapter::ModKeyMask::MODKEY_ALT;
+            else
+                emods &= ~osgGA::GUIEventAdapter::ModKeyMask::MODKEY_ALT;
+            es->setModKeyMask(emods);
+            // push through a harmless key to update modifier state in event system, otherwise the joystick b0rks.. (arrrrgh!!)
+            win->getEventQueue()->keyPress(osgGA::GUIEventAdapter::KeySymbol::KEY_Shift_L);
+        }
         WLGWlog(0) << "<keymods: " << mods_depressed << ',' << mods_latched << ',' << mods_locked << ',' << group << ">" << std::endl;
     }
     static void keyboard_key(void* data, wl_keyboard* wl_keyboard, uint32_t serial, uint32_t time, uint32_t key, uint32_t state) {
         WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
         // NB: from: https://wayland-book.com/seat/keyboard.html
         // "Important: the scancode from this event is the Linux evdev scancode. To translate this to an XKB scancode, you must add 8 to the evdev scancode."
+        key += 8;
+        // ignore modifier keys..
+        if (!xkb_key_repeats(obj->_gc.xkb_keymap, key))
+            return;
         // We also rely on the fact that OSG have used the /same UTF32 symbol codes/ as XKB (or so it appears)
-        xkb_keysym_t sym = xkb_state_key_get_one_sym(obj->_gc.xkb_state, key+8);
-        // independantly of XKB, we maintain a flag for Ctrl modifier, since the above function ignores it..
-        if (XKB_KEY_Control_L==sym || XKB_KEY_Control_R==sym)
-            obj->_gc.keyboard_ctrl = state ? true : false;
-        // if Ctrl is in play and we have A-Z, synthesize old ASCII values
-        if (obj->_gc.keyboard_ctrl && sym>=XKB_KEY_a && sym<=XKB_KEY_z) {
+        xkb_keysym_t sym = xkb_state_key_get_one_sym(obj->_gc.xkb_state, key);
+        // if Ctrl is in play and we have A-Z, synthesize old ASCII values, as 'get_one_sym' above does not translate Ctrl codes..
+        if (xkb_state_mod_name_is_active(obj->_gc.xkb_state, XKB_MOD_NAME_CTRL, XKB_STATE_MODS_EFFECTIVE)
+            && sym>=XKB_KEY_a && sym<=XKB_KEY_z) {
             sym = 1 + (sym - XKB_KEY_a);
         }
+        // find the target window..
         if (auto win = obj->get_window(obj->_gc.keyboard_surface)) {
             if (state)
                 win->getEventQueue()->keyPress((int)sym);
@@ -566,7 +586,7 @@ private:
                 win->getEventQueue()->keyRelease((int)sym);
             WLGWlog(0) << (state?"<keypress: ":"<keyrelease: ") << key << "=>" << sym << ">" << std::endl;
         }
-        // any new keypress always puts us in DELAY state for repeats, releasing any key stops repeats
+        // any keypress always puts us in DELAY state for repeats, any release and we stop repeating
         obj->_gc.keyboard_state = state ? KEYBOARD_DELAY : KEYBOARD_IDLE;
         obj->_gc.keyboard_last = (int)sym;
     }

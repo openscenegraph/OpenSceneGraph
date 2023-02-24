@@ -1101,8 +1101,7 @@ void Text::drawImplementationSinglePass(osg::State& state, const osg::Vec4& colo
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
     bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
+    bool requiresSetArrays = vas->getRequiresSetArrays();
 
     if ((_drawMode&(~TEXT))!=0 && !_decorationPrimitives.empty())
     {
@@ -1184,11 +1183,8 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     state.Normal(_normal.x(), _normal.y(), _normal.z());
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
-    if (requiresSetArrays)
+    if (vas->getRequiresSetArrays())
     {
         vas->lazyDisablingOfVertexAttributes();
         vas->setVertexArray(state, _coords.get());
@@ -1213,12 +1209,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     state.haveAppliedAttribute(osg::StateAttribute::DEPTH);
 
-    if (usingVertexBufferObjects && !usingVertexArrayObjects)
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (needToApplyMatrix)
     {

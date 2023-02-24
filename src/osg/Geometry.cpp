@@ -896,15 +896,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     State& state = *renderInfo.getState();
 
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
-    vas->setVertexBufferObjectSupported(usingVertexBufferObjects);
-
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
-
 
     drawVertexArraysImplementation(renderInfo);
 
@@ -917,12 +910,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (usingVertexBufferObjects && !usingVertexArrayObjects)
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    osg::VertexArrayState *vas = state.getCurrentVertexArrayState();
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
@@ -953,10 +944,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     attributeDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
     attributeDispatchers.activateFogCoordArray(_fogCoordArray.get());
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
-    {
-        if (!vas->getRequiresSetArrays()) return;
-    }
+    if (!vas->getRequiresSetArrays()) return;
 
     vas->lazyDisablingOfVertexAttributes();
 

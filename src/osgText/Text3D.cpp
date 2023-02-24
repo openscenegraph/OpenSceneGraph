@@ -520,17 +520,16 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     }
 
     osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-    bool requiresSetArrays = !usingVertexBufferObjects || !usingVertexArrayObjects || vas->getRequiresSetArrays();
 
-    if (requiresSetArrays)
+    if (vas->getRequiresSetArrays())
     {
         vas->lazyDisablingOfVertexAttributes();
         vas->setVertexArray(state, _coords.get());
         vas->setNormalArray(state, _normals.get());
         vas->applyDisablingOfVertexAttributes(state);
     }
+
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
 
     if ((_drawMode&(~TEXT))!=0)
     {
@@ -588,12 +587,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         }
     }
 
-    if (usingVertexBufferObjects && !usingVertexArrayObjects)
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (needToApplyMatrix)
     {

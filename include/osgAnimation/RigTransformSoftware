@@ -133,7 +133,7 @@ namespace osgAnimation
         };
 
         template <class V>
-        inline void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst)
+        inline void compute(const osg::Matrix& transform, const osg::Matrix& invTransform, const V* src, V* dst, osg::BoundingBox* bbox = NULL)
         {
             // the result of matrix mult should be cached to be used for vertices transform and normal transform and maybe other computation
             for(VertexGroupList::iterator itvg=_uniqVertexGroupList.begin(); itvg!=_uniqVertexGroupList.end(); ++itvg)
@@ -145,7 +145,10 @@ namespace osgAnimation
                 const IndexList& vertices = uniq.getVertices();
                 for(IndexList::const_iterator vertIDit=vertices.begin(); vertIDit!=vertices.end(); ++vertIDit)
                 {
-                    dst[*vertIDit] = src[*vertIDit] * matrix;
+                    osg::Vec3 v = src[*vertIDit] * matrix;
+                    dst[*vertIDit] = v;
+                    if (bbox)
+                        bbox->expandBy(v);
                 }
 
             }

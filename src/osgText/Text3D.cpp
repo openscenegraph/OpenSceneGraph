@@ -207,7 +207,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 return lastValidChar;
 
             // Subtract off glyphs from the cursor position (to correctly center text)
-                if(*prevChar != '-')
+            if(*prevChar != '-')
             {
                 Glyph3D* glyph = _font->getGlyph3D(_fontSize, *prevChar);
                 if (glyph)

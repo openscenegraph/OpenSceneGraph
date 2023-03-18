@@ -43,26 +43,24 @@
 -(void) hide
 {
     if(_displaySettings.valid()) _menubarBehavior = _displaySettings->getOSXMenubarBehavior();
-    
-    if (_menubarBehavior == osg::DisplaySettings::MENUBAR_FORCE_SHOW)
-        return;
-    
+
+    if (_menubarBehavior == osg::DisplaySettings::MENUBAR_FORCE_SHOW) return;
+
     #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
         NSApplicationPresentationOptions options;
         switch(_menubarBehavior) {
             case osg::DisplaySettings::MENUBAR_AUTO_HIDE:
                 options = NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationAutoHideDock;
                 break;
-            
+
             case osg::DisplaySettings::MENUBAR_FORCE_HIDE:
                 options = NSApplicationPresentationHideMenuBar | NSApplicationPresentationHideDock;
                 break;
-            
+
             default:
                 options = NSApplicationPresentationDefault;
-                
         }
-    
+
         [[NSApplication sharedApplication] setPresentationOptions: options];
     #else
         SystemUIMode mode = kUIModeAllHidden;

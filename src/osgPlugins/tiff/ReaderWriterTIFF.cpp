@@ -777,6 +777,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
         {
             supportsExtension("tiff","Tiff image format");
             supportsExtension("tif","Tiff image format");
+            supportsOption("tiff_compression=[packbits|lzw|jpeg|none]", "output compression type (default: packbits)");
         }
 
         virtual const char* className() const { return "TIFF Image Reader"; }

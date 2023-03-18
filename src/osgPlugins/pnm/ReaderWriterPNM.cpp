@@ -222,6 +222,8 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             supportsExtension("ppm","PNM Image format");
             supportsExtension("pgm","PNM Image format");
             supportsExtension("pbm","PNM Image format");
+            supportsOption("flip", "flipVertical after reading file.");
+            supportsOption("ascii", "write .ppm ascii files.");
         }
 
         virtual const char* className() const { return "PNM Image Reader/Writer"; }

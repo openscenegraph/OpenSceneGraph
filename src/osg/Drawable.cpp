@@ -683,6 +683,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
         drawInner(renderInfo);
 
         vas->setRequiresSetArrays(getDataVariance()==osg::Object::DYNAMIC);
+        vas->resetBufferObjectPointers();
 
         return;
     }

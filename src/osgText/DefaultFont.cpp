@@ -38,6 +38,8 @@ DefaultFont::~DefaultFont()
 
 osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+
     if (_sizeGlyphMap.empty()) return 0;
 
     FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);

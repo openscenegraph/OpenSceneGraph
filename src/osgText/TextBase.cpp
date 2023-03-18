@@ -424,16 +424,18 @@ osg::BoundingBox TextBase::computeBoundingBox() const
 
     if (_textBBWithMargin.valid())
     {
-        bbox.expandBy(_textBBWithMargin.corner(0)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(1)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(2)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(3)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(4)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(5)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(6)*_matrix);
-        bbox.expandBy(_textBBWithMargin.corner(7)*_matrix);
+        if (!_matrix.isIdentity())
+        {
+            bbox.expandBy(_textBBWithMargin.corner(0)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(1)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(2)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(3)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(4)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(5)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(6)*_matrix);
+            bbox.expandBy(_textBBWithMargin.corner(7)*_matrix);
+        }
 
-#if 0
         if (!bbox.valid())
         {
             // Provide a fallback in cases where no bounding box has been been setup so far.
@@ -444,7 +446,7 @@ osg::BoundingBox TextBase::computeBoundingBox() const
             if (_autoRotateToScreen)
             {
                 // use bounding sphere encompassing the maximum size of the text centered on the _position
-                double radius = _textBB.radius();
+                double radius = _textBBWithMargin.radius();
                 osg::Vec3 diagonal(radius, radius, radius);
                 bbox.set(_position-diagonal, _position+diagonal);
             }
@@ -454,17 +456,16 @@ osg::BoundingBox TextBase::computeBoundingBox() const
                 matrix.makeTranslate(-_offset);
                 matrix.postMultRotate(_rotation);
                 matrix.postMultTranslate(_position);
-                bbox.expandBy(_textBB.corner(0)*_matrix);
-                bbox.expandBy(_textBB.corner(1)*_matrix);
-                bbox.expandBy(_textBB.corner(2)*_matrix);
-                bbox.expandBy(_textBB.corner(3)*_matrix);
-                bbox.expandBy(_textBB.corner(4)*_matrix);
-                bbox.expandBy(_textBB.corner(5)*_matrix);
-                bbox.expandBy(_textBB.corner(6)*_matrix);
-                bbox.expandBy(_textBB.corner(7)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(0)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(1)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(2)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(3)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(4)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(5)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(6)*_matrix);
+                bbox.expandBy(_textBBWithMargin.corner(7)*_matrix);
             }
         }
-#endif
     }
 
     return bbox;
@@ -518,7 +519,10 @@ void TextBase::computePositionsImplementation()
 
 bool TextBase::computeMatrix(osg::Matrix& matrix, osg::State* state) const
 {
-    if (state && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
+    if (!state)
+        return false;
+
+    if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {
         osg::Matrix modelview = state->getModelViewMatrix();
         osg::Matrix projection = state->getProjectionMatrix();

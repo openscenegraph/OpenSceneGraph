@@ -55,7 +55,11 @@
 
 # We depend on 2.8.8 for CMakePackageConfigHelpers. This config file is not
 # guaranteed to work with lower versions of cmake.
-cmake_minimum_required(VERSION 2.8.8)
+#
+# The upper end version enhances forward compatability with modern (>3.0) versions of CMake
+# and avoids the following warning:
+# "Compatibility with CMake < 2.8.12 will be removed from a future version of CMake.
+cmake_minimum_required(VERSION 2.8.8...3.15.5 FATAL_ERROR)
 
 # Assume we have succeeded unless a required component is missing
 set(OpenSceneGraph_FOUND TRUE)

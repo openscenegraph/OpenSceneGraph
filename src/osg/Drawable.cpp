@@ -687,16 +687,20 @@ void Drawable::draw(RenderInfo& renderInfo) const
         return;
     }
 
+    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
+
     // TODO, add check against whether VAO is active and supported
-    if (state.getCurrentVertexArrayState())
+    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
+    if (vas)
     {
-        //OSG_NOTICE<<"state.getCurrentVertexArrayState()->getVertexArrayObject()="<< state.getCurrentVertexArrayState()->getVertexArrayObject()<<std::endl;
-        state.bindVertexArrayObject(state.getCurrentVertexArrayState());
+        //OSG_NOTICE<<"vas->getVertexArrayObject()="<< vas->getVertexArrayObject()<<std::endl;
+        vas->setVertexBufferObjectSupported(usingVertexBufferObjects);
+        vas->setRequiresSetArrays(true);
+        state.bindVertexArrayObject(vas);
     }
 
-
 #ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
-    if (!state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects) && _useDisplayList)
+    if (!usingVertexBufferObjects && _useDisplayList)
     {
         // get the contextID (user defined ID of 0 upwards) for the
         // current OpenGL context.
@@ -735,7 +739,7 @@ void Drawable::draw(RenderInfo& renderInfo) const
 VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const
 {
     OSG_INFO<<"VertexArrayState* Drawable::createVertexArrayStateImplementation(RenderInfo& renderInfo) const "<<this<<std::endl;
-    VertexArrayState* vos = new osg::VertexArrayState(renderInfo.getState());
-    vos->assignAllDispatchers();
-    return vos;
+    VertexArrayState* vas = new osg::VertexArrayState(renderInfo.getState());
+    vas->assignAllDispatchers();
+    return vas;
 }

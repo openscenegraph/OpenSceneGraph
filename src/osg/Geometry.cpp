@@ -830,12 +830,22 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
         if (bufferObjects.empty())
             return; // no buffers, nothing to compile
 
+        if (state.useVertexArrayObject(_useVertexArrayObject))
+        {
+            VertexArrayState* vas = 0;
+
+            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
+
+            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
+
+            state.bindVertexArrayObject(vas);
+        }
+
         //osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
-        for(BufferObjects::iterator itr = bufferObjects.begin();
-            itr != bufferObjects.end();
-            ++itr)
+        // this must be done inside VAO (if used), EBOs require this!
+        for (BufferObjects::iterator itr = bufferObjects.begin(); itr != bufferObjects.end(); ++itr)
         {
             GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
             if (glBufferObject && glBufferObject->isDirty())
@@ -849,16 +859,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
         if (state.useVertexArrayObject(_useVertexArrayObject))
         {
-            VertexArrayState* vas = 0;
-
-            _vertexArrayStateList[contextID] = vas = createVertexArrayState(renderInfo);
-
-            State::SetCurrentVertexArrayStateProxy setVASProxy(state, vas);
-
-            state.bindVertexArrayObject(vas);
-
             drawVertexArraysImplementation(renderInfo);
-
             state.unbindVertexArrayObject();
         }
 
@@ -884,15 +885,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     State& state = *renderInfo.getState();
 
-    bool usingVertexBufferObjects = state.useVertexBufferObject(_supportsVertexBufferObjects && _useVertexBufferObjects);
-    bool usingVertexArrayObjects = usingVertexBufferObjects && state.useVertexArrayObject(_useVertexArrayObject);
-
-    osg::VertexArrayState* vas = state.getCurrentVertexArrayState();
-    vas->setVertexBufferObjectSupported(usingVertexBufferObjects);
-
     bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
     if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
-
 
     drawVertexArraysImplementation(renderInfo);
 
@@ -905,12 +899,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     drawPrimitivesImplementation(renderInfo);
 
-    if (usingVertexBufferObjects && !usingVertexArrayObjects)
-    {
-        // unbind the VBO's if any are used.
-        vas->unbindVertexBufferObject();
-        vas->unbindElementBufferObject();
-    }
+    osg::VertexArrayState *vas = state.getCurrentVertexArrayState();
+    // unbind the VBO's if any are used.
+    vas->unbindVertexBufferObject();
+    if (!state.useVertexArrayObject(_useVertexArrayObject)) vas->unbindElementBufferObject();
 
     if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
@@ -941,10 +933,7 @@ void Geometry::drawVertexArraysImplementation(RenderInfo& renderInfo) const
     attributeDispatchers.activateSecondaryColorArray(_secondaryColorArray.get());
     attributeDispatchers.activateFogCoordArray(_fogCoordArray.get());
 
-    if (state.useVertexArrayObject(_useVertexArrayObject))
-    {
-        if (!vas->getRequiresSetArrays()) return;
-    }
+    if (!vas->getRequiresSetArrays()) return;
 
     vas->lazyDisablingOfVertexAttributes();
 

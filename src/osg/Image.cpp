@@ -32,6 +32,9 @@
 #include <stdlib.h>
 
 #include "dxtctool.h"
+#ifndef GL_RGB565
+#define GL_RGB565                         0x8D62
+#endif
 
 using namespace osg;
 using namespace std;
@@ -712,6 +715,32 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
             OSG_WARN<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
             return 0;
         }
+		//try adding all sizedInternalFormats[] in table in Texture.cpp
+		case(GL_RGBA8UI_EXT): return 4;
+		case(GL_RGBA8I_EXT): return 4;
+//		case(GL_RGB10_A2UI_EXT): return 4;
+		case(GL_RGBA16UI_EXT): return 4;
+		case(GL_RGBA16I_EXT): return 4;
+		case(GL_RGBA32I_EXT): return 4;
+		case(GL_RGBA32UI_EXT): return 4;
+//		case(GL_RGBA2): return 4;
+		case(GL_R3_G3_B2): return 3;
+		case(GL_RGB4): return 3;
+		case(GL_RGB5): return 3;
+		case(GL_RGB8): return 3;
+		case(GL_RGB565): return 3;
+//		case(GL_RGB9_E5): return 3;
+//		case(GL_R11F_G11F_B10F): return 3;
+		case(GL_RGB10): return 3;
+		case(GL_RGB12): return 3;
+		case(GL_RGBA16): return 4;
+		case(GL_RGB10_A2): return 4;
+		case(GL_RGBA12): return 4;
+		case(GL_RGBA4): return 4;
+//		case(GL_RGBA16F): return 4;
+		case(GL_RGB8_SNORM): return 3;
+		case(GL_RGB16_SNORM): return 3;
+		case(GL_RGBA8_SNORM): return 4;
     }
 }
 
@@ -1528,7 +1557,11 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, i, GL_TEXTURE_DEPTH, &depth);
 
             unsigned int level_size = computeRowWidthInBytes(width,internalformat,type,packing)*height*depth;
-
+            if (level_size == 0)
+            {
+                OSG_WARN << "Warning: Image::readImageFromCurrentTexture(..) computeRowWidthInBytes returned 0, no image read." << std::endl;
+                return;
+            }
             total_size += level_size;
         }
 

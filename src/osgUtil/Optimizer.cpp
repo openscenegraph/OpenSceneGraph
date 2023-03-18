@@ -3365,9 +3365,13 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(int maximumAtlasWi
         case(GL_COMPRESSED_RGBA_ARB):
         case(GL_COMPRESSED_RGB_ARB):
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
             // can't handle compressed textures inside an atlas
             return false;
         default:

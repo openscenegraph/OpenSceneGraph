@@ -26,6 +26,8 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+#include <algorithm> // included for std::max
+
 #ifndef GL_TEXTURE_WRAP_R
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
@@ -1885,6 +1887,7 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
         case (GL_COMPRESSED_RGBA_ARB):
         case (GL_COMPRESSED_RGB_ARB):
         case (GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
         case (GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         case (GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
@@ -1945,9 +1948,11 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
 
 void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size)
 {
-    if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
+    if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+        || internalFormat == GL_COMPRESSED_SRGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT)
         blockSize = 8;
-    else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
+    else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
+        || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT)
         blockSize = 16;
     else if (internalFormat == GL_ETC1_RGB8_OES)
         blockSize = 8;
@@ -2574,10 +2579,11 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
                         //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 
+                        // Note: glCompressedTexSubImage2D uses internal format, not pixel format. See https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/glCompressedTexSubImage2D.xml
                         extensions->glCompressedTexSubImage2D(target, k,
                             0, 0,
                             width, height,
-                            (GLenum)image->getPixelFormat(),
+                            (GLenum)image->getInternalTextureFormat(),
                             size,
                             dataPtr + image->getMipmapOffset(k));
 
@@ -2828,7 +2834,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
             extensions->glCompressedTexSubImage2D(target, 0,
                 0,0,
                 inwidth, inheight,
-                (GLenum)image->getPixelFormat(),
+                (GLenum)image->getInternalTextureFormat(),
                 size,
                 dataPtr);
         }
@@ -2882,7 +2888,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     extensions->glCompressedTexSubImage2D(target, k,
                                                        0, 0,
                                                        width, height,
-                                                       (GLenum)image->getPixelFormat(),
+                                                       (GLenum)image->getInternalTextureFormat(),
                                                        size,
                                                        dataPtr + image->getMipmapOffset(k));
 

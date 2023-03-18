@@ -683,17 +683,20 @@ void GraphicsContext::removeAllOperations()
 void GraphicsContext::runOperations()
 {
     // sort the cameras into order
-    typedef std::vector<Camera*> CameraVector;
-    CameraVector camerasCopy;
-    std::copy(_cameras.begin(), _cameras.end(), std::back_inserter(camerasCopy));
-    std::sort(camerasCopy.begin(), camerasCopy.end(), CameraRenderOrderSortOp());
-
-    for(CameraVector::iterator itr = camerasCopy.begin();
-        itr != camerasCopy.end();
-        ++itr)
+    // each camera should not be destroyed until the end of the renderer's operation, so using ref_ptr
     {
-        osg::Camera* camera = *itr;
-        if (camera->getRenderer()) (*(camera->getRenderer()))(this);
+        typedef std::vector< osg::ref_ptr<Camera> > CameraVector;
+        CameraVector camerasCopy;
+        std::copy(_cameras.begin(), _cameras.end(), std::back_inserter(camerasCopy));
+        std::sort(camerasCopy.begin(), camerasCopy.end(), CameraRenderOrderSortOp());
+
+        for(CameraVector::iterator itr = camerasCopy.begin();
+            itr != camerasCopy.end();
+            ++itr)
+        {
+            osg::ref_ptr<osg::Camera> camera = *itr;
+            if (camera->getRenderer()) (*(camera->getRenderer()))(this);
+        }
     }
 
     for(GraphicsOperationQueue::iterator itr = _operations.begin();

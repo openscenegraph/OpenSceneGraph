@@ -1314,6 +1314,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             _threadingModelText->setFont(_font);
             _threadingModelText->setCharacterSize(_characterSize);
             _threadingModelText->setPosition(pos);
+            _threadingModelText->setDataVariance(osg::Object::DYNAMIC);
 
             updateThreadingModelText();
 

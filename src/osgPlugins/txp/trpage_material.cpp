@@ -1623,7 +1623,7 @@ trpgTexTable::trpgTexTable(const trpgTexTable &in):
 // Reset function
 void trpgTexTable::Reset()
 {
-    errMess[0] = '\0';
+    errMess.clear();
     textureMap.clear();
     currentRow = -1;
     currentCol = -1;

@@ -41,7 +41,7 @@ trpgTileTable::trpgTileTable()
 // Reset function
 void trpgTileTable::Reset()
 {
-    errMess[0] = '\0';
+    errMess.clear();
     mode = External;
     lodInfo.resize(0);
     valid = true;

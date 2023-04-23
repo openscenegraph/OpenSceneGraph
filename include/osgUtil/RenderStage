@@ -167,7 +167,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Set a framebuffer object to render into. It is permissible for the
           * framebuffer object to be multisampled, in which case you should also
           * set a resolve framebuffer object - see setMultisampleResolveFramebufferObject(). */
-        void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
+        void setFrameBufferObject(osg::FrameBufferObject* fbo);
         osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
         const osg::FrameBufferObject* getFrameBufferObject() const { return _fbo.get(); }
 
@@ -316,6 +316,8 @@ protected:
 
         // VRV_PATCH BEGIN
         // for resolving individual layers of a multisampled texture 2d array
+        void runResolveArrayLayersSetup();
+        bool _resolveArrayLayersNeedSetup;
         std::vector<osg::ref_ptr<osg::FrameBufferObject>> _arrayLayerFbos;
         std::vector<osg::ref_ptr<osg::FrameBufferObject>> _resolveArrayLayerFbos;
         // VRV_PATCH END

@@ -64,6 +64,8 @@ RenderStage::RenderStage():
 
     _imageReadPixelFormat = GL_RGBA;
     _imageReadPixelDataType = GL_UNSIGNED_BYTE;
+
+    _resolveArrayLayersNeedSetup = false;
 }
 
 RenderStage::RenderStage(SortMode mode):
@@ -129,6 +131,69 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
 
 RenderStage::~RenderStage()
 {
+}
+
+void osgUtil::RenderStage::runResolveArrayLayersSetup()
+{
+    _resolveArrayLayersNeedSetup = false;
+
+    if (!_fbo || !_resolveFbo) return;
+
+    OSG_INFO << "RenderStage::runResolveArrayLayersSetup() " << this << std::endl;
+
+    const osg::FrameBufferObject::AttachmentMap& bufferAttachments = _fbo->getAttachmentMap();
+    const osg::FrameBufferObject::AttachmentMap& resolveBufferAttachments = _resolveFbo->getAttachmentMap();
+    _resolveArrayLayerFbos.clear();
+    _arrayLayerFbos.clear();
+
+    for (osg::FrameBufferObject::AttachmentMap::const_iterator itr = bufferAttachments.begin();
+        itr != bufferAttachments.end();
+        ++itr)
+    {
+        osg::FrameBufferObject::BufferComponent buffer = itr->first;
+        if (resolveBufferAttachments.count(buffer) == 0)
+            continue;
+
+        osg::FrameBufferAttachment msaaAttachment = _fbo->getAttachment(buffer);
+        osg::FrameBufferAttachment resolveAttachment = _resolveFbo->getAttachment(buffer);
+        osg::Texture2DMultisampleArray* msaaAttachmentAsTex2dArray = dynamic_cast<osg::Texture2DMultisampleArray*>(msaaAttachment.getTexture());
+        osg::Texture2DArray* attachmentAsTex2dArray = dynamic_cast<osg::Texture2DArray*>(resolveAttachment.getTexture());
+
+        int depth = attachmentAsTex2dArray->getTextureDepth();
+
+        // make a read and draw fbos for each layer so we can resolve later
+        for (unsigned int i = 0; i < static_cast<unsigned int>(depth); i++)
+        {
+            osg::ref_ptr<osg::FrameBufferObject> layerfbo;
+            osg::ref_ptr<osg::FrameBufferObject> resolvelayerfbo;
+
+            if (static_cast<int>(_arrayLayerFbos.size()) <= i)
+            {
+                layerfbo = new osg::FrameBufferObject;
+                layerfbo->setName(_camera->getName() + "_layer_");
+                _arrayLayerFbos.push_back(layerfbo);
+            }
+            else
+            {
+                layerfbo = _arrayLayerFbos[i];
+            }
+
+            if (static_cast<int>(_resolveArrayLayerFbos.size()) <= i)
+            {
+                resolvelayerfbo = new osg::FrameBufferObject;
+                resolvelayerfbo->setName(_camera->getName() + "_resolvelayer_");
+                _resolveArrayLayerFbos.push_back(resolvelayerfbo);
+            }
+            else
+            {
+                resolvelayerfbo = _resolveArrayLayerFbos[i];
+            }
+
+            resolvelayerfbo->setAttachment(buffer, osg::FrameBufferAttachment(attachmentAsTex2dArray, i, 0));
+            layerfbo->setAttachment(buffer, osg::FrameBufferAttachment(msaaAttachmentAsTex2dArray, i, 0));
+
+        }
+    }
 }
 
 void RenderStage::reset()
@@ -465,39 +530,11 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                             osg::Texture2DMultisampleArray* multiSampleTexArray = new osg::Texture2DMultisampleArray(width, height, depth, internalFormat, samples, GL_FALSE);
                             fbo_multisample->setAttachment(buffer, osg::FrameBufferAttachment(multiSampleTexArray, attachment._face, 0));
 
-                            osg::Texture2DArray* attachmentAsTex2dArray = dynamic_cast<osg::Texture2DArray*>(attachment._texture.get());
+                            // Since we're using a texture instead of a RenderBuffer, we have to disable mipmap generation
+                            // by changing the MIN_FILTER which defaults to LINEAR_MIPMAP_LINEAR.
+                            multiSampleTexArray->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
 
-                            // make a read and draw fbos for each layer so we can resolve later
-                            for(unsigned int i=0; i<depth; i++)
-                            {
-                                osg::ref_ptr<osg::FrameBufferObject> layerfbo;
-                                osg::ref_ptr<osg::FrameBufferObject> resolvelayerfbo;
-
-                                if(static_cast<int>(_arrayLayerFbos.size()) <= i)
-                                {
-                                    layerfbo = new osg::FrameBufferObject;
-                                    layerfbo->setName(_camera->getName() + "_layer_");
-                                    _arrayLayerFbos.push_back(layerfbo);
-                                }
-                                else
-                                {
-                                    layerfbo = _arrayLayerFbos[i];
-                                }
-
-                                if (static_cast<int>(_resolveArrayLayerFbos.size()) <= i)
-                                {
-                                    resolvelayerfbo = new osg::FrameBufferObject;
-                                    resolvelayerfbo->setName(_camera->getName() + "_resolvelayer_");
-                                    _resolveArrayLayerFbos.push_back(resolvelayerfbo);
-                                }
-                                else
-                                {
-                                    resolvelayerfbo = _resolveArrayLayerFbos[i];
-                                }
-
-                                resolvelayerfbo->setAttachment(buffer, osg::FrameBufferAttachment(attachmentAsTex2dArray, i, 0));
-                                layerfbo->setAttachment(buffer, osg::FrameBufferAttachment(multiSampleTexArray, i, 0));
-                            }
+                            _resolveArrayLayersNeedSetup = true;
                         }
                         else
                         {
@@ -1101,9 +1138,12 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         else
         {
             // VRV_PATCH BEGIN
-            if (blitMask)
+            if (_resolveArrayLayersNeedSetup || _arrayLayerFbos.empty() || _resolveArrayLayerFbos.empty())
+                runResolveArrayLayersSetup();
+
+            for (unsigned int i = 0; i < _resolveArrayLayerFbos.size(); i++)
             {
-                for(unsigned int i = 0; i < _resolveArrayLayerFbos.size(); i++)
+                if (blitMask)
                 {
                     //_arrayLayerFbos[i]->dirtyAll();
                     _arrayLayerFbos[i]->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
@@ -1579,6 +1619,13 @@ unsigned int RenderStage::computeNumberOfDynamicRenderLeaves() const
 }
 
 
+void osgUtil::RenderStage::setFrameBufferObject(osg::FrameBufferObject* fbo)
+{
+    _fbo = fbo;
+    if (!_arrayLayerFbos.empty())
+        _resolveArrayLayersNeedSetup = true;
+}
+
 void RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject* fbo)
 {
     if (fbo && fbo->isMultisample())
@@ -1587,6 +1634,9 @@ void RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject*
             " multisampled." << std::endl;
     }
     _resolveFbo = fbo;
+
+    if (!_resolveArrayLayerFbos.empty())
+        _resolveArrayLayersNeedSetup = true;
 }
 
 void RenderStage::collateReferencesToDependentCameras()

@@ -440,26 +440,29 @@ void Texture2DArray::apply(State& state) const
         // generate texture
         GLenum texStorageSizedInternalFormat = extensions->isTextureStorageEnabled ? selectSizedInternalFormat() : 0;
 
-        textureObject = generateAndAssignTextureObject(
-                contextID, GL_TEXTURE_2D_ARRAY, _numMipmapLevels,
-                texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat :_internalFormat,
-                _textureWidth, _textureHeight, _textureDepth, 0);
-
-        textureObject->bind();
-
-        applyTexParameters(GL_TEXTURE_2D_ARRAY,state);
-
-        if (texStorageSizedInternalFormat!=0 && !textureObject->_allocated)
+        if (texStorageSizedInternalFormat != 0)
         {
-            extensions->glTexStorage3D( GL_TEXTURE_2D_ARRAY, osg::maximum(_numMipmapLevels,1), texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth);
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D_ARRAY, _numMipmapLevels, texStorageSizedInternalFormat, _textureWidth, _textureHeight, _textureDepth, 0);
+            textureObject->bind();
+            applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
+            if (!textureObject->_allocated)
+            {
+                extensions->glTexStorage3D(GL_TEXTURE_2D_ARRAY, osg::maximum(_numMipmapLevels, 1), texStorageSizedInternalFormat, 
+                    _textureWidth, _textureHeight, _textureDepth);
+            }
         }
         else
-            extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
-                     _textureWidth, _textureHeight, _textureDepth,
-                     _borderWidth,
-                     _sourceFormat ? _sourceFormat : _internalFormat,
-                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
-                     0);
+        {
+            GLenum internalFormat = _sourceFormat ? _sourceFormat : _internalFormat;
+            textureObject = generateAndAssignTextureObject(contextID, GL_TEXTURE_2D_ARRAY, _numMipmapLevels, internalFormat, _textureWidth, _textureHeight, _textureDepth, 0);
+            textureObject->bind();
+            applyTexParameters(GL_TEXTURE_2D_ARRAY, state);
+            extensions->glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, _internalFormat,
+                _textureWidth, _textureHeight, _textureDepth, _borderWidth,
+                internalFormat,
+                _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
+                0);
+        }
 
         textureObject->setAllocated(_numMipmapLevels, texStorageSizedInternalFormat!=0 ? texStorageSizedInternalFormat :_internalFormat, _textureWidth, _textureHeight, _textureDepth, 0);
     }

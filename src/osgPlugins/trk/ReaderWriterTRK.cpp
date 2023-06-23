@@ -189,8 +189,6 @@ class ReaderWriterTRK : public osgDB::ReaderWriter
         ReaderWriterTRK()
         {
             supportsExtension("trk","Track file format");
-
-            OSG_NOTICE<<"sizeof(TrkHeader)="<<sizeof(TrkHeader)<<std::endl;
         }
 
         virtual const char* className() const { return "Track Reader/Writer"; }

@@ -45,7 +45,7 @@ void Registry::addPrototype(int opcode, Record* prototype)
     }
 
     if (_recordProtoMap.find(opcode) != _recordProtoMap.end())
-        OSG_WARN << "Registry already contains prototype for opcode " << opcode << "." << std::endl;
+        OSG_DEBUG << "Registry already contains prototype for opcode " << opcode << "." << std::endl;
 
     _recordProtoMap[opcode] = prototype;
 }

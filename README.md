@@ -7,13 +7,13 @@
 
 Welcome to the OpenSceneGraph (OSG).
 
-For up-to-date information on the project, in-depth details on how to compile and run libraries and examples, see the documentation on the OpenSceneGraph website:
+For information on the project, in-depth details on how to compile and run libraries and examples, see the documentation on the OpenSceneGraph website:
 
-    http://www.openscenegraph.org/index.php/documentation
+http://www.openscenegraph.org/index.php/documentation
 
-For support subscribe to our public mailing list or forum, details at:
+For support please use the github OpenSceneGraph Discussions forum:
 
-    http://www.openscenegraph.org/index.php/support
+https://github.com/openscenegraph/OpenSceneGraph/discussions
 
 For the impatient, we've included quick build instructions below, these are are broken down is three parts:
 
@@ -40,7 +40,7 @@ The OpenSceneGraph uses the CMake build system to generate a platform-specific b
 
 If you don't already have CMake installed on your system you can grab it from http://www.cmake.org, use version 2.8.0 or later.  Details on the OpenSceneGraph's CMake build can be found at:
 
-    http://www.openscenegraph.org/projects/osg/wiki/Build/CMake
+http://www.openscenegraph.org/projects/osg/wiki/Build/CMake
 
 Under Unix-like systems (i.e. Linux, IRIX, Solaris, Free-BSD, HP-UX, AIX, macOS) use the `cmake` or `ccmake` command-line utils. Note that `cmake .` defaults to building Release to ensure that you get the best performance from your final libraries/applications.
 
@@ -59,13 +59,13 @@ Alternatively, you can create an out-of-source build directory and run cmake or 
 
 Under Windows use the GUI tool CMakeSetup to build your VisualStudio files. The following page on our wiki dedicated to the CMake build system should help guide you through the process:
 
-    http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows
+http://www.openscenegraph.org/index.php/documentation/platform-specifics/windows
 
 Under macOS you can either use the CMake build system above, or use the Xcode projects that you will find in the OpenSceneGraph/Xcode directory. See release notes on macOS CMake build below.
 
 For further details on compilation, installation and platform-specific information read "Getting Started" guide:
 
-    http://www.openscenegraph.org/index.php/documentation/10-getting-started
+http://www.openscenegraph.org/index.php/documentation/10-getting-started
 
 
 ## Section 2. Release notes on macOS build, by Eric Sokolowski et al.

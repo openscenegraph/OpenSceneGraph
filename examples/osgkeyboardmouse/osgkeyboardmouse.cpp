@@ -71,11 +71,11 @@ public:
     bool _addToModel;
 };
 
-class DeleteSelectedNodesVisitor : public osg::NodeVisitor
+class SelectedNodesVisitor : public osg::NodeVisitor
 {
 public:
 
-    DeleteSelectedNodesVisitor():
+    SelectedNodesVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
     }
@@ -108,6 +108,23 @@ public:
                 (*pitr)->removeChild(node);
             }
         }
+    }
+
+    osg::ref_ptr<osg::Node> createSelectedNodeSubgraph()
+    {
+        if (_selectedNodes.empty()) return osg::ref_ptr<osg::Node>();
+
+        if (_selectedNodes.size()==1)  return _selectedNodes[0];
+
+        // note code doesn't yet handle selected nodes being nested within transforms.
+        osg::ref_ptr<osg::Group> group;
+        for(SelectedNodes::iterator itr = _selectedNodes.begin();
+            itr != _selectedNodes.end();
+            ++itr)
+        {
+            group->addChild(*itr);
+        }
+        return group;
     }
 
     typedef std::vector< osg::ref_ptr<osgFX::Scribe> > SelectedNodes;
@@ -150,6 +167,18 @@ public:
                     osg::notify(osg::NOTICE)<<"Saved model to file 'saved_model.osgt'"<<std::endl;
                     osgDB::writeNodeFile(*(viewer->getSceneData()), "saved_model.osgt");
                 }
+                else if (ea.getKey()=='s')
+                {
+                    SelectedNodesVisitor snv;
+                    viewer->getSceneData()->accept(snv);
+                    osg::ref_ptr<osg::Node> selected = snv.createSelectedNodeSubgraph();
+
+                    if (selected)
+                    {
+                        osg::notify(osg::NOTICE)<<"Saved selected to file 'saved_selected.osgt'"<<std::endl;
+                        osgDB::writeNodeFile(*(viewer->getSceneData()), "saved_selected.osgt");
+                    }
+                }
                 else if (ea.getKey()=='p')
                 {
                     _usePolytopeIntersector = !_usePolytopeIntersector;
@@ -177,7 +206,7 @@ public:
                 else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Delete || ea.getKey()==osgGA::GUIEventAdapter::KEY_BackSpace)
                 {
                     osg::notify(osg::NOTICE)<<"Delete"<<std::endl;
-                    DeleteSelectedNodesVisitor dsnv;
+                    SelectedNodesVisitor dsnv;
                     viewer->getSceneData()->accept(dsnv);
                     dsnv.pruneSelectedNodes();
                 }

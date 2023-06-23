@@ -90,7 +90,7 @@ public:
                 unsigned int pos=first;
                 for(GLsizei i=3;i<count;i+=2,pos+=2)
                 {
-                    this->operator()(pos,pos+1,pos+2,pos+3);
+                    this->operator()(pos,pos+1,pos+3,pos+2);
                 }
                 break;
             }
@@ -187,7 +187,7 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }
@@ -283,7 +283,7 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }
@@ -378,7 +378,7 @@ public:
                 IndexPointer iptr = indices;
                 for(GLsizei i=3;i<count;i+=2,iptr+=2)
                 {
-                    this->operator()(*(iptr),*(iptr+1),*(iptr+2),*(iptr+3));
+                    this->operator()(*(iptr),*(iptr+1),*(iptr+3),*(iptr+2));
                 }
                 break;
             }

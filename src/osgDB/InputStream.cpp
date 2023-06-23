@@ -815,7 +815,7 @@ osg::ref_ptr<osg::Image> InputStream::readImage(bool readFromExternal)
                     std::stringstream inputStream;
                     inputStream.write( data, size );
 
-                    osgDB::ReaderWriter::ReadResult rr = reader->readImage( inputStream );
+                    osgDB::ReaderWriter::ReadResult rr = reader->readImage( inputStream, _options.get());
                     if ( rr.validImage() )
                         image = rr.takeImage();
                     else

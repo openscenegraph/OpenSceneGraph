@@ -19,7 +19,6 @@
 #include <osg/io_utils>
 #include <osgUtil/SmoothingVisitor>
 #include <osg/TexEnv>
-#include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 #include <osg/Texture2D>
@@ -269,7 +268,7 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
 
 
 /*  Open a PLY file and read vertex, color and index data. and returns the node  */
-osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColors )
+osg::Node* VertexData::readPlyFile( const char* filename, const osgDB::ReaderWriter::Options* options, const bool ignoreColors )
 {
     int     nPlyElems;
     char**  elemNames;
@@ -539,7 +538,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         geom->setUseVertexBufferObjects(true);
 
         osg::ref_ptr<osg::Image> image;
-        if (!textureFile.empty() && (image = osgDB::readRefImageFile(textureFile)) != NULL)
+        if (!textureFile.empty() && (image = osgDB::readRefImageFile(textureFile, options)) != NULL)
         {
             osg::Texture2D *texture = new osg::Texture2D;
             texture->setImage(image.get());

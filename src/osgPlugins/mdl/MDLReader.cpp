@@ -145,7 +145,7 @@ std::string MDLReader::getToken(std::string str, const char * /*delim*/, size_t 
 }
 
 
-ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
+ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName, const osgDB::ReaderWriter::Options* options)
 {
     // Find the texture's image file
     std::string texExtension = osgDB::getFileExtensionIncludingDot(textureName);
@@ -175,7 +175,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
     // If we found the file, read it, otherwise bail
     if (!texPath.empty())
     {
-        osg::ref_ptr<Image> texImage = readRefImageFile(texPath);
+        osg::ref_ptr<Image> texImage = readRefImageFile(texPath, options);
 
         // If we got the image, create the texture attribute
         if (texImage.valid())
@@ -227,7 +227,7 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
 }
 
 
-ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
+ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName, const osgDB::ReaderWriter::Options* options)
 {
     std::string              mtlFileName;
     std::string              mtlPath;
@@ -363,7 +363,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
 
                 // Read the texture
                 if (!token.empty())
-                    texture = readTextureFile(token);
+                    texture = readTextureFile(token, options);
             }
             else if (equalCaseInsensitive(token, "$basetexture2"))
             {
@@ -372,7 +372,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
 
                 // Read the texture
                 if (!token.empty())
-                    texture2 = readTextureFile(token);
+                    texture2 = readTextureFile(token, options);
             }
             else if ((equalCaseInsensitive(token, "$translucent")) ||
                      (equalCaseInsensitive(token, "$alphatest")))
@@ -586,7 +586,7 @@ Mesh * MDLReader::processMesh(std::istream * str, int offset)
 }
 
 
-bool MDLReader::readFile(const std::string & file)
+bool MDLReader::readFile(const std::string & file, const osgDB::ReaderWriter::Options* options)
 {
     std::string       baseName;
     std::string       fileName;
@@ -680,7 +680,7 @@ bool MDLReader::readFile(const std::string & file)
         while ((j < sizeof(texName)) && (texName[j-1] != 0));
 
         // Load this texture
-        stateSet = readMaterialFile(texName);
+        stateSet = readMaterialFile(texName, options);
 
         // Add it to our list
         state_sets.push_back(stateSet);

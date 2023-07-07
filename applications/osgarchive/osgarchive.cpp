@@ -143,11 +143,15 @@ int main( int argc, char **argv )
                     osg::HeightField* hf = dynamic_cast<osg::HeightField*>(obj.get());
                     osg::Node* node = dynamic_cast<osg::Node*>(obj.get());
                     osg::Shader* shader = dynamic_cast<osg::Shader*>(obj.get());
-                    if (image) archive->writeImage(*image, *itr);
-                    else if (hf) archive->writeHeightField(*hf, *itr);
-                    else if (node) archive->writeNode(*node, *itr);
-                    else if (shader) archive->writeShader(*shader, *itr);
-                    else archive->writeObject(*obj, *itr);
+                    osgDB::ReaderWriter::WriteResult result;
+                    if (image) result = archive->writeImage(*image, *itr);
+                    else if (hf) result = archive->writeHeightField(*hf, *itr);
+                    else if (node) result = archive->writeNode(*node, *itr);
+                    else if (shader) result = archive->writeShader(*shader, *itr);
+                    else result = archive->writeObject(*obj, *itr);
+                    if (result.status() != osgDB::ReaderWriter::WriteResult::WriteStatus::FILE_SAVED) {
+                        std::cout<<"  -- unable to write "<<*itr<<": "<<result.statusMessage()<<std::endl;
+                    }
                 }
             }
         }

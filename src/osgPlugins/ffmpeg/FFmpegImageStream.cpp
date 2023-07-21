@@ -10,6 +10,11 @@
 
 #define STREAM_TIMEOUT_IN_SECONDS_TO_CONSIDER_IT_DEAD   10
 
+#if ((defined(_MSVC_LANG) && _MSVC_LANG > 199711L) || __cplusplus > 199711L)
+    #define smart_ptr std::unique_ptr
+#else
+    #define smart_ptr std::auto_ptr
+#endif
 
 namespace osgFFmpeg {
 
@@ -23,8 +28,8 @@ FFmpegImageStream::FFmpegImageStream() :
 {
     setOrigin(osg::Image::TOP_LEFT);
 
-    std::auto_ptr<FFmpegDecoder> decoder(new FFmpegDecoder);
-    std::auto_ptr<CommandQueue> commands(new CommandQueue);
+    smart_ptr<FFmpegDecoder> decoder(new FFmpegDecoder);
+    smart_ptr<CommandQueue> commands(new CommandQueue);
 
     m_decoder = decoder.release();
     m_commands = commands.release();

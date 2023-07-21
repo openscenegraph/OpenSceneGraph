@@ -32,7 +32,7 @@
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
-#if  __cplusplus > 199711L
+#if ((defined(_MSVC_LANG) && _MSVC_LANG > 199711L) || __cplusplus > 199711L)
     #define smart_ptr std::unique_ptr
 #else
     #define smart_ptr std::auto_ptr

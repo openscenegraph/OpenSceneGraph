@@ -75,28 +75,44 @@ GraphicsContext::WindowingSystemInterface* GraphicsContext::WindowingSystemInter
         OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no interfaces available."<<std::endl;
         return 0;
     }
+    std::string search = name;
+    if (getenv("OSG_WINDOWING_SYSTEM") != NULL)
+    {
+        search = getenv("OSG_WINDOWING_SYSTEM");
+    }
 
-    if (!name.empty())
+    if (!search.empty())
     {
         for(Interfaces::iterator itr = _interfaces.begin();
             itr != _interfaces.end();
             ++itr)
         {
-            if ((*itr)->getName()==name)
+            if ((*itr)->getName()==search)
             {
+                OSG_INFO<<"found WindowingSystemInterface : "<<search<<std::endl;
                 return itr->get();
             }
-
-            OSG_NOTICE<<"   tried interface "<<typeid(*itr).name()<<", name= "<<(*itr)->getName()<<std::endl;
         }
 
-        OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no interfaces matches name : "<<name<<std::endl;
+        OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no interfaces matches name : "<<search<<std::endl;
         return 0;
     }
     else
     {
-        // no preference provided so just take the first available interface
-        return _interfaces.front().get();
+        // no preference provided so just take the first available interface that works
+        for (Interfaces::iterator itr = _interfaces.begin();
+            itr != _interfaces.end();
+            ++itr)
+        {
+            if ((*itr)->getNumScreens() > 0)
+            {
+                OSG_INFO<<"using default WindowingSystemInterface : "<<(*itr)->getName()<<std::endl;
+                return itr->get();
+            }
+        }
+
+        OSG_WARN<<"Warning: GraphicsContext::WindowingSystemInterfaces::getWindowingSystemInterface() failed, no working interfaces"<<std::endl;
+        return 0;
     }
 }
 

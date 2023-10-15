@@ -482,6 +482,16 @@ private:
         WLGWlog(0) << "<output(" << o << ") scale: " << factor << ">" << std::endl;
     }
     static void output_done(void *data, wl_output *wl_output) {}
+    static void output_name(void *data, wl_output *wl_output, const char *name) {
+        WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
+        int o = obj->find_output(wl_output);
+        WLGWlog(0) << "<output(" << o << ") name: " << name << ">" << std::endl;
+    }
+    static void output_desc(void *data, wl_output *wl_output, const char *desc) {
+        WLWindowingSystemInterface* obj = (WLWindowingSystemInterface*) data;
+        int o = obj->find_output(wl_output);
+        WLGWlog(0) << "<output(" << o << ") desc: " << desc << ">" << std::endl;
+    }
     // Input handling
     WLGraphicsWindow* get_window(struct wl_surface* surface) {
         if (surface) {
@@ -733,7 +743,7 @@ private:
             wl_registry_add_listener(_gc.registry, &_wl_registry_listener, this);
             wl_display_roundtrip(_gc.display);
             // ensure we got all required shared objects
-            if (!_gc.compositor || !_gc.shm || !_gc.output || !_gc.xdg_wm_base || !_gc.zxdg_decoration_manager_v1) {
+            if (!_gc.compositor || !_gc.shm || _gc.n_outputs < 1 || !_gc.xdg_wm_base || !_gc.zxdg_decoration_manager_v1) {
                 WLGWlog(0) << "WLwsi::checkInit: missing one of compositor/shm/output/xdg_wm_base/zxdg_decoration_manager_v1" << std::endl;
                 break;
             }
@@ -776,6 +786,8 @@ private:
             _wl_output_listener.mode = output_mode;
             _wl_output_listener.scale = output_scale;
             _wl_output_listener.done = output_done;
+            _wl_output_listener.name = output_name;
+            _wl_output_listener.description = output_desc;
             for (size_t o=0; o<_gc.n_outputs; o++)
                 wl_output_add_listener(_gc.output[o], &_wl_output_listener, this);
             // attach ping responder

@@ -113,11 +113,13 @@ private:
             wl_egl_window_resize(obj->_gw.egl_window, obj->_gw.width, obj->_gw.height, 0, 0);
             obj->resized(0, 0, obj->_gw.width, obj->_gw.height);                // camera(s), also updates _traits
             obj->getEventQueue()->windowResize(obj->_traits->x, obj->_traits->y, obj->_traits->width, obj->_traits->height);     // event co-ords & GUI
-            // floating? then decorated
-            if (obj->_gw.floating)
-                zxdg_toplevel_decoration_v1_set_mode(obj->_gw.zxdg_toplevel_decoration_v1, ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
-            else
-                zxdg_toplevel_decoration_v1_set_mode(obj->_gw.zxdg_toplevel_decoration_v1, ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE);
+            // floating? then decorated if we have the option
+            if (obj->_gw.zxdg_toplevel_decoration_v1) {
+                if (obj->_gw.floating)
+                    zxdg_toplevel_decoration_v1_set_mode(obj->_gw.zxdg_toplevel_decoration_v1, ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
+                else
+                    zxdg_toplevel_decoration_v1_set_mode(obj->_gw.zxdg_toplevel_decoration_v1, ZXDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE);
+            }
             obj->_gw.pending_config = false;
             WLGWlog(0) << obj->_logname << "<xdg surface configure: " << obj->_gw.width << 'x' << obj->_gw.height << "," << obj->_gw.floating << ">" << std::endl;
         } else {
@@ -200,8 +202,9 @@ public:
         xdg_toplevel_add_listener(_gw.xdg_toplevel, &_xdg_toplevel_listener, this);
         // hint for the window manager on grouping, and allows app-specific rules to be applied
         xdg_toplevel_set_app_id(_gw.xdg_toplevel, "org.flightgear.FlightGear");
-        // grab decoration extension for this toplevel
-        _gw.zxdg_toplevel_decoration_v1 = zxdg_decoration_manager_v1_get_toplevel_decoration(_gw.gc->zxdg_decoration_manager_v1, _gw.xdg_toplevel);
+        // grab decoration extension for this toplevel if available
+        if (_gw.gc->zxdg_decoration_manager_v1)
+            _gw.zxdg_toplevel_decoration_v1 = zxdg_decoration_manager_v1_get_toplevel_decoration(_gw.gc->zxdg_decoration_manager_v1, _gw.xdg_toplevel);
         // apply traits..
         xdg_toplevel_set_title(_gw.xdg_toplevel, _traits->windowName.c_str());
         WLGWlog(0) << _logname << "name='" << _traits->windowName << "'" << std::endl;
@@ -743,8 +746,8 @@ private:
             wl_registry_add_listener(_gc.registry, &_wl_registry_listener, this);
             wl_display_roundtrip(_gc.display);
             // ensure we got all required shared objects
-            if (!_gc.compositor || !_gc.shm || _gc.n_outputs < 1 || !_gc.xdg_wm_base || !_gc.zxdg_decoration_manager_v1) {
-                WLGWlog(0) << "WLwsi::checkInit: missing one of compositor/shm/output/xdg_wm_base/zxdg_decoration_manager_v1" << std::endl;
+            if (!_gc.compositor || !_gc.shm || _gc.n_outputs < 1 || !_gc.xdg_wm_base) {
+                WLGWlog(0) << "WLwsi::checkInit: missing one of compositor/shm/output/xdg_wm_base" << std::endl;
                 break;
             }
             // load default cursor theme & cursor images for each OSG cursor

@@ -856,7 +856,7 @@ public:
         for (int screen=0; screen<(int)_gc.n_outputs; screen++) {
             osg::GraphicsContext::ScreenIdentifier next(screen);
             osg::GraphicsContext::ScreenSettings s;
-            getScreenSettings(si, s);
+            getScreenSettings(next, s);
             resList.push_back(s);
         }
         WLGWlog(-1) << "]=1" << std::endl;

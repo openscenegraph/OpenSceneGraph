@@ -53,6 +53,18 @@ bool MouseHandler::_handleMousePush(float x, float y, int button) {
         &WindowManager::mousePushedMiddle
     );
 
+    else if(button == osgGA::GUIEventAdapter::X1_MOUSE_BUTTON) return _doMouseEvent(
+            x,
+            y,
+            &WindowManager::mousePushedX1
+            );
+
+    else if(button == osgGA::GUIEventAdapter::X2_MOUSE_BUTTON) return _doMouseEvent(
+            x,
+            y,
+            &WindowManager::mousePushedX2
+            );
+
     else return false;
 }
 

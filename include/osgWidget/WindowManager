@@ -130,6 +130,8 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             flag |= _leftDown ? osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON : 0;
             flag |= _middleDown ? osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON: 0;
             flag |= _rightDown ? osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON : 0;
+            flag |= _x1Down ? osgGA::GUIEventAdapter::X1_MOUSE_BUTTON : 0;
+            flag |= _x2Down ? osgGA::GUIEventAdapter::X2_MOUSE_BUTTON : 0;
 
             return flag;
         }
@@ -210,6 +212,14 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             return _rightDown;
         }
 
+        bool isX1MouseButtonDown() const {
+            return _x1Down;
+        }
+
+        bool isX2MouseButtonDown() const {
+            return _x2Down;
+        }
+
         bool isMouseScrollingUp() const {
             return _scrolling == osgGA::GUIEventAdapter::SCROLL_UP;
         }
@@ -263,6 +273,14 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             return _handleMousePushed(x, y, _rightDown);
         }
 
+        bool mousePushedX1(float x, float y) {
+            return _handleMousePushed(x, y, _x1Down);
+        }
+
+        bool mousePushedX2(float x, float y) {
+            return _handleMousePushed(x, y, _x2Down);
+        }
+
         bool mouseReleasedLeft(float x, float y) {
             return _handleMouseReleased(x, y, _leftDown);
         }
@@ -273,6 +291,14 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
 
         bool mouseReleasedRight(float x, float y) {
             return _handleMouseReleased(x, y, _rightDown);
+        }
+
+        bool mouseReleasedX1(float x, float y) {
+            return _handleMouseReleased(x, y, _x1Down);
+        }
+
+        bool mouseReleasedX2(float x, float y) {
+            return _handleMouseReleased(x, y, _x2Down);
         }
 
         // Keyboards wrappers, as above; takes the key and key's mask code, which
@@ -320,6 +346,8 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         bool               _leftDown;
         bool               _middleDown;
         bool               _rightDown;
+        bool               _x1Down;
+        bool               _x2Down;
 
         osgGA::GUIEventAdapter::ScrollingMotion _scrolling;
 

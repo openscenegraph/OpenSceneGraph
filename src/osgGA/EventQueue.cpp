@@ -251,6 +251,12 @@ osgGA::GUIEventAdapter* EventQueue::mouseButtonPress(float x, float y, unsigned 
         case(3):
             _accumulateEventState->setButtonMask(GUIEventAdapter::RIGHT_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
             break;
+        case(4):
+            _accumulateEventState->setButtonMask(GUIEventAdapter::X1_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+        case(5):
+            _accumulateEventState->setButtonMask(GUIEventAdapter::X2_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
     }
 
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
@@ -267,6 +273,12 @@ osgGA::GUIEventAdapter* EventQueue::mouseButtonPress(float x, float y, unsigned 
             break;
         case(3):
             event->setButton(GUIEventAdapter::RIGHT_MOUSE_BUTTON);
+            break;
+        case(4):
+            event->setButton(GUIEventAdapter::X1_MOUSE_BUTTON);
+            break;
+        case(5):
+            event->setButton(GUIEventAdapter::X2_MOUSE_BUTTON);
             break;
     }
 
@@ -290,6 +302,12 @@ osgGA::GUIEventAdapter* EventQueue::mouseDoubleButtonPress(float x, float y, uns
             break;
         case(3):
             _accumulateEventState->setButtonMask(GUIEventAdapter::RIGHT_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+        case(4):
+            _accumulateEventState->setButtonMask(GUIEventAdapter::X1_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
+            break;
+        case(5):
+            _accumulateEventState->setButtonMask(GUIEventAdapter::X2_MOUSE_BUTTON | _accumulateEventState->getButtonMask());
             break;
     }
 
@@ -330,6 +348,12 @@ osgGA::GUIEventAdapter* EventQueue::mouseButtonRelease(float x, float y, unsigne
             break;
         case(3):
             _accumulateEventState->setButtonMask(~GUIEventAdapter::RIGHT_MOUSE_BUTTON & _accumulateEventState->getButtonMask());
+            break;
+        case(4):
+            _accumulateEventState->setButtonMask(~GUIEventAdapter::X1_MOUSE_BUTTON & _accumulateEventState->getButtonMask());
+            break;
+        case(5):
+            _accumulateEventState->setButtonMask(~GUIEventAdapter::X2_MOUSE_BUTTON & _accumulateEventState->getButtonMask());
             break;
     }
 

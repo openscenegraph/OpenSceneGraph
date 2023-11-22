@@ -38,6 +38,8 @@ _focusMode      (PFM_FOCUS),
 _leftDown       (false),
 _middleDown     (false),
 _rightDown      (false),
+_x1Down         (false),
+_x2Down         (false),
 _scrolling      (osgGA::GUIEventAdapter::SCROLL_NONE),
 _styleManager   (new StyleManager()) {
     _name = generateRandomName("WindowManager");
@@ -105,6 +107,8 @@ WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):
     _leftDown       (false),
     _middleDown     (false),
     _rightDown      (false),
+    _x1Down         (false),
+    _x2Down         (false),
     _scrolling      (osgGA::GUIEventAdapter::SCROLL_NONE),
     _styleManager   (new StyleManager())
 {
@@ -517,6 +521,8 @@ bool WindowManager::pointerMove(float x, float y) {
         _leftDown   = 0;
         _middleDown = 0;
         _rightDown  = 0;
+        _x1Down     = 0;
+        _x2Down     = 0;
 
         return false;
     }

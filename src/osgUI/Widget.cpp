@@ -81,6 +81,8 @@ void Widget::updateFocus(osg::NodeVisitor& nv)
                     if (ea->getButtonMask()&osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) ++numButtonsPressed;
                     if (ea->getButtonMask()&osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON) ++numButtonsPressed;
                     if (ea->getButtonMask()&osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) ++numButtonsPressed;
+                    if (ea->getButtonMask()&osgGA::GUIEventAdapter::X1_MOUSE_BUTTON) ++numButtonsPressed;
+                    if (ea->getButtonMask()&osgGA::GUIEventAdapter::X2_MOUSE_BUTTON) ++numButtonsPressed;
                 }
 
                 bool previousFocus = _hasEventFocus;

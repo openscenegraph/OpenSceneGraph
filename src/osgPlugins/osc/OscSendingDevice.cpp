@@ -261,6 +261,12 @@ int OscSendingDevice::getButtonNum(const osgGA::GUIEventAdapter& ea)
         case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
             return 3;
             break;
+        case osgGA::GUIEventAdapter::X1_MOUSE_BUTTON:
+            return 4;
+            break;
+        case osgGA::GUIEventAdapter::X2_MOUSE_BUTTON:
+            return 5;
+            break;
         default:
             return -1;
     }

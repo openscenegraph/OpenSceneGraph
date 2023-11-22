@@ -85,7 +85,9 @@ public:
         enum MouseButtonMask {
             LEFT_MOUSE_BUTTON    = 1<<0,
             MIDDLE_MOUSE_BUTTON  = 1<<1,
-            RIGHT_MOUSE_BUTTON   = 1<<2
+            RIGHT_MOUSE_BUTTON   = 1<<2,
+            X1_MOUSE_BUTTON      = 1<<3,
+            X2_MOUSE_BUTTON      = 1<<4
         };
 
         enum EventType {

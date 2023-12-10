@@ -44,6 +44,7 @@ extern "C"
 #endif
 
 #include <libavutil/mathematics.h>
+#include <libavutil/imgutils.h>
 
 #ifdef USE_SWSCALE
     #include <libswscale/swscale.h>

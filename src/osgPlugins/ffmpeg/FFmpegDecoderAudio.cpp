@@ -40,17 +40,17 @@ static int decode_audio(AVCodecContext *avctx, int16_t *samples,
     avpkt.size = buf_size;
 
     AVFrame *frame = av_frame_alloc();
-    int ret, got_frame = 0;
+    int ret;
 
     if (!frame)
         return AVERROR(ENOMEM);
 
-    ret = avcodec_decode_audio4(avctx, frame, &got_frame, &avpkt);
+    ret = avcodec_receive_frame(avctx, frame);
 
 #ifdef USE_AVRESAMPLE    // libav's AVFrame structure does not contain a 'channels' field
-    if (ret >= 0 && got_frame) {
+    if (ret >= 0) {
 #else
-    if (ret >= 0 && got_frame && av_frame_get_channels(frame)>0) {
+    if (ret >= 0 && frame->channels>0) {
 #endif
         int ch, plane_size;
         int planar = av_sample_fmt_is_planar(avctx->sample_fmt);
@@ -151,7 +151,9 @@ void FFmpegDecoderAudio::open(AVStream * const stream, FFmpegParameters* paramet
             return;
 
         m_stream = stream;
-        m_context = stream->codec;
+        m_codecpar = stream->codecpar;
+        const AVCodec* p_codec = avcodec_find_decoder(m_codecpar->codec_id);
+        m_context = avcodec_alloc_context3(p_codec);
 
         m_in_sample_rate = m_context->sample_rate;
         m_in_nb_channels = m_context->channels;
@@ -214,7 +216,7 @@ printf("### CONVERTING from sample format %s TO %s\n\t\tFROM %d TO %d channels\n
             throw std::runtime_error("invalid audio codec");;
 
         // Find the decoder for the audio stream
-        AVCodec * const p_codec = avcodec_find_decoder(m_context->codec_id);
+        p_codec = avcodec_find_decoder(m_context->codec_id);
 
         if (p_codec == 0)
             throw std::runtime_error("avcodec_find_decoder() failed");

@@ -88,9 +88,9 @@ private:
     void findAspectRatio();
     void publishFrame(double delay, bool audio_disabled);
     double synchronizeVideo(double pts);
-    void yuva420pToRgba(AVPicture *dst, AVPicture *src, int width, int height);
+    void yuva420pToRgba(AVFrame *dst, AVFrame *src, int width, int height);
 
-    int convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
+    int convert(AVFrame *dst, int dst_pix_fmt, AVFrame *src,
                 int src_pix_fmt, int src_width, int src_height);
 
 
@@ -100,8 +100,9 @@ private:
     PacketQueue &           m_packets;
     FFmpegClocks &          m_clocks;
     AVStream *              m_stream;
+    AVCodecParameters *     m_codecpar;
     AVCodecContext *        m_context;
-    AVCodec *               m_codec;
+    const AVCodec *         m_codec;
     const uint8_t *         m_packet_data;
     int                     m_bytes_remaining;
     int64_t                 m_packet_pts;

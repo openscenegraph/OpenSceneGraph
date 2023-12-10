@@ -62,7 +62,9 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
 void FFmpegDecoderVideo::open(AVStream * const stream)
 {
     m_stream = stream;
-    m_context = stream->codec;
+    m_codecpar = stream->codecpar;
+    const AVCodec* p_codec = avcodec_find_decoder(m_codecpar->codec_id);
+    m_context = avcodec_alloc_context3(p_codec);
 
     // Trust the video size given at this point
     // (avcodec_open seems to sometimes return a 0x0 size)
@@ -99,11 +101,12 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
 
     // Allocate converted RGB frame
     m_frame_rgba.reset(av_frame_alloc());
-    m_buffer_rgba[0].resize(avpicture_get_size(AV_PIX_FMT_RGB24, width(), height()));
+    m_buffer_rgba[0].resize(av_image_get_buffer_size(AV_PIX_FMT_RGB24, width(), height(), 1));
     m_buffer_rgba[1].resize(m_buffer_rgba[0].size());
 
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
-    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[0])[0], AV_PIX_FMT_RGB24, width(), height());
+    AVFrame *avf = m_frame_rgba.get();
+    av_image_fill_arrays(avf->data, avf->linesize, &(m_buffer_rgba[0])[0], AV_PIX_FMT_RGB24, width(), height(), 1);
 
     // Override get_buffer()/release_buffer() from codec context in order to retrieve the PTS of each frame.
     m_context->opaque = this;
@@ -169,7 +172,7 @@ void FFmpegDecoderVideo::decodeLoop()
             int frame_finished = 0;
 
             // We want to use the entire packet since some codecs will require extra information for decoding
-            const int bytes_decoded = avcodec_decode_video2(m_context, m_frame.get(), &frame_finished, &(packet.packet));
+            const int bytes_decoded = avcodec_receive_frame(m_context, m_frame.get());
 
             if (bytes_decoded < 0)
                 throw std::runtime_error("avcodec_decode_video failed()");
@@ -283,7 +286,7 @@ void FFmpegDecoderVideo::findAspectRatio()
     m_pixel_aspect_ratio = ratio;
 }
 
-int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
+int FFmpegDecoderVideo::convert(AVFrame *dst, int dst_pix_fmt, AVFrame *src,
             int src_pix_fmt, int src_width, int src_height)
 {
     osg::Timer_t startTick = osg::Timer::instance()->tick();
@@ -334,11 +337,11 @@ void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
         return;
 #endif
 
-    AVPicture * const src = (AVPicture *) m_frame.get();
-    AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
+    AVFrame * const src = (AVFrame *) m_frame.get();
+    AVFrame * const dst = (AVFrame *) m_frame_rgba.get();
 
-    // Assign appropriate parts of the buffer to image planes in m_frame_rgba
-    avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[m_writeBuffer])[0], AV_PIX_FMT_RGB24, width(), height());
+    // Assign appropriate parts of the buffer to image planes in m_frame_rgba    
+    av_image_fill_arrays(dst->data, dst->linesize, &(m_buffer_rgba[m_writeBuffer])[0], AV_PIX_FMT_RGB24, width(), height(), 1);
 
     // Convert YUVA420p (i.e. YUV420p plus alpha channel) using our own routine
 
@@ -370,7 +373,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
 
 
 
-void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, AVPicture * const src, int width, int height)
+void FFmpegDecoderVideo::yuva420pToRgba(AVFrame * const dst, AVFrame * const src, int width, int height)
 {
     convert(dst, AV_PIX_FMT_RGB24, src, m_context->pix_fmt, width, height);
 

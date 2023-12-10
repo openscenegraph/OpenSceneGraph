@@ -25,6 +25,7 @@
     (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR==20 && LIBAVCODEC_VERSION_MICRO >= 1)
     #define USE_AV_LOCK_MANAGER
 #endif
+#undef USE_AV_LOCK_MANAGER
 
 extern "C" {
 
@@ -118,7 +119,7 @@ public:
         av_lockmgr_register(&lockMgr);
 #endif
         // Register all FFmpeg formats/codecs
-        av_register_all();
+        // av_register_all();   // Omit after ffmpeg 4.0
 
         avformat_network_init();
     }

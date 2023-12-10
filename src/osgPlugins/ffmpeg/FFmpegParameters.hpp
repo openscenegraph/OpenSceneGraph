@@ -20,7 +20,7 @@ public:
 
     bool isFormatAvailable() const { return m_format!=NULL; }
     
-    AVInputFormat* getFormat() { return m_format; }
+    const AVInputFormat* getFormat() { return m_format; }
     AVDictionary** getOptions() { return &m_options; }
     void setContext(AVIOContext* context) { m_context = context; }
     AVIOContext* getContext() { return m_context; }
@@ -29,7 +29,7 @@ public:
 
 protected:
 
-    AVInputFormat* m_format;
+    const AVInputFormat* m_format;
     AVIOContext* m_context;
     AVDictionary* m_options;
 };

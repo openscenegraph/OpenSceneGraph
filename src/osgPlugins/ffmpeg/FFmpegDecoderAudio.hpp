@@ -59,6 +59,7 @@ private:
     PacketQueue &                       m_packets;
     FFmpegClocks &                      m_clocks;
     AVStream *                          m_stream;
+    AVCodecParameters *                 m_codecpar;
     AVCodecContext *                    m_context;
     FFmpegPacket                        m_packet;
     const uint8_t *                     m_packet_data;

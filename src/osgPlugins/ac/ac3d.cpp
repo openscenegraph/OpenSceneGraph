@@ -1050,8 +1050,8 @@ class SurfaceBin : public PrimitiveBin {
             Tessellator.retessellatePolygons(*geometry);
         }
 
-        // handle triangles
-        if (!_triangles.empty())
+        // handle triangles & quads
+        if (!_triangles.empty() || !_quads.empty())
         {
             osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
             for (unsigned i = 0; i < _triangles.size(); ++i)
@@ -1062,20 +1062,20 @@ class SurfaceBin : public PrimitiveBin {
                     drawElements->addElement(index);
                 }
             }
-            geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
-        }
-
-        // handle quads
-        if (!_quads.empty())
-        {
-            osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
             for (unsigned i = 0; i < _quads.size(); ++i)
             {
+                unsigned indices[4];
                 for (unsigned j = 0; j < 4; ++j)
-                {
-                    unsigned index = pushVertex(_quads[i].index[j], vertexArray, normalArray, texcoordArray);
-                    drawElements->addElement(index);
-                }
+                    indices[j] = pushVertex(_quads[i].index[j], vertexArray, normalArray, texcoordArray);
+                // Quads aren't compatible with geometry shaders
+                // A B C D -> A B C, A C D
+                drawElements->addElement(indices[0]);
+                drawElements->addElement(indices[1]);
+                drawElements->addElement(indices[2]);
+
+                drawElements->addElement(indices[0]);
+                drawElements->addElement(indices[2]);
+                drawElements->addElement(indices[3]);
             }
             geometry->addPrimitiveSet(createOptimalDrawElements(drawElements.get()));
         }
@@ -1085,7 +1085,8 @@ class SurfaceBin : public PrimitiveBin {
         {
             for (unsigned i = 0; i < _polygons.size(); ++i)
             {
-                osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::POLYGON);
+                // Polygons aren't compatible with geometry shaders
+                osg::ref_ptr<osg::DrawElementsUInt> drawElements = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_FAN);
                 for (unsigned j = 0; j < _polygons[i].index.size(); ++j)
                 {
                     unsigned index = pushVertex(_polygons[i].index[j], vertexArray, normalArray, texcoordArray);

@@ -1017,7 +1017,7 @@ void SceneView::draw()
 
     osg::State* state = _renderInfo.getState();
 
-    // we in theory should be able to be able to bypass reset, but we'll call it just in case.
+    // we in theory should be able to bypass reset, but we'll call it just in case.
     //_state->reset();
     state->setFrameStamp(_frameStamp.get());
 

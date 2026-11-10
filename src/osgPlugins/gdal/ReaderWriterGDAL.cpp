@@ -34,6 +34,12 @@
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
 
+#if ((defined(_MSVC_LANG) && _MSVC_LANG > 199711L) || __cplusplus > 199711L)
+    #define smart_ptr std::unique_ptr
+#else
+    #define smart_ptr std::auto_ptr
+#endif
+
 // From easyrgb.com
 float Hue_2_RGB( float v1, float v2, float vH )
 {
@@ -123,7 +129,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             initGDAL();
 
-            std::auto_ptr<GDALDataset> dataset((GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly));
+            smart_ptr<GDALDataset> dataset((GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly));
             if (!dataset.get()) return ReadResult::FILE_NOT_HANDLED;
 
             int dataWidth = dataset->GetRasterXSize();
@@ -577,7 +583,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             initGDAL();
 
-            std::auto_ptr<GDALDataset> dataset((GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly));
+            smart_ptr<GDALDataset> dataset((GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly));
             if (!dataset.get()) return ReadResult::FILE_NOT_HANDLED;
 
             int dataWidth = dataset->GetRasterXSize();

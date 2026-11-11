@@ -1097,6 +1097,10 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
                 # -Wmisleading-indentation (in -Wall) generates less warnings when interpreting tab as 4 spaces instead of the default of 8
                 # SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -ftabstop=4)
                 SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-misleading-indentation)
+                IF(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 13.0)
+                    # -Woverloaded-virtual issued by default by gcc compiler >= 13
+                    SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wno-overloaded-virtual)
+                ENDIF()
             ENDIF()
         ENDIF()
     ENDIF()
